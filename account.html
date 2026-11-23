@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پنل مشتری | وب‌ساز مرادی</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#07111f;color:white;
+ font-family:tahoma,Arial;padding:20px;
+}
+.container{max-width:850px;margin:40px auto}
+.header{
+ background:#102238;padding:25px;border-radius:18px;
+ border:1px solid #263d55;
+}
+h1{color:#42d9ff}
+.card{
+ background:#102238;padding:22px;border-radius:16px;
+ margin-top:18px;border:1px solid #263d55;
+}
+.info{color:#42d9ff;word-break:break-all}
+button{
+ border:0;border-radius:10px;padding:13px 20px;
+ background:#12bde8;color:#07111f;
+ font-weight:bold;cursor:pointer;margin-top:15px;
+}
+a{color:#42d9ff}
+#status{color:#a9bbce;line-height:2}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+<h1>پنل مشتریان</h1>
+<p>به وب‌ساز مرادی خوش آمدید</p>
+</div>
+
+<div class="card">
+<h3>اطلاعات حساب شما</h3>
+<p>ایمیل:</p>
+<p class="info" id="email">در حال بررسی...</p>
+<p id="status">لطفاً صبر کنید...</p>
+</div>
+
+<div class="card">
+<h3>سفارش‌های من</h3>
+<p>بخش سفارش‌های اختصاصی به‌زودی فعال می‌شود.</p>
+</div>
+
+<div class="card">
+<h3>دسترسی سریع</h3>
+<p><a href="index.html">بازگشت به صفحه اصلی</a></p>
+<button onclick="logout()">خروج از حساب</button>
+</div>
+
+</div>
+
+<script>
+const db = window.supabase.createClient(
+ 'https://oczpjbwwogsydzkouxtj.supabase.co',
+ 'sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0'
+);
+
+async function checkUser(){
+ const {data,error}=await db.auth.getUser();
+
+ if(error || !data.user){
+  location.href='auth.html';
+  return;
+ }
+
+ document.getElementById('email').textContent=
+ data.user.email || 'نامشخص';
+
+ document.getElementById('status').textContent=
+ 'حساب شما با موفقیت وارد شده است.';
+}
+
+async function logout(){
+ const {error}=await db.auth.signOut();
+
+ if(error){
+  alert('خروج انجام نشد: '+error.message);
+  return;
+ }
+
+ location.href='auth.html';
+}
+
+checkUser();
+</script>
+</body>
+</html>
