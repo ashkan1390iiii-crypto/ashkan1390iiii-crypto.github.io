@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="نمونه‌کار طراحی سایت فروشگاه پوشاک آوید">
+<title>آوید | فروشگاه پوشاک</title>
+<style>
+:root{--ink:#17211d;--muted:#68746e;--cream:#f6f3ed;--paper:#fffdf9;--green:#244c3d;--lime:#d8e5b5;--line:#e8e4dc}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.8}
+a{color:inherit;text-decoration:none}.wrap{width:min(1120px,92%);margin:auto}
+header{background:rgba(246,243,237,.94);position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{font-size:25px;font-weight:900;letter-spacing:-1px}.brand span{color:#78936d}
+.links{display:flex;gap:25px;color:#536159;font-size:14px}.navbtn,.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:11px 19px;background:var(--green);color:white;font-weight:700;font-size:14px;border:0;cursor:pointer}
+.hero{padding:62px 0 54px}.hero-grid{display:grid;grid-template-columns:1.03fr .97fr;gap:36px;align-items:center}.eyebrow{color:#708866;font-weight:800;font-size:13px;letter-spacing:1px}.hero h1{font-size:clamp(38px,6vw,68px);line-height:1.25;margin:12px 0 16px;letter-spacing:-2px}.hero p{color:var(--muted);max-width:510px;margin:0 0 25px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.btn.light{background:transparent;color:var(--green);border:1px solid #b9c6b9}
+.hero-art{min-height:410px;border-radius:28px;overflow:hidden;position:relative;background:linear-gradient(140deg,#d9dfcf,#a8b6a3 55%,#738a78);display:flex;align-items:center;justify-content:center}
+.hero-art:before{content:"";position:absolute;width:250px;height:330px;background:#f0e8d9;border-radius:48% 48% 24% 24%;transform:rotate(-8deg);box-shadow:26px 20px 0 #304c3e}
+.hero-art:after{content:"AVID / NEW SEASON";position:absolute;bottom:23px;right:25px;color:#fff;font-size:12px;letter-spacing:3px;font-weight:bold}
+.model{position:relative;z-index:1;width:160px;height:280px;border-radius:70px 70px 22px 22px;background:linear-gradient(90deg,#263b32,#526b58);transform:translate(8px,24px);box-shadow:inset 20px 0 0 #405b4a}
+.model:before{content:"";position:absolute;top:-62px;left:43px;width:75px;height:75px;border-radius:50%;background:#b78362;box-shadow:0 -12px 0 8px #332b27}
+.model:after{content:"";position:absolute;bottom:-65px;left:8px;width:145px;height:85px;border-radius:18px;background:#e7dfd0}
+section{padding:54px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:25px}.section-head h2{font-size:30px;margin:0}.section-head p{margin:0;color:var(--muted);font-size:14px}
+.pills{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:22px}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 15px;font-size:13px;background:var(--paper);cursor:pointer}.pill.active{background:var(--green);color:white;border-color:var(--green)}
+.products{display:grid;grid-template-columns:repeat(4,1fr);gap:17px}.product{background:var(--paper);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:.25s}.product:hover{transform:translateY(-5px);box-shadow:0 15px 30px #23382b12}
+.photo{height:235px;display:grid;place-items:center;position:relative;overflow:hidden}.photo:before{content:"";width:116px;height:170px;border-radius:35px 35px 15px 15px;background:var(--cloth);box-shadow:inset 16px 0 #ffffff20,0 15px 25px #1d2b241c;transform:rotate(-5deg)}
+.photo:after{content:"";position:absolute;top:28px;left:calc(50% - 24px);width:48px;height:18px;border-radius:0 0 20px 20px;border:7px solid var(--cloth);border-top:0}
+.p1{background:#e8e2d7;--cloth:#344c3f}.p2{background:#e8d9d0;--cloth:#b66c53}.p3{background:#dce3d9;--cloth:#d7cbb6}.p4{background:#e3dfeb;--cloth:#45414e}
+.tag{position:absolute;top:12px;right:12px;background:#fffdf0;border-radius:99px;padding:3px 10px;font-size:11px}
+.info{padding:14px}.info h3{margin:0;font-size:15px}.info p{margin:5px 0 12px;color:var(--muted);font-size:12px}.price{font-weight:900;color:var(--green)}
+.info button{width:100%;margin-top:12px;background:#edf1e8;color:var(--green);border:0;border-radius:10px;padding:9px;font-weight:700;cursor:pointer}
+.banner{background:var(--green);color:white;border-radius:25px;padding:35px;display:flex;align-items:center;justify-content:space-between;gap:20px}.banner h2{font-size:28px;margin:0 0 5px}.banner p{color:#d4dfd5;margin:0;font-size:14px}.banner .btn{background:var(--lime);color:var(--green);white-space:nowrap}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.feature{padding:22px;border:1px solid var(--line);border-radius:16px;background:var(--paper)}.feature b{display:block;margin:8px 0}.feature span{font-size:13px;color:var(--muted)}
+.contact{display:grid;grid-template-columns:.9fr 1.1fr;gap:28px}.contact-card{background:var(--paper);border:1px solid var(--line);padding:25px;border-radius:20px}.contact-card h3{margin-top:0}.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:13px;font-weight:bold}.field input,.field textarea,.field select{font:inherit;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;width:100%}
+footer{margin-top:45px;background:#172a21;color:#dce5dd;padding:30px 0}.foot{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;font-size:13px}.demo{font-size:11px;color:#aab9ad}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#172a21;color:white;padding:12px 18px;border-radius:12px;display:none;z-index:10}
+@media(max-width:800px){.hero-grid,.contact{grid-template-columns:1fr}.hero-art{min-height:330px}.products{grid-template-columns:repeat(2,1fr)}.links{display:none}.features{grid-template-columns:1fr}.banner{align-items:flex-start;flex-direction:column}.section-head{align-items:flex-start;flex-direction:column}}
+@media(max-width:420px){.products{gap:10px}.photo{height:190px}.info{padding:11px}.hero{padding-top:38px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><nav><a class="brand" href="#">آوید<span>.</span></a><div class="links"><a href="#shop">محصولات</a><a href="#about">درباره ما</a><a href="#contact">ارتباط با ما</a></div><a class="navbtn" href="#shop">دیدن محصولات</a></nav></div></header>
+<main>
+<div class="wrap hero"><div class="hero-grid"><div><div class="eyebrow">کالکشن پاییز و زمستان</div><h1>سادگی، با<br>امضای استایل تو.</h1><p>انتخابی از لباس‌های روزمره و خوش‌دوخت؛ برای روزهایی که می‌خواهی راحت باشی و استایل خودت را داشته باشی.</p><div class="hero-actions"><a class="btn" href="#shop">مشاهده محصولات</a><a class="btn light" href="#about">درباره آوید</a></div></div><div class="hero-art" role="img" aria-label="تصویر گرافیکی لباس"><div class="model"></div></div></div></div>
+<section id="shop"><div class="wrap"><div class="section-head"><div><div class="eyebrow">انتخاب‌های این فصل</div><h2>محصولات منتخب</h2></div><p>چهار پیشنهاد برای شروع استایل تازه‌ات</p></div>
+<div class="pills"><button class="pill active" data-filter="all">همه</button><button class="pill" data-filter="tops">بالاپوش</button><button class="pill" data-filter="outer">لباس گرم</button><button class="pill" data-filter="basic">روزمره</button></div>
+<div class="products">
+<article class="product" data-kind="outer"><div class="photo p1"><span class="tag">پرفروش</span></div><div class="info"><h3>هودی سبز جنگلی</h3><p>پارچه نرم · مناسب استفاده روزانه</p><div class="price">۱٬۲۵۰٬۰۰۰ تومان</div><button onclick="order('هودی سبز جنگلی')">درخواست این محصول</button></div></article>
+<article class="product" data-kind="tops"><div class="photo p2"><span class="tag">جدید</span></div><div class="info"><h3>پیراهن آجری</h3><p>قالب راحت · طراحی مینیمال</p><div class="price">۹۸۰٬۰۰۰ تومان</div><button onclick="order('پیراهن آجری')">درخواست این محصول</button></div></article>
+<article class="product" data-kind="basic"><div class="photo p3"></div><div class="info"><h3>تی‌شرت کرم ساده</h3><p>سبک و کاربردی · مناسب هر روز</p><div class="price">۵۹۰٬۰۰۰ تومان</div><button onclick="order('تی‌شرت کرم ساده')">درخواست این محصول</button></div></article>
+<article class="product" data-kind="outer"><div class="photo p4"><span class="tag">منتخب</span></div><div class="info"><h3>سویشرت ذغالی</h3><p>استایل ساده · پارچه لطیف</p><div class="price">۱٬۴۵۰٬۰۰۰ تومان</div><button onclick="order('سویشرت ذغالی')">درخواست این محصول</button></div></article>
+</div><p class="demo">* نام محصولات، تصاویر گرافیکی و قیمت‌ها صرفاً نمونه نمایشی برای نمونه‌کار هستند.</p></div></section>
+<section id="about"><div class="wrap"><div class="banner"><div><h2>استایل خودت را پیدا کن.</h2><p>آوید؛ یک نمونه فروشگاه پوشاک با طراحی ساده و تجربه خرید راحت.</p></div><a class="btn" href="#contact">ثبت درخواست</a></div></div></section>
+<section><div class="wrap"><div class="section-head"><div><div class="eyebrow">چرا آوید؟</div><h2>خرید راحت‌تر، انتخاب آگاهانه‌تر</h2></div></div><div class="features"><div class="feature">✦<b>انتخاب‌های ساده</b><span>دسته‌بندی روشن برای پیدا کردن سریع‌تر محصول.</span></div><div class="feature">◈<b>طراحی موبایل‌پسند</b><span>نمایش مرتب در گوشی، تبلت و رایانه.</span></div><div class="feature">♡<b>پشتیبانی دوستانه</b><span>امکان ثبت درخواست و پیگیری سفارش.</span></div></div></div></section>
+<section id="contact"><div class="wrap"><div class="section-head"><div><div class="eyebrow">در تماس باشیم</div><h2>درخواست یا پرسشت را بفرست</h2></div></div><div class="contact"><div><h3>برای انتخاب بهتر کمکت می‌کنیم.</h3><p style="color:var(--muted)">اگر درباره سایز، رنگ یا موجودی پرسشی داری، فرم روبه‌رو را تکمیل کن. این فرم در نسخه نمونه، پیام را فقط در مرورگر آماده می‌کند و به سرور ارسال نمی‌کند.</p></div><form class="contact-card" onsubmit="sendForm(event)"><div class="field"><label>نام</label><input required placeholder="نام شما"></div><div class="field"><label>راه ارتباطی</label><input required placeholder="شماره تماس یا ایمیل"></div><div class="field"><label>موضوع درخواست</label><select id="subject"><option>پرسش درباره محصولات</option><option>پیگیری سفارش</option><option>راهنمایی انتخاب سایز</option></select></div><div class="field"><label>پیام</label><textarea rows="3" placeholder="پیامت را بنویس..."></textarea></div><button class="btn" type="submit">آماده‌سازی پیام</button></form></div></div></section>
+</main>
+<footer><div class="wrap foot"><div><b>آوید.</b><div class="demo">نمونه‌کار طراحی فروشگاه اینترنتی پوشاک</div></div><div>محصولات · درباره ما · ارتباط با ما</div><div class="demo">© 2026 AVID — Demo project</div></div></footer><div class="toast" id="toast"></div>
+<script>
+document.querySelectorAll('.pill').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.product').forEach(p=>p.style.display=(b.dataset.filter==='all'||p.dataset.kind===b.dataset.filter)?'':'none')}));
+function notify(t){let e=document.getElementById('toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',2800)}
+function order(n){document.getElementById('subject').value='پرسش درباره محصولات';document.querySelector('#contact textarea').value='درخواست اطلاعات درباره: '+n;document.getElementById('contact').scrollIntoView({behavior:'smooth'});notify('فرم درخواست برای '+n+' آماده شد')}
+function sendForm(e){e.preventDefault();notify('این فرم نمایشی است؛ برای دریافت واقعی پیام باید به سرویس فرم یا سرور متصل شود.')}
+</script>
+</body></html>
