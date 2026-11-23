@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>پنل مدیریت | وب‌ساز مرادی</title>
+  <meta name="description" content="پنل مدیریت سفارش‌های وب‌ساز مرادی">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f3f5f9;color:#172033}
+    .wrap{max-width:1050px;margin:36px auto;padding:0 16px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}
+    h1{font-size:25px;margin:0} .muted{color:#64748b;font-size:13px}
+    .panel{background:#fff;border:1px solid #e5eaf2;border-radius:16px;padding:22px;box-shadow:0 8px 28px #15213a0a}
+    .login{max-width:430px;margin:55px auto}
+    label{display:block;font-size:14px;margin:14px 0 7px}
+    input,select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit;background:#fff}
+    button{border:0;border-radius:9px;padding:11px 16px;font:inherit;cursor:pointer;background:#2457d6;color:white}
+    button.secondary{background:#e8edf7;color:#172033}
+    button:disabled{opacity:.55;cursor:wait}
+    .actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+    .error{color:#b42318;background:#fff1f0;padding:10px;border-radius:8px;margin-top:12px;display:none}
+    .success{color:#067647;background:#ecfdf3;padding:10px;border-radius:8px;margin-top:12px;display:none}
+    .table-wrap{overflow-x:auto;margin-top:18px}
+    table{width:100%;border-collapse:collapse;min-width:700px}
+    th,td{text-align:right;padding:13px 10px;border-bottom:1px solid #edf0f5;vertical-align:top;font-size:13px}
+    th{color:#475569;background:#f8fafc}
+    td select{min-width:145px;padding:8px}
+    .empty{text-align:center;color:#64748b;padding:35px}
+    .hidden{display:none!important}
+    @media(max-width:600px){.wrap{margin:20px auto}.panel{padding:16px}h1{font-size:20px}header{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div>
+        <h1>پنل مدیریت وب‌ساز مرادی</h1>
+        <div class="muted">مدیریت سفارش‌های ثبت‌شده</div>
+      </div>
+      <div class="actions hidden" id="topActions">
+        <button class="secondary" id="refreshBtn">بروزرسانی</button>
+        <button id="logoutBtn">خروج از حساب</button>
+      </div>
+    </header>
+
+    <section class="panel login" id="loginPanel">
+      <h2 style="margin-top:0">ورود مدیر</h2>
+      <p class="muted">با ایمیل و رمزی که برای حساب مدیر ساختی وارد شو.</p>
+      <form id="loginForm">
+        <label for="email">ایمیل مدیر</label>
+        <input id="email" type="email" autocomplete="username" required>
+        <label for="password">رمز عبور</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+        <div style="margin-top:18px"><button id="loginBtn" type="submit">ورود</button></div>
+      </form>
+      <div class="error" id="loginError"></div>
+    </section>
+
+    <section class="panel hidden" id="ordersPanel">
+      <div class="actions" style="justify-content:space-between">
+        <div>
+          <h2 style="margin:0 0 5px">سفارش‌ها</h2>
+          <div class="muted" id="countText">در حال دریافت سفارش‌ها…</div>
+        </div>
+      </div>
+      <div class="error" id="ordersError"></div>
+      <div class="success" id="notice"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>نام مشتری</th><th>شماره تماس</th><th>نوع سایت</th>
+            <th>توضیحات</th><th>تاریخ ثبت</th><th>وضعیت</th>
+          </tr></thead>
+          <tbody id="ordersBody"><tr><td colspan="6" class="empty">در حال بارگذاری…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // آدرس پروژه و کلید عمومی (Publishable) سوپابیس
+    const SUPABASE_URL = 'https://oczpjbwwogsydzkouxtj.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
+
+    const { createClient } = supabase;
+    const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const $ = (id) => document.getElementById(id);
+    const loginPanel = $('loginPanel');
+    const ordersPanel = $('ordersPanel');
+    const topActions = $('topActions');
+    const statusLabels = {
+      new: 'جدید',
+      reviewing: 'در حال بررسی',
+      in_progress: 'در حال انجام',
+      completed: 'تکمیل‌شده'
+    };
+
+    function showError(id, message) {
+      const el = $(id); el.textContent = message; el.style.display = 'block';
+    }
+    function hideMessage(id) { $(id).style.display = 'none'; }
+
+    async function loadOrders() {
+      hideMessage('ordersError');
+      $('countText').textContent = 'در حال دریافت سفارش‌ها…';
+      const { data, error } = await db.from('orders')
+        .select('id, customer_name, phone, site_type, description, status, created_at')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        $('countText').textContent = 'دریافت سفارش‌ها ناموفق بود';
+        showError('ordersError', 'خطا در دریافت سفارش‌ها: ' + error.message);
+        return;
+      }
+
+      $('countText').textContent = `${data.length} سفارش`;
+      const body = $('ordersBody');
+      body.replaceChildren();
+
+      if (!data.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 6; td.className = 'empty'; td.textContent = 'هنوز سفارشی ثبت نشده است.';
+        tr.appendChild(td); body.appendChild(tr); return;
+      }
+
+      for (const order of data) {
+        const tr = document.createElement('tr');
+        const values = [
+          order.customer_name,
+          order.phone,
+          order.site_type,
+          order.description || '—',
+          new Date(order.created_at).toLocaleString('fa-IR')
+        ];
+        for (const value of values) {
+          const td = document.createElement('td');
+          td.textContent = value;
+          tr.appendChild(td);
+        }
+        const statusCell = document.createElement('td');
+        const select = document.createElement('select');
+        for (const [value, label] of Object.entries(statusLabels)) {
+          const option = document.createElement('option');
+          option.value = value; option.textContent = label;
+          select.appendChild(option);
+        }
+        select.value = order.status;
+        select.addEventListener('change', async () => {
+          select.disabled = true;
+          const { error: updateError } = await db.from('orders')
+            .update({ status: select.value }).eq('id', order.id);
+          select.disabled = false;
+          if (updateError) {
+            showError('ordersError', 'ذخیره وضعیت انجام نشد: ' + updateError.message);
+            select.value = order.status;
+          } else {
+            order.status = select.value;
+            $('notice').textContent = 'وضعیت سفارش ذخیره شد.';
+            $('notice').style.display = 'block';
+            hideMessage('ordersError');
+          }
+        });
+        statusCell.appendChild(select); tr.appendChild(statusCell);
+        body.appendChild(tr);
+      }
+    }
+
+    function showDashboard() {
+      loginPanel.classList.add('hidden');
+      ordersPanel.classList.remove('hidden');
+      topActions.classList.remove('hidden');
+      loadOrders();
+    }
+    function showLogin() {
+      loginPanel.classList.remove('hidden');
+      ordersPanel.classList.add('hidden');
+      topActions.classList.add('hidden');
+    }
+
+    $('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      hideMessage('loginError');
+      $('loginBtn').disabled = true;
+      const { error } = await db.auth.signInWithPassword({
+        email: $('email').value.trim(),
+        password: $('password').value
+      });
+      $('loginBtn').disabled = false;
+      if (error) {
+        showError('loginError', 'ورود انجام نشد: ' + error.message);
+      } else {
+        $('password').value = '';
+        showDashboard();
+      }
+    });
+
+    $('refreshBtn').addEventListener('click', loadOrders);
+    $('logoutBtn').addEventListener('click', async () => {
+      await db.auth.signOut();
+      showLogin();
+    });
+
+    db.auth.getSession().then(({ data }) => {
+      if (data.session) showDashboard();
+      else showLogin();
+    });
+    db.auth.onAuthStateChange((_event, session) => {
+      if (session) showDashboard();
+      else showLogin();
+    });
+  </script>
+</body>
+</html>
