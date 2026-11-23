@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090f1e">
+<title>وب‌ساز مرادی | طراحی سایت حرفه‌ای</title>
+<meta name="description" content="طراحی سایت‌های مدرن و واکنش‌گرا برای کسب‌وکارها">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#090f1e;--panel:#15233c;--text:#f4f7ff;--muted:#a9b6cb;--line:#30415f;--a:#68e0c0;--b:#8b9cff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:radial-gradient(ellipse at 80% 0%,#1b3154 0,transparent 34%),var(--bg);color:var(--text);line-height:1.9}a{color:inherit}.container{width:min(1120px,92%);margin:auto}
+header{position:sticky;top:0;z-index:10;background:#090f1eef;border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}.nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{font-size:21px;font-weight:900;text-decoration:none;white-space:nowrap}.brand span{color:var(--a)}nav{display:flex;gap:22px;align-items:center;flex-wrap:wrap}nav a{text-decoration:none;color:var(--muted);font-size:14px}nav a:hover{color:var(--a)}
+.btn{display:inline-flex;justify-content:center;align-items:center;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:bold;border:1px solid transparent;background:linear-gradient(110deg,var(--a),#8af0d4);color:#071a19;cursor:pointer;font:inherit;font-weight:bold;transition:.2s}.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}.btn.alt{background:transparent;color:var(--text);border-color:#50658b}
+.hero{padding:94px 0 76px;overflow:hidden}.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:45px;align-items:center}.eyebrow{display:inline-block;border:1px solid #3a5872;background:#12243a;border-radius:99px;padding:6px 13px;color:var(--a);font-size:13px}h1{font-size:clamp(34px,5vw,58px);line-height:1.45;margin:18px 0}h1 span{background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{color:var(--muted);max-width:650px;font-size:17px;margin:0 0 27px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.visual{min-height:330px;border:1px solid #344766;border-radius:28px;background:linear-gradient(145deg,#1c3151,#101a2d 65%);padding:22px;box-shadow:0 25px 80px #0006}.visual-top{display:flex;gap:7px;margin-bottom:22px}.dot{width:9px;height:9px;border-radius:50%;background:#7284a5}.mock-card{background:#0d1729;border:1px solid #344766;border-radius:18px;padding:19px;margin-bottom:14px}.mock-line{height:9px;border-radius:10px;background:#344766;margin:10px 0;width:75%}.mock-line.short{width:45%}.mock-pills{display:flex;gap:8px;margin-top:17px}.mock-pills i{display:block;height:34px;flex:1;border-radius:9px;background:linear-gradient(90deg,#1f927e,#5ad8ba)}.mock-pills i:nth-child(2){background:#5368a9}.mock-pills i:nth-child(3){background:#303f5e}
+section{padding:76px 0}.section-head{text-align:center;margin-bottom:34px}.section-head h2{font-size:30px;margin:0 0 8px}.section-head p{color:var(--muted);margin:0}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card{background:linear-gradient(160deg,#15233b,#101a2d);border:1px solid var(--line);border-radius:18px;padding:24px;transition:.2s}.card:hover{transform:translateY(-5px);border-color:#55708f}.emoji{font-size:30px}.card h3{color:var(--a);font-size:18px;margin:12px 0 6px}.card p{color:var(--muted);font-size:14px;margin:0}
+.portfolio{background:linear-gradient(180deg,transparent,#111c30 18%,#111c30 82%,transparent)}.project{max-width:760px;margin:auto;display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center;background:linear-gradient(120deg,#182b49,#111c30);border:1px solid #344766;border-radius:22px;padding:28px}.project h3{margin:0 0 8px;color:var(--a);font-size:22px}.project p{color:var(--muted);margin:0}
+.order-wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:25px;align-items:start}.order-info{padding:15px 5px}.order-info h2{font-size:29px;margin:0 0 12px}.order-info p{color:var(--muted)}.info-chip{display:inline-block;border:1px solid #3a5872;border-radius:10px;padding:7px 11px;color:var(--a);font-size:13px;margin-top:10px}
+form{background:linear-gradient(150deg,#172641,#101a2d);border:1px solid #344766;border-radius:20px;padding:25px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}label{display:block;font-size:13px;color:#d9e2f1;margin-bottom:6px}input,select,textarea{width:100%;background:#0a1425;color:var(--text);border:1px solid #3a4c6b;border-radius:10px;padding:12px;font:inherit;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--a);box-shadow:0 0 0 3px #68e0c022}textarea{min-height:110px;resize:vertical}.field{margin-bottom:14px}.full{grid-column:1/-1}.form-note,.track-note{color:var(--muted);font-size:12px;margin:12px 0 0}.message{display:none;padding:12px;border-radius:10px;margin-top:14px;font-size:13px}.message.ok{display:block;background:#10352f;color:#a8f5dc;border:1px solid #236e5b}.message.err{display:block;background:#3a1c28;color:#ffd0d0;border:1px solid #79394b}.track-note{text-align:center;font-size:13px;margin-top:20px}
+footer{border-top:1px solid var(--line);padding:25px 0;color:#8795ac;text-align:center;font-size:13px}
+@media(max-width:850px){.hero-grid,.order-wrap{grid-template-columns:1fr}.visual{max-width:560px;width:100%;margin:auto}.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.nav{padding:14px 0;align-items:flex-start;flex-direction:column}.nav nav{gap:14px}.hero{padding:65px 0 50px}.visual{min-height:260px}.grid{grid-template-columns:1fr}.project{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}section{padding:55px 0}form{padding:18px}}
+</style>
+</head>
+<body>
+<header><div class="container nav">
+<a class="brand" href="#home">وب‌ساز <span>مرادی</span></a>
+<nav><a href="#home">خانه</a><a href="#services">خدمات</a><a href="#portfolio">نمونه‌کار</a><a href="#order">ثبت سفارش</a><a href="admin.html">ورود مدیر</a></nav>
+</div></header>
+<main>
+<section class="hero" id="home"><div class="container hero-grid"><div>
+<div class="eyebrow">✦ طراحی مدرن، تجربه حرفه‌ای</div>
+<h1>برای کسب‌وکارت،<br><span>یک سایت متفاوت</span> بساز</h1>
+<p>از معرفی خدمات تا نمایش محصولات؛ وب‌سایتی زیبا، سریع و سازگار با موبایل داشته باش تا حضورت در اینترنت حرفه‌ای‌تر دیده شود.</p>
+<div class="hero-actions"><a class="btn" href="#order">ثبت درخواست طراحی سایت</a><a class="btn alt" href="#portfolio">مشاهده نمونه‌کار</a></div>
+</div><div class="visual" aria-label="نمای گرافیکی نمونه طراحی وب‌سایت">
+<div class="visual-top"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+<div class="mock-card"><div style="color:#68e0c0;font-weight:bold">YOUR BRAND</div><div class="mock-line"></div><div class="mock-line short"></div><div class="mock-pills"><i></i><i></i><i></i></div></div>
+<div class="mock-card" style="display:flex;gap:12px;align-items:center"><div style="width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,#68e0c0,#788cff)"></div><div style="flex:1"><div class="mock-line" style="margin-top:0"></div><div class="mock-line short"></div></div></div>
+</div></div></section>
+<section id="services"><div class="container"><div class="section-head"><h2>خدمات ما</h2><p>راهکارهایی برای معرفی بهتر کسب‌وکار شما در فضای آنلاین</p></div><div class="grid">
+<article class="card"><div class="emoji">🌐</div><h3>طراحی سایت</h3><p>طراحی صفحات اختصاصی و متناسب با هویت کسب‌وکار شما.</p></article>
+<article class="card"><div class="emoji">📱</div><h3>طراحی واکنش‌گرا</h3><p>نمایش مرتب و کاربردی در موبایل، تبلت و رایانه.</p></article>
+<article class="card"><div class="emoji">🛍️</div><h3>فروشگاه اینترنتی</h3><p>صفحه‌های معرفی محصولات و دسته‌بندی‌های فروشگاهی.</p></article>
+<article class="card"><div class="emoji">⚡</div><h3>ظاهر مدرن</h3><p>طراحی تمیز، سریع و ساده برای تجربه بهتر بازدیدکنندگان.</p></article>
+</div></div></section>
+<section class="portfolio" id="portfolio"><div class="container"><div class="section-head"><h2>نمونه‌کارها</h2><p>نمونه‌ای از سبک طراحی وب‌ساز مرادی</p></div>
+<article class="project"><div><h3>فروشگاه پوشاک آوید</h3><p>نمونه طراحی فروشگاه لباس با چیدمان مدرن، معرفی محصولات و ساختار مناسب نمایش در موبایل. این پروژه نمونه‌کار نمایشی است.</p></div><a class="btn" href="avid.html" target="_blank" rel="noopener">مشاهده نمونه‌کار</a></article>
+</div></section>
+<section id="order"><div class="container order-wrap"><div class="order-info"><div class="eyebrow">✦ شروع یک همکاری</div><h2>پروژه‌ات رو با ما شروع کن</h2><p>فرم روبه‌رو رو پر کن تا درخواستت ثبت بشه. اطلاعات تماس برای پیگیری درخواست استفاده می‌شه.</p><span class="info-chip">ثبت مستقیم درخواست در سایت</span></div>
+<form id="orderForm"><div class="form-grid">
+<div class="field"><label for="customer_name">نام و نام خانوادگی</label><input id="customer_name" required minlength="2" maxlength="100" placeholder="نام شما"></div>
+<div class="field"><label for="phone">شماره تماس</label><input id="phone" required minlength="5" maxlength="30" placeholder="شماره تماس"></div>
+<div class="field full"><label for="site_type">چه سایتی نیاز دارید؟</label><select id="site_type" required><option value="">انتخاب نوع سایت</option><option value="سایت شرکتی">سایت شرکتی</option><option value="فروشگاه اینترنتی">فروشگاه اینترنتی</option><option value="سایت شخصی و نمونه‌کار">سایت شخصی و نمونه‌کار</option><option value="سایت معرفی خدمات">سایت معرفی خدمات</option><option value="سایر">سایر</option></select></div>
+<div class="field full"><label for="description">توضیحات پروژه (اختیاری)</label><textarea id="description" maxlength="2000" placeholder="درباره سایت موردنظرت توضیح بده…"></textarea></div>
+<div class="field full"><button class="btn" id="submitBtn" type="submit" style="width:100%">ثبت درخواست</button><p class="form-note">با ثبت فرم، درخواست شما برای بررسی ارسال می‌شود.</p><div id="formMessage" class="message" role="status" aria-live="polite"></div></div>
+</div></form></div><p class="track-note">پیگیری آنلاین سفارش با کد اختصاصی در مرحله بعد فعال می‌شود.</p></section>
+</main>
+<footer><div class="container">© ۲۰۲۶ وب‌ساز مرادی | طراحی سایت برای حضور بهتر در دنیای آنلاین</div></footer>
+<script>
+const SUPABASE_URL='https://oczpjbwwogsydzkouxtj.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const form=document.getElementById('orderForm'),submitBtn=document.getElementById('submitBtn'),formMessage=document.getElementById('formMessage');
+form.addEventListener('submit',async event=>{
+ event.preventDefault();formMessage.className='message';formMessage.textContent='';submitBtn.disabled=true;submitBtn.textContent='در حال ثبت…';
+ const order={customer_name:document.getElementById('customer_name').value.trim(),phone:document.getElementById('phone').value.trim(),site_type:document.getElementById('site_type').value,description:document.getElementById('description').value.trim()||null};
+ const {error}=await supabaseClient.from('orders').insert(order);
+ submitBtn.disabled=false;submitBtn.textContent='ثبت درخواست';
+ if(error){formMessage.className='message err';formMessage.textContent='ثبت درخواست انجام نشد. لطفاً دوباره تلاش کنید. ('+error.message+')';return;}
+ formMessage.className='message ok';formMessage.textContent='درخواست شما با موفقیت ثبت شد. پس از بررسی با شما تماس می‌گیریم.';form.reset();
+});
+</script>
+</body></html>
