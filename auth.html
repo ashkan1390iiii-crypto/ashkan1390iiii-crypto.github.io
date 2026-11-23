@@ -1,1 +1,107 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ورود و ثبت‌نام مشتریان | وب‌ساز مرادی</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;display:grid;place-items:center;
+ background:#07111f;color:#fff;font-family:tahoma,Arial;
+ padding:20px
+}
+.card{
+ width:100%;max-width:420px;background:#101e30;
+ padding:30px;border-radius:22px;
+ border:1px solid #263b52
+}
+h1{text-align:center;color:#42d9ff}
+p{text-align:center;color:#a9bbce}
+input,button{
+ width:100%;padding:15px;margin-top:13px;
+ border-radius:10px;font-size:15px
+}
+input{background:#07111f;color:white;border:1px solid #344b64}
+button{
+ background:#12bde8;color:#06121d;border:0;
+ font-weight:bold;cursor:pointer
+}
+button.secondary{background:#263b52;color:white}
+#message{line-height:2;font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>وب‌ساز مرادی</h1>
+<p>حساب کاربری مشتریان</p>
 
+<input id="email" type="email" placeholder="ایمیل">
+<input id="password" type="password" placeholder="رمز عبور">
+
+<button onclick="signup()">ثبت‌نام</button>
+<button class="secondary" onclick="login()">ورود به حساب</button>
+
+<div id="message"></div>
+</div>
+
+<script>
+const SUPABASE_URL =
+'https://oczpjbwwogsydzkouxtj.supabase.co';
+
+const SUPABASE_KEY =
+'sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
+
+const db = window.supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_KEY
+);
+
+const message = document.getElementById('message');
+
+async function signup(){
+ const email = document.getElementById('email').value.trim();
+ const password = document.getElementById('password').value;
+
+ if(!email || password.length < 8){
+  message.textContent='ایمیل را وارد کن و رمز حداقل ۸ کاراکتری بگذار.';
+  return;
+ }
+
+ const {data,error} = await db.auth.signUp({
+  email,
+  password,
+  options:{
+   emailRedirectTo:location.origin + '/account.html'
+  }
+ });
+
+ if(error){
+  message.textContent=error.message;
+  return;
+ }
+
+ message.textContent =
+ 'ثبت‌نام انجام شد! ایمیلت را برای تأیید حساب بررسی کن.';
+}
+
+async function login(){
+ const email = document.getElementById('email').value.trim();
+ const password = document.getElementById('password').value;
+
+ const {data,error} = await db.auth.signInWithPassword({
+  email,
+  password
+ });
+
+ if(error){
+  message.textContent=error.message;
+  return;
+ }
+
+ location.href='account.html';
+}
+</script>
+</body>
+  </html>
