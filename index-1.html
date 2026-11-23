@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="وب‌ساز مرادی؛ طراحی سایت حرفه‌ای، مدرن و واکنش‌گرا">
+  <meta name="theme-color" content="#0b1020">
+  <title>وب‌ساز مرادی | طراحی سایت حرفه‌ای</title>
+  <style>
+    :root{--bg:#080d1b;--panel:#111a30;--panel2:#16223d;--text:#f4f7ff;--muted:#aab6d0;--blue:#6d8cff;--cyan:#45d6d0;--line:#263451;--ok:#39d6a1;--danger:#ff7885}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 85% 0%,#172b55 0,transparent 34%),var(--bg);color:var(--text);line-height:1.9}
+    a{color:inherit;text-decoration:none}.wrap{width:min(1100px,92%);margin:auto}
+    header{position:sticky;top:0;z-index:5;background:#080d1beF;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    nav{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{font-weight:900;font-size:1.15rem}.brand span{color:var(--cyan)}
+    .navlinks{display:flex;gap:20px;color:var(--muted);font-size:.92rem}.navlinks a:hover{color:white}
+    .hero{padding:82px 0 65px;display:grid;grid-template-columns:1.3fr .7fr;gap:35px;align-items:center}
+    .tag{display:inline-block;padding:5px 13px;border:1px solid #3d5785;border-radius:30px;color:#b9caff;background:#172747}
+    h1{font-size:clamp(2.1rem,5vw,3.7rem);line-height:1.35;margin:18px 0}.gradient{background:linear-gradient(90deg,var(--cyan),#8ca5ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    p{color:var(--muted)}.hero p{max-width:650px;font-size:1.05rem}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px}
+    .btn{border:0;border-radius:12px;padding:12px 20px;background:linear-gradient(120deg,var(--blue),#536de0);color:white;font-weight:700;cursor:pointer;font-size:.95rem;display:inline-flex;align-items:center;justify-content:center}
+    .btn.secondary{background:var(--panel2);border:1px solid var(--line)}.btn:disabled{opacity:.6;cursor:not-allowed}
+    .hero-card,.card,.form-card,.track-card{background:linear-gradient(145deg,#15213b,#0e172b);border:1px solid var(--line);border-radius:22px;padding:25px;box-shadow:0 18px 50px #0003}
+    .hero-card .big{font-size:3.4rem}.hero-card h3{margin:0}.hero-card p{margin-bottom:0}
+    section{padding:48px 0}.section-title{text-align:center;margin-bottom:28px}.section-title h2{font-size:2rem;margin:0}.section-title p{margin:8px 0}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.card h3{margin:8px 0}.card .emoji{font-size:1.8rem}.card p{margin:0}
+    .sample{display:flex;align-items:center;justify-content:space-between;gap:20px}.sample .preview{width:42%;min-height:190px;border-radius:17px;background:linear-gradient(135deg,#f8d9c4,#b75f4d);display:grid;place-items:center;color:#321b1b;font-size:2rem;font-weight:900}
+    .sample .details{flex:1}.sample .details p{max-width:600px}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}.form-card h2,.track-card h2{margin-top:0}
+    label{display:block;margin:12px 0 5px;color:#dce5fa;font-size:.92rem}input,select,textarea{width:100%;padding:13px;border:1px solid #334565;border-radius:11px;background:#0a1326;color:white;font:inherit;outline:none}
+    input:focus,select:focus,textarea:focus{border-color:var(--cyan)}textarea{min-height:110px;resize:vertical}
+    .hint{font-size:.82rem;color:var(--muted)}.message{margin-top:14px;padding:12px;border-radius:10px;display:none;overflow-wrap:anywhere}.message.ok{display:block;background:#12372f;color:#a9ffe0;border:1px solid #246b57}.message.err{display:block;background:#3b1c28;color:#ffd1d5;border:1px solid #813746}
+    .codebox{font-size:1.3rem;letter-spacing:2px;font-weight:900;color:#9ef5df;background:#071a20;border:1px dashed #3a9c83;padding:10px 14px;border-radius:10px;display:inline-block;direction:ltr}
+    footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);text-align:center;font-size:.9rem}
+    @media(max-width:760px){.hero{grid-template-columns:1fr;padding-top:55px}.grid{grid-template-columns:1fr}.two{grid-template-columns:1fr}.sample{display:block}.sample .preview{width:100%;margin-bottom:18px}.navlinks{gap:10px;font-size:.8rem}.brand{font-size:1rem}}
+  </style>
+</head>
+<body>
+<header><div class="wrap"><nav>
+  <a class="brand" href="#">وب‌ساز <span>مرادی</span></a>
+  <div class="navlinks"><a href="#services">خدمات</a><a href="#portfolio">نمونه‌کار</a><a href="#order">ثبت سفارش</a><a href="#tracking">پیگیری</a></div>
+</nav></div></header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <span class="tag">طراحی سایت مدرن و اختصاصی</span>
+      <h1>ایده‌ات رو به یک <span class="gradient">وب‌سایت حرفه‌ای</span> تبدیل کن</h1>
+      <p>برای کسب‌وکارت یک سایت زیبا، سریع و سازگار با موبایل سفارش بده. جزئیات درخواستت رو ثبت کن تا بعد از بررسی باهات تماس بگیریم.</p>
+      <div class="actions"><a class="btn" href="#order">ثبت درخواست طراحی سایت</a><a class="btn secondary" href="#portfolio">دیدن نمونه‌کار</a></div>
+    </div>
+    <div class="hero-card"><div class="big">✦</div><h3>از ایده تا حضور آنلاین</h3><p>طراحی واکنش‌گرا، ظاهر مرتب و تجربه کاربری ساده برای بازدیدکننده‌ها.</p></div>
+  </div>
+
+  <section id="services"><div class="wrap">
+    <div class="section-title"><h2>خدمات ما</h2><p>امکاناتی که می‌تونیم برای سایتت آماده کنیم</p></div>
+    <div class="grid">
+      <article class="card"><div class="emoji">🖥️</div><h3>طراحی سایت</h3><p>طراحی مدرن و متناسب با موضوع و هویت کسب‌وکار.</p></article>
+      <article class="card"><div class="emoji">📱</div><h3>نمایش در موبایل</h3><p>چیدمان واکنش‌گرا برای موبایل، تبلت و رایانه.</p></article>
+      <article class="card"><div class="emoji">🧾</div><h3>ثبت و پیگیری سفارش</h3><p>ثبت درخواست آنلاین و مشاهده وضعیت با کد پیگیری.</p></article>
+    </div>
+  </div></section>
+
+  <section id="portfolio"><div class="wrap">
+    <div class="section-title"><h2>نمونه‌کار</h2><p>یک نمونه طراحی فروشگاه پوشاک</p></div>
+    <div class="card sample">
+      <div class="preview">AVID</div>
+      <div class="details"><span class="tag">فروشگاه پوشاک</span><h3>فروشگاه آوید</h3><p>نمونه‌ای برای نمایش چیدمان صفحه اصلی فروشگاه لباس و معرفی محصولات.</p><a class="btn" href="avid.html">مشاهده نمونه‌کار</a></div>
+    </div>
+  </div></section>
+
+  <section id="order"><div class="wrap two">
+    <div class="form-card">
+      <h2>ثبت سفارش طراحی سایت</h2>
+      <p>اطلاعات زیر رو وارد کن تا درخواستت ثبت بشه.</p>
+      <form id="orderForm">
+        <label for="customerName">نام</label><input id="customerName" maxlength="80" required placeholder="نام شما">
+        <label for="phone">شماره تماس</label><input id="phone" maxlength="30" required inputmode="tel" placeholder="شماره تماس">
+        <label for="siteType">نوع سایت</label>
+        <select id="siteType" required><option value="">انتخاب کن</option><option>فروشگاهی</option><option>شرکتی</option><option>شخصی</option><option>معرفی خدمات</option><option>سایر</option></select>
+        <label for="description">توضیحات درخواست</label><textarea id="description" maxlength="1500" placeholder="چه امکاناتی برای سایتت می‌خوای؟"></textarea>
+        <p class="hint">اطلاعات تماس فقط برای بررسی درخواست استفاده می‌شه. اطلاعات حساس یا رمز عبور وارد نکن.</p>
+        <button class="btn" id="submitBtn" type="submit">ثبت درخواست</button>
+      </form>
+      <div id="orderMessage" class="message" role="status"></div>
+    </div>
+    <div class="card"><h2>بعد از ثبت سفارش چه می‌شه؟</h2><p>۱. درخواستت در سیستم ثبت می‌شه.</p><p>۲. یک کد پیگیری اختصاصی دریافت می‌کنی؛ اون رو نگه دار و با کسی به اشتراک نذار.</p><p>۳. هر زمان خواستی، از بخش پیگیری وضعیت درخواستت رو بررسی کن.</p><p class="hint">ثبت درخواست به معنی تأیید نهایی یا شروع پروژه نیست؛ ابتدا جزئیات بررسی می‌شن.</p></div>
+  </div></section>
+
+  <section id="tracking"><div class="wrap">
+    <div class="track-card">
+      <h2>پیگیری سفارش</h2><p>کدی رو که هنگام ثبت سفارش دریافت کردی وارد کن.</p>
+      <form id="trackForm"><label for="trackingCode">کد پیگیری</label><input id="trackingCode" required maxlength="40" dir="ltr" placeholder="مثلاً A1B2C3D4"><div class="actions"><button class="btn" id="trackBtn" type="submit">بررسی وضعیت</button></div></form>
+      <div id="trackMessage" class="message" role="status"></div>
+    </div>
+  </div></section>
+</main>
+<footer><div class="wrap">© وب‌ساز مرادی — طراحی سایت با تمرکز بر سادگی و کیفیت <span> | </span><a href="admin.html">ورود مدیر</a></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://oczpjbwwogsydzkouxtj.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const orderForm = document.getElementById('orderForm');
+  const orderMessage = document.getElementById('orderMessage');
+  const submitBtn = document.getElementById('submitBtn');
+  const trackForm = document.getElementById('trackForm');
+  const trackMessage = document.getElementById('trackMessage');
+  const trackBtn = document.getElementById('trackBtn');
+
+  function showMessage(el, text, type) {
+    el.className = 'message ' + type;
+    el.textContent = text;
+  }
+  function statusLabel(status) {
+    const labels = {new:'در انتظار بررسی', reviewing:'در حال بررسی', in_progress:'در حال انجام', completed:'تکمیل شده'};
+    return labels[status] || 'وضعیت نامشخص';
+  }
+
+  orderForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    orderMessage.className = 'message';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'در حال ثبت...';
+    const order = {
+      p_customer_name: document.getElementById('customerName').value.trim(),
+      p_phone: document.getElementById('phone').value.trim(),
+      p_site_type: document.getElementById('siteType').value,
+      p_description: document.getElementById('description').value.trim() || null
+    };
+    try {
+      const { data, error } = await db.rpc('submit_order', order);
+      if (error) throw error;
+      const code = typeof data === 'string' ? data : data?.tracking_code;
+      if (!code) throw new Error('درخواست ثبت شد اما کد پیگیری دریافت نشد. با پشتیبانی تماس بگیر.');
+      showMessage(orderMessage, 'درخواستت با موفقیت ثبت شد. کد پیگیری‌ات را نگه دار: ' + code, 'ok');
+      const copyBtn = document.createElement('button');
+      copyBtn.type = 'button'; copyBtn.className = 'btn secondary'; copyBtn.style.marginTop = '10px';
+      copyBtn.textContent = 'کپی کد پیگیری';
+      copyBtn.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(code); copyBtn.textContent = 'کپی شد'; }
+        catch { copyBtn.textContent = 'کپی خودکار در دسترس نیست؛ کد را دستی یادداشت کن'; }
+      });
+      orderMessage.appendChild(document.createElement('br'));
+      const codeEl = document.createElement('div'); codeEl.className = 'codebox'; codeEl.textContent = code; codeEl.style.marginTop = '8px';
+      orderMessage.appendChild(codeEl); orderMessage.appendChild(document.createElement('br')); orderMessage.appendChild(copyBtn);
+      orderForm.reset();
+    } catch (err) {
+      showMessage(orderMessage, 'ثبت سفارش انجام نشد: ' + (err.message || 'خطای نامشخص'), 'err');
+    } finally {
+      submitBtn.disabled = false; submitBtn.textContent = 'ثبت درخواست';
+    }
+  });
+
+  trackForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    trackMessage.className = 'message';
+    trackBtn.disabled = true; trackBtn.textContent = 'در حال بررسی...';
+    const code = document.getElementById('trackingCode').value.trim().toUpperCase();
+    try {
+      const { data, error } = await db.rpc('track_order', { p_tracking_code: code });
+      if (error) throw error;
+      if (!data) {
+        showMessage(trackMessage, 'سفارشی با این کد پیدا نشد. کد را دوباره بررسی کن.', 'err');
+      } else {
+        showMessage(trackMessage, 'وضعیت سفارش: ' + statusLabel(data), 'ok');
+      }
+    } catch (err) {
+      showMessage(trackMessage, 'پیگیری انجام نشد: ' + (err.message || 'خطای نامشخص'), 'err');
+    } finally {
+      trackBtn.disabled = false; trackBtn.textContent = 'بررسی وضعیت';
+    }
+  });
+</script>
+</body>
+</html>
