@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<meta name="description" content="وب‌ساز مرادی؛ طراحی سایت فروشگاهی، شرکتی و شخصی با طراحی مدرن و واکنش‌گرا.">
+<title>وب‌ساز مرادی | طراحی سایت حرفه‌ای</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+ --bg:#07111f;--surface:#10233a;--surface2:#17314d;--text:#f4f8ff;
+ --muted:#a7b8cc;--accent:#5ee7f5;--accent2:#38a8ff;--line:rgba(148,190,225,.17);
+ --good:#63e6a6;--bad:#ff8795;--shadow:0 24px 70px rgba(0,0,0,.28);
+ --radius:22px;--container:1160px
+}
+[data-theme="gold"]{--bg:#100e0a;--surface:#211b12;--surface2:#332719;--text:#fff8e9;--muted:#c9bda7;--accent:#f2c66d;--accent2:#d99b36;--line:rgba(242,198,109,.2)}
+[data-theme="light"]{--bg:#f2f7fc;--surface:#fff;--surface2:#e8f1fb;--text:#12243a;--muted:#53677e;--accent:#167cc4;--accent2:#42a5f5;--line:rgba(35,74,112,.16);--shadow:0 20px 55px rgba(29,65,100,.12)}
+[data-theme="purple"]{--bg:#100b1d;--surface:#211632;--surface2:#302047;--text:#faf5ff;--muted:#c1b2d6;--accent:#c3a0ff;--accent2:#8b68df;--line:rgba(195,160,255,.2)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{min-height:100vh;overflow-x:hidden;color:var(--text);background:radial-gradient(circle at 85% 4%,color-mix(in srgb,var(--accent2) 18%,transparent),transparent 28rem),var(--bg);font-family:"Vazirmatn",Tahoma,sans-serif;line-height:1.9;transition:background .25s,color .25s}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.container{width:min(var(--container),92%);margin-inline:auto}
+.section{padding-block:78px}
+.top-line{height:3px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent)}
+header{position:sticky;top:0;z-index:30;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(18px)}
+.nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900}
+.brand-mark{width:43px;height:43px;display:grid;place-items:center;border-radius:14px;color:#07111f;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.brand small{display:block;color:var(--muted);font-size:10px;direction:ltr;letter-spacing:1.2px}
+.links{display:flex;gap:20px;color:var(--muted);font-size:13px}
+.links a:hover{color:var(--accent)}
+.actions{display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:10px 18px;border:1px solid transparent;border-radius:13px;color:#061522;background:linear-gradient(110deg,var(--accent),var(--accent2));font-weight:900;font-size:13px;transition:.2s}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.btn.ghost{border-color:var(--line);color:var(--text);background:var(--surface);box-shadow:none}
+.btn.small{min-height:39px;padding:7px 13px;font-size:12px}
+.icon-btn{width:42px;height:42px;border:1px solid var(--line);border-radius:12px;color:var(--text);background:var(--surface)}
+#menuToggle{display:none}
+.hero{display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:45px;padding-block:76px 58px;min-height:610px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);border-radius:30px;color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent);font-size:12px;font-weight:800}
+h1{margin:18px 0;font-size:clamp(2.2rem,5.2vw,4.4rem);line-height:1.45;font-weight:900;letter-spacing:-1px}
+h2{font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.5}
+h3{font-size:1.08rem}
+.gradient{color:transparent;background:linear-gradient(100deg,var(--accent),var(--accent2));background-clip:text;-webkit-background-clip:text}
+.lead,.desc{color:var(--muted)}
+.lead{max-width:610px;font-size:15px}
+.hero-buttons{display:flex;flex-wrap:wrap;gap:12px;margin-top:25px}
+.trust{display:flex;flex-wrap:wrap;gap:18px;margin-top:28px;color:var(--muted);font-size:12px}
+.trust b{color:var(--good)}
+.hero-art{min-height:390px;display:grid;place-items:center;position:relative}
+.orb{position:absolute;width:300px;height:300px;border-radius:50%;background:color-mix(in srgb,var(--accent2) 18%,transparent);filter:blur(35px)}
+.browser{position:relative;width:min(100%,455px);padding:15px;border:1px solid var(--line);border-radius:23px;background:var(--surface);box-shadow:var(--shadow);transform:rotate(-2deg);animation:float 6s ease-in-out infinite}
+.browser-top{display:flex;gap:6px;padding:4px 3px 13px;border-bottom:1px solid var(--line)}
+.browser-top i{width:8px;height:8px;border-radius:50%;background:#ff7185}.browser-top i:nth-child(2){background:#ffd166}.browser-top i:nth-child(3){background:#63e6a6}
+.browser-body{padding:24px}
+.browser-label{color:var(--accent);font-size:10px}
+.browser-title{max-width:300px;margin-top:12px;font-size:25px;font-weight:900;line-height:1.5}
+.browser-copy{margin-top:7px;color:var(--muted);font-size:11px}
+.browser-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:22px}
+.browser-tiles span{height:65px;border-radius:10px;background:linear-gradient(145deg,var(--surface2),color-mix(in srgb,var(--accent) 14%,var(--surface)))}
+.float-tag{position:absolute;padding:10px 14px;border:1px solid var(--line);border-radius:13px;background:var(--surface);box-shadow:var(--shadow);font-size:11px;font-weight:800}
+.tag-a{top:38px;right:-5px}.tag-b{bottom:35px;left:-5px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;padding-bottom:20px}
+.stat,.card,.panel,.step,.faq{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.stat{padding:17px;text-align:center}.stat strong{display:block;color:var(--accent);font-size:24px}.stat span{color:var(--muted);font-size:11px}
+.section-head{max-width:690px;margin-bottom:30px}
+.section-head p{margin-top:8px;color:var(--muted);font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{padding:23px;transition:.2s}.card:hover{transform:translateY(-5px);border-color:var(--accent)}
+.service-icon{width:50px;height:50px;display:grid;place-items:center;margin-bottom:15px;border-radius:15px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);font-size:23px}
+.card p{margin-top:8px;color:var(--muted);font-size:12px}
+.card-link{display:inline-block;margin-top:14px;color:var(--accent);font-size:12px;font-weight:800}
+.split{display:grid;grid-template-columns:.9fr 1.1fr;gap:30px;align-items:center}
+.panel{padding:28px;box-shadow:var(--shadow)}
+.panel p{margin-top:8px;color:var(--muted);font-size:13px}
+.features{display:grid;gap:18px}
+.feature{display:flex;gap:13px}.number{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;border-radius:11px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);font-weight:900}
+.feature p{color:var(--muted);font-size:12px}
+.portfolio{padding:0;overflow:hidden}
+.preview-art{min-height:190px;display:grid;place-items:center;background:linear-gradient(135deg,var(--surface2),color-mix(in srgb,var(--accent2) 25%,var(--surface)))}
+.mini-store{width:78%;padding:14px;border:1px solid var(--line);border-radius:13px;background:var(--bg);transform:rotate(-3deg)}
+.mini-store strong{color:var(--accent);font-size:11px}
+.mini-banner{display:grid;min-height:75px;place-items:center;margin-top:10px;border-radius:8px;background:var(--surface2);font-weight:900}
+.mini-products{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}
+.mini-products i{height:30px;border-radius:6px;background:var(--surface2)}
+.portfolio-info{padding:20px}.portfolio-info p{margin-top:7px;color:var(--muted);font-size:12px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.step{padding:20px}.step strong{color:var(--accent);font-size:25px}.step p{margin-top:6px;color:var(--muted);font-size:12px}
+.cta{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:30px;border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:25px;background:linear-gradient(110deg,var(--surface),color-mix(in srgb,var(--accent2) 14%,var(--surface)))}
+.cta p{margin-top:5px;color:var(--muted);font-size:12px}
+.order-layout{display:grid;grid-template-columns:.7fr 1.3fr;gap:18px;align-items:start}
+.form-card{padding:25px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.field{display:grid;gap:6px;margin-bottom:13px}
+.field label{font-size:12px;font-weight:800}
+.field input,.field select,.field textarea{width:100%;min-height:47px;padding:10px 13px;border:1px solid var(--line);border-radius:11px;outline:none;color:var(--text);background:var(--bg)}
+.field textarea{min-height:110px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+.field option{background:var(--bg)}
+.notice{display:none;margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:11px;color:var(--good);overflow-wrap:anywhere;font-size:12px}
+.notice.show{display:block}.notice.error{color:var(--bad)}
+.faq-list{display:grid;max-width:850px;gap:10px}
+.faq{overflow:hidden}.faq-q{width:100%;display:flex;justify-content:space-between;gap:12px;padding:16px;border:0;color:var(--text);background:transparent;text-align:right;font-weight:800}
+.faq-a{display:none;padding:0 16px 16px;color:var(--muted);font-size:12px}.faq.active .faq-a{display:block}
+footer{margin-top:40px;padding:40px 0 18px;border-top:1px solid var(--line)}
+.footer-grid{display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:25px}
+.footer-grid p,.footer-links{color:var(--muted);font-size:12px}.footer-links{display:grid;gap:7px}
+.copy{margin-top:25px;padding-top:15px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;text-align:center}
+.preview-box{display:grid;grid-template-columns:1fr 1fr;gap:15px;align-items:center}
+.preview-controls{display:grid;gap:10px}
+.preview-controls select{padding:11px;border:1px solid var(--line);border-radius:10px;color:var(--text);background:var(--bg)}
+.live-preview{min-height:230px;padding:20px;border:1px solid var(--line);border-radius:17px;background:var(--surface2);overflow:hidden}
+.live-preview h3{margin:20px 0 8px;font-size:22px}
+.live-preview p{color:var(--muted);font-size:12px}
+.live-preview .sample-btn{display:inline-block;margin-top:15px;padding:8px 13px;border-radius:9px;color:#07111f;background:var(--accent);font-size:11px;font-weight:900}
+#chatLauncher{position:fixed;left:18px;bottom:18px;z-index:40;border:0;border-radius:50px;padding:13px 17px;color:#07111f;background:var(--accent);font-weight:900;box-shadow:var(--shadow)}
+#chatPanel{position:fixed;left:18px;bottom:78px;z-index:40;width:min(330px,calc(100vw - 36px));padding:17px;border:1px solid var(--line);border-radius:17px;background:var(--surface);box-shadow:var(--shadow);display:none}
+#chatPanel.open{display:block}
+#chatPanel p{margin-top:7px;color:var(--muted);font-size:12px}
+.reveal{opacity:0;transform:translateY(17px);transition:.55s}
+.reveal.visible{opacity:1;transform:none}
+@keyframes float{50%{transform:translateY(-12px) rotate(-2deg)}}
+@media(max-width:850px){.links{gap:11px;font-size:11px}.hero{gap:20px}.cards{grid-template-columns:repeat(2,1fr)}.split{gap:18px}}
+@media(max-width:680px){
+ .nav{min-height:68px}.links{display:none;position:absolute;top:68px;right:4%;left:4%;padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+ .links.open{display:grid}.links a{padding:8px}.actions .btn{display:none}#menuToggle{display:block}
+ .hero{grid-template-columns:1fr;padding-block:55px 25px;text-align:center}.lead{margin:auto}.hero-buttons,.trust{justify-content:center}.hero-art{min-height:320px}
+ .stats{grid-template-columns:repeat(2,1fr)}.split,.order-layout,.preview-box{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}
+ .cta{align-items:flex-start;flex-direction:column}.footer-grid{grid-template-columns:1fr 1fr}.footer-grid>div:first-child{grid-column:1/-1}
+}
+@media(max-width:460px){.cards,.form-grid,.steps,.footer-grid{grid-template-columns:1fr}.footer-grid>div:first-child{grid-column:auto}.hero-buttons .btn{width:100%}.browser-body{padding:16px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="top-line"></div>
+<header>
+ <div class="container nav">
+  <a class="brand" href="#home"><span class="brand-mark">MW</span><span>وب‌ساز مرادی<small>MORADI WEB BUILDER</small></span></a>
+  <nav class="links" id="navLinks">
+   <a href="#home">خانه</a><a href="#services">خدمات</a><a href="#portfolio">نمونه‌کارها</a><a href="#preview">پیش‌نمایش</a><a href="#order">ثبت سفارش</a><a href="#tracking">پیگیری</a>
+  </nav>
+  <div class="actions">
+   <a class="btn small ghost" href="auth.html" id="authLink">ورود / ثبت‌نام</a>
+   <a class="btn small" href="account.html" id="accountLink">پنل مشتری</a>
+   <button class="icon-btn" id="themeButton" type="button" title="تغییر تم" aria-label="تغییر تم">◐</button>
+   <button class="icon-btn" id="menuToggle" type="button" aria-label="باز کردن منو">☰</button>
+  </div>
+ </div>
+</header>
+
+<main>
+<section class="container hero" id="home">
+ <div>
+  <span class="eyebrow">طراحی وب با نگاه حرفه‌ای</span>
+  <h1>کسب‌وکارت رو با یک <span class="gradient">سایت خاص</span> به دنیا معرفی کن</h1>
+  <p class="lead">از ایده تا اجرا؛ طراحی مدرن، تجربه کاربری روان و نمایش درست در موبایل و کامپیوتر برای حضور بهتر در دنیای آنلاین.</p>
+  <div class="hero-buttons"><a class="btn" href="#order">ثبت درخواست طراحی ←</a><a class="btn ghost" href="#portfolio">دیدن نمونه‌کارها</a></div>
+  <div class="trust"><span><b>✓</b> طراحی واکنش‌گرا</span><span><b>✓</b> ظاهر اختصاصی</span><span><b>✓</b> پیگیری سفارش</span></div>
+ </div>
+ <div class="hero-art" aria-label="پیش‌نمایش گرافیکی وب‌سایت">
+  <div class="orb"></div>
+  <div class="browser"><div class="browser-top"><i></i><i></i><i></i></div><div class="browser-body"><span class="browser-label">YOUR DIGITAL PRESENCE</span><div class="browser-title">یک شروع تازه برای برند شما</div><p class="browser-copy">طراحی زیبا، سرعت مناسب و تجربه‌ای ساده برای کاربران شما.</p><div class="browser-tiles"><span></span><span></span><span></span></div></div></div>
+  <div class="float-tag tag-a">✦ طراحی مدرن</div><div class="float-tag tag-b">▣ سازگار با موبایل</div>
+ </div>
+</section>
+
+<section class="container stats">
+ <div class="stat reveal"><strong>۱۰۰٪</strong><span>واکنش‌گرا</span></div>
+ <div class="stat reveal"><strong>۲۴/۷</strong><span>قابل مشاهده</span></div>
+ <div class="stat reveal"><strong>UI</strong><span>توجه به تجربه کاربری</span></div>
+ <div class="stat reveal"><strong>SEO</strong><span>ساختار مناسب جست‌وجو</span></div>
+</section>
+
+<section class="section" id="services"><div class="container">
+ <div class="section-head reveal"><span class="eyebrow">خدمات وب‌ساز مرادی</span><h2>هر چیزی که برای شروع آنلاین نیاز داری</h2><p>متناسب با نوع کسب‌وکار، هدف و نیاز مخاطبانت، ساختار مناسبی برای سایت طراحی می‌کنیم.</p></div>
+ <div class="cards">
+  <article class="card reveal"><div class="service-icon">🛍️</div><h3>فروشگاه اینترنتی</h3><p>معرفی محصول، دسته‌بندی و مسیر ساده برای ثبت درخواست خرید.</p><a class="card-link" href="#order">درخواست این خدمت ←</a></article>
+  <article class="card reveal"><div class="service-icon">🏢</div><h3>سایت شرکتی</h3><p>معرفی برند، خدمات، نمونه‌کارها و راه‌های ارتباطی.</p><a class="card-link" href="#order">درخواست این خدمت ←</a></article>
+  <article class="card reveal"><div class="service-icon">👤</div><h3>سایت شخصی</h3><p>صفحه اختصاصی برای معرفی مهارت‌ها، رزومه و پروژه‌ها.</p><a class="card-link" href="#order">درخواست این خدمت ←</a></article>
+  <article class="card reveal"><div class="service-icon">📱</div><h3>طراحی واکنش‌گرا</h3><p>چیدمان سازگار با موبایل، تبلت و دسکتاپ.</p><a class="card-link" href="#order">درخواست این خدمت ←</a></article>
+  <article class="card reveal"><div class="service-icon">⚡</div><h3>بهینه‌سازی تجربه</h3><p>ساختار مرتب و مسیرهای واضح برای دسترسی آسان‌تر.</p><a class="card-link" href="#order">درخواست این خدمت ←</a></article>
+  <article class="card reveal"><div class="service-icon">🎨</div><h3>طراحی رابط کاربری</h3><p>انتخاب رنگ، فونت و اجزای بصری هماهنگ با برند.</p><a class="card-link" href="#order">درخواست این خدمت ←</a></article>
+ </div>
+</div></section>
+
+<section class="section"><div class="container split">
+ <div class="panel reveal"><div class="service-icon">MWB</div><span class="eyebrow">MORADI WEB BUILDER</span><h2>یک سایت خوب فقط زیبا نیست</h2><p>سایت باید پیام برند را روشن منتقل کند، استفاده از آن ساده باشد و مخاطب را به اقدام درست هدایت کند.</p></div>
+ <div class="features">
+  <div class="feature reveal"><span class="number">۰۱</span><div><h3>طراحی متناسب با هدف</h3><p>ساختار سایت بر اساس نوع فعالیت و مخاطبان شکل می‌گیرد.</p></div></div>
+  <div class="feature reveal"><span class="number">۰۲</span><div><h3>نمایش درست در موبایل</h3><p>بخش‌ها و دکمه‌ها در اندازه‌های مختلف صفحه درست چیده می‌شوند.</p></div></div>
+  <div class="feature reveal"><span class="number">۰۳</span><div><h3>مسیر ساده برای کاربر</h3><p>منوها، لینک‌ها و فرم‌ها برای استفاده راحت‌تر طراحی می‌شوند.</p></div></div>
+  <div class="feature reveal"><span class="number">۰۴</span><div><h3>قابلیت توسعه</h3><p>امکانات تازه در مراحل بعدی قابل اضافه‌شدن هستند.</p></div></div>
+ </div>
+</div></section>
+
+<section class="section" id="portfolio"><div class="container">
+ <div class="section-head reveal"><span class="eyebrow">نمونه‌کارها</span><h2>ایده‌هایی برای شروع</h2><p>برای دیدن نمونه طراحی فروشگاهی، پروژه آوید را باز کن.</p></div>
+ <div class="cards">
+  <article class="card portfolio reveal"><div class="preview-art"><div class="mini-store"><strong>AVID STORE</strong><div class="mini-banner">استایل خودت رو پیدا کن</div><div class="mini-products"><i></i><i></i><i></i></div></div></div><div class="portfolio-info"><h3>فروشگاه پوشاک آوید</h3><p>نمونه طراحی فروشگاه اینترنتی پوشاک با تمرکز بر نمایش محصولات.</p><a class="card-link" href="avid.html">مشاهده نمونه‌کار آوید ←</a></div></article>
+  <article class="card portfolio reveal"><div class="preview-art"><div class="mini-store"><strong>BUSINESS</strong><div class="mini-banner">کسب‌وکار حرفه‌ای</div><div class="mini-products"><i></i><i></i><i></i></div></div></div><div class="portfolio-info"><h3>قالب شرکتی</h3><p>چیدمان پیشنهادی برای معرفی خدمات و اطلاعات مجموعه.</p><a class="card-link" href="#order">سفارش طرح مشابه ←</a></div></article>
+  <article class="card portfolio reveal"><div class="preview-art"><div class="mini-store"><strong>PERSONAL</strong><div class="mini-banner">داستان و مهارت‌های من</div><div class="mini-products"><i></i><i></i><i></i></div></div></div><div class="portfolio-info"><h3>صفحه شخصی</h3><p>طرحی ساده برای معرفی توانایی‌ها، سوابق و راه‌های ارتباطی.</p><a class="card-link" href="#order">سفارش طرح مشابه ←</a></div></article>
+ </div>
+</div></section>
+
+<section class="section" id="preview"><div class="container">
+ <div class="section-head reveal"><span class="eyebrow">ابزار تعاملی</span><h2>پیش‌نمایش ایده سایت</h2><p>نوع سایت و رنگ را انتخاب کن تا یک پیش‌نمایش اولیه ببینی. این ابزار نمونه ظاهری است و هنوز فایل سایت نهایی تولید نمی‌کند.</p></div>
+ <div class="form-card preview-box reveal">
+  <div class="preview-controls">
+   <div class="field"><label for="previewType">نوع سایت</label><select id="previewType"><option value="فروشگاه آنلاین">فروشگاه آنلاین</option><option value="سایت شرکتی">سایت شرکتی</option><option value="سایت شخصی">سایت شخصی</option></select></div>
+   <div class="field"><label for="previewColor">رنگ پیش‌نمایش</label><select id="previewColor"><option value="cyan">فیروزه‌ای</option><option value="gold">طلایی</option><option value="purple">بنفش</option><option value="blue">آبی</option></select></div>
+   <a class="btn" href="#order">ثبت سفارش این ایده ←</a>
+  </div>
+  <div class="live-preview" id="livePreview"><span class="eyebrow">پیش‌نمایش سایت</span><h3>فروشگاه آنلاین شما</h3><p>یک طرح اولیه برای معرفی محصولات و برند شما.</p><span class="sample-btn">مشاهده محصولات</span></div>
+ </div>
+</div></section>
+
+<section class="section"><div class="container">
+ <div class="section-head reveal"><span class="eyebrow">مراحل همکاری</span><h2>از درخواست تا تحویل سایت</h2></div>
+ <div class="steps">
+  <div class="step reveal"><strong>۰۱</strong><h3>ثبت درخواست</h3><p>نوع سایت و توضیحات اولیه را وارد می‌کنی.</p></div>
+  <div class="step reveal"><strong>۰۲</strong><h3>بررسی نیازها</h3><p>جزئیات و امکانات موردنیاز بررسی می‌شود.</p></div>
+  <div class="step reveal"><strong>۰۳</strong><h3>طراحی و اجرا</h3><p>سایت بر اساس توافق آماده می‌شود.</p></div>
+  <div class="step reveal"><strong>۰۴</strong><h3>تحویل پروژه</h3><p>نسخه نهایی بررسی و تحویل می‌شود.</p></div>
+ </div>
+</div></section>
+
+<section class="container"><div class="cta reveal"><div><span class="eyebrow">آماده شروع هستی؟</span><h2>ایده‌ات رو به یک سایت تبدیل کن</h2><p>برای ثبت درخواست، ابتدا وارد حساب کاربری‌ات شو.</p></div><a class="btn" href="#order">ثبت سفارش جدید ←</a></div></section>
+
+<section class="section" id="order"><div class="container">
+ <div class="section-head reveal"><span class="eyebrow">شروع یک پروژه تازه</span><h2>فرم ثبت سفارش طراحی سایت</h2><p>ثبت سفارش فقط برای کاربران واردشده امکان‌پذیر است.</p></div>
+ <div class="order-layout">
+  <aside class="panel reveal"><div class="service-icon">✉</div><h3>درخواستت رو ثبت کن</h3><p>پس از ورود، درخواستت به حساب کاربری خودت متصل می‌شود.</p><p style="margin-top:15px;color:var(--accent)">✓ ثبت امن درخواست<br>✓ کد پیگیری اختصاصی<br>✓ مشاهده سوابق از پنل مشتری</p><a class="btn ghost" style="margin-top:18px" href="account.html">رفتن به پنل مشتری</a></aside>
+  <div class="form-card reveal">
+   <div id="loginRequired" class="notice show">برای ثبت سفارش ابتدا وارد حساب کاربری شو. <a href="auth.html" style="text-decoration:underline;font-weight:900">ورود یا ثبت‌نام</a></div>
+   <form id="orderForm" hidden>
+    <div class="form-grid">
+     <div class="field"><label for="customer">نام و نام خانوادگی</label><input id="customer" maxlength="100" required autocomplete="name" placeholder="نام شما"></div>
+     <div class="field"><label for="phone">شماره تماس</label><input id="phone" maxlength="30" required inputmode="tel" autocomplete="tel" placeholder="شماره تماس"></div>
+    </div>
+    <div class="field"><label for="type">نوع سایت موردنظر</label><select id="type" required><option value="">یک گزینه انتخاب کن</option><option value="فروشگاهی">فروشگاهی</option><option value="شرکتی">شرکتی</option><option value="شخصی">شخصی</option><option value="سایر">سایر</option></select></div>
+    <div class="field"><label for="description">توضیحات پروژه</label><textarea id="description" maxlength="2000" placeholder="چه امکاناتی برای سایتت می‌خواهی؟"></textarea></div>
+    <button class="btn" id="submitBtn" type="submit">ثبت سفارش ←</button><div class="notice" id="orderMessage" role="status" aria-live="polite"></div>
+   </form>
+  </div>
+ </div>
+</div></section>
+
+<section class="section" id="tracking"><div class="container">
+ <div class="section-head reveal"><span class="eyebrow">پیگیری آنلاین</span><h2>وضعیت سفارشت رو بررسی کن</h2><p>کد پیگیری را وارد کن. اطلاعات حساس سفارش فقط باید در پنل حساب مشتری نمایش داده شود.</p></div>
+ <div class="form-card reveal" style="max-width:720px">
+  <form id="trackForm"><div class="field"><label for="trackingCode">کد پیگیری سفارش</label><input id="trackingCode" required maxlength="64" autocomplete="off" placeholder="کد پیگیری را وارد کن"></div><button class="btn" id="trackBtn" type="submit">بررسی وضعیت سفارش ←</button><div class="notice" id="trackMessage" role="status" aria-live="polite"></div></form>
+ </div>
+</div></section>
+
+<section class="section" id="faq"><div class="container">
+ <div class="section-head reveal"><span class="eyebrow">سؤالات متداول</span><h2>پاسخ چند سؤال مهم</h2></div>
+ <div class="faq-list">
+  <div class="faq reveal"><button class="faq-q" type="button">چه نوع سایت‌هایی طراحی می‌شود؟ <span>＋</span></button><div class="faq-a">برای سایت فروشگاهی، شرکتی، شخصی یا ایده‌های دیگر می‌توانی درخواست ثبت کنی.</div></div>
+  <div class="faq reveal"><button class="faq-q" type="button">چرا باید وارد حساب شوم؟ <span>＋</span></button><div class="faq-a">برای اینکه سفارش به حساب خودت متصل شود و سوابق آن را در پنل مشتری ببینی.</div></div>
+  <div class="faq reveal"><button class="faq-q" type="button">چطور سفارشم را پیگیری کنم؟ <span>＋</span></button><div class="faq-a">از پنل مشتری یا با کد پیگیری‌ای که هنگام ثبت سفارش دریافت می‌کنی.</div></div>
+  <div class="faq reveal"><button class="faq-q" type="button">آیا سایت در موبایل هم نمایش داده می‌شود؟ <span>＋</span></button><div class="faq-a">بله، طراحی صفحه برای موبایل، تبلت و دسکتاپ واکنش‌گراست.</div></div>
+ </div>
+</div></section>
+</main>
+
+<footer><div class="container">
+ <div class="footer-grid">
+  <div><a class="brand" href="#home"><span class="brand-mark">MW</span><span>وب‌ساز مرادی<small>MORADI WEB BUILDER</small></span></a><p style="margin-top:12px">طراحی سایت مدرن و واکنش‌گرا برای معرفی بهتر ایده‌ها و کسب‌وکارها.</p></div>
+  <div><h3>دسترسی سریع</h3><div class="footer-links"><a href="#services">خدمات</a><a href="#portfolio">نمونه‌کارها</a><a href="#order">ثبت سفارش</a></div></div>
+  <div><h3>بخش مشتریان</h3><div class="footer-links"><a href="auth.html">ورود / ثبت‌نام</a><a href="account.html">پنل مشتری</a><a href="#tracking">پیگیری سفارش</a><a href="admin.html">پنل مدیریت</a></div></div>
+ </div>
+ <div class="copy">© <span id="year"></span> وب‌ساز مرادی — تمامی حقوق محفوظ است.</div>
+</div></footer>
+
+<div id="chatPanel"><strong>پشتیبانی وب‌ساز مرادی</strong><p>بخش گفت‌وگوی آنلاین هنوز به سامانه پیام‌رسان و پنل مدیریت متصل نشده است. برای جلوگیری از ارسال پیام‌های گم‌شده، این بخش فعلاً نمایشی است.</p><a class="btn small ghost" href="#order">ثبت درخواست</a></div>
+<button id="chatLauncher" type="button">گفت‌وگو با پشتیبانی</button>
+
+<script>
+(() => {
+"use strict";
+const SUPABASE_URL = "https://oczpjbwwogsydzkouxtj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+const show = (el, text, error=false) => { el.textContent=text; el.className="notice show"+(error?" error":""); };
+const clear = el => { el.textContent=""; el.className="notice"; };
+
+/* Theme picker: four palettes, remembered on this device */
+const themes=["default","gold","light","purple"];
+let themeIndex=0;
+try {
+ const saved=localStorage.getItem("mwb-theme");
+ if(themes.includes(saved)) themeIndex=themes.indexOf(saved);
+} catch (_) {}
+function applyTheme(){
+ const theme=themes[themeIndex];
+ if(theme==="default") document.documentElement.removeAttribute("data-theme");
+ else document.documentElement.setAttribute("data-theme",theme);
+ try { localStorage.setItem("mwb-theme",theme); } catch (_) {}
+}
+applyTheme();
+$("themeButton").addEventListener("click",()=>{
+ themeIndex=(themeIndex+1)%themes.length;
+ applyTheme();
+ const names={default:"سرمه‌ای و فیروزه‌ای",gold:"مشکی و طلایی",light:"سفید و آبی",purple:"بنفش و مشکی"};
+ $("themeButton").title="تم فعلی: "+names[themes[themeIndex]];
+});
+
+/* Mobile navigation */
+$("menuToggle").addEventListener("click",()=> $("navLinks").classList.toggle("open"));
+document.querySelectorAll("#navLinks a").forEach(a=>a.addEventListener("click",()=>$("navLinks").classList.remove("open")));
+
+/* FAQ */
+document.querySelectorAll(".faq-q").forEach(btn=>btn.addEventListener("click",()=>btn.closest(".faq").classList.toggle("active")));
+
+/* Reveal animations */
+if("IntersectionObserver" in window){
+ const observer=new IntersectionObserver((entries,obs)=>entries.forEach(entry=>{
+  if(entry.isIntersecting){entry.target.classList.add("visible");obs.unobserve(entry.target);}
+ }),{threshold:.12});
+ document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
+}else document.querySelectorAll(".reveal").forEach(el=>el.classList.add("visible"));
+
+/* Preview sandbox */
+function updatePreview(){
+ const type=$("previewType").value, color=$("previewColor").value;
+ const palettes={cyan:["#5ee7f5","#17314d"],gold:["#f2c66d","#3b2c18"],purple:["#c3a0ff","#302047"],blue:["#75baff","#173653"]};
+ const [accent,bg]=palettes[color];
+ const title=type==="فروشگاه آنلاین"?"فروشگاه آنلاین شما":type==="سایت شرکتی"?"معرفی حرفه‌ای شرکت شما":"رزومه و سایت شخصی شما";
+ $("livePreview").style.setProperty("--accent",accent);
+ $("livePreview").style.background=bg;
+ $("livePreview").innerHTML=`<span style="color:${accent};font-size:11px">پیش‌نمایش ${type}</span><h3>${title}</h3><p>یک طرح اولیه برای معرفی بهتر برند، خدمات و محتوای شما.</p><span class="sample-btn">مشاهده بیشتر</span>`;
+}
+$("previewType").addEventListener("change",updatePreview);
+$("previewColor").addEventListener("change",updatePreview);
+updatePreview();
+
+/* Chat panel is intentionally labelled as not yet connected */
+$("chatLauncher").addEventListener("click",()=>$("chatPanel").classList.toggle("open"));
+$("year").textContent=new Date().getFullYear();
+
+/* Auth state: order form is shown only to a signed-in user */
+let currentUser=null;
+async function refreshAuth(){
+ const {data,error}=await db.auth.getUser();
+ currentUser=(!error && data && data.user)?data.user:null;
+ $("orderForm").hidden=!currentUser;
+ $("loginRequired").style.display=currentUser?"none":"block";
+ $("authLink").textContent=currentUser?"حساب کاربری":"ورود / ثبت‌نام";
+ $("authLink").href=currentUser?"account.html":"auth.html";
+}
+refreshAuth();
+db.auth.onAuthStateChange(()=>{refreshAuth();});
+
+/* Authenticated order submission. Database trigger must also reject anonymous inserts. */
+$("orderForm").addEventListener("submit",async event=>{
+ event.preventDefault();
+ const message=$("orderMessage"),button=$("submitBtn");
+ clear(message);
+ const {data:userData,error:userError}=await db.auth.getUser();
+ if(userError || !userData.user){
+  location.href="auth.html?next="+encodeURIComponent("index.html#order");
+  return;
+ }
+ button.disabled=true;button.textContent="در حال ثبت سفارش...";
+ const order={
+  p_customer_name:$("customer").value.trim(),
+  p_phone:$("phone").value.trim(),
+  p_site_type:$("type").value,
+  p_description:$("description").value.trim() || ""
+ };
+ try{
+  const {data,error}=await db.rpc("submit_order",order);
+  if(error) throw error;
+  const code=typeof data==="string"?data:data?.tracking_code;
+  if(!code) throw new Error("کد پیگیری از سرور دریافت نشد.");
+  show(message,"سفارش ثبت شد. کد پیگیری شما: "+code+" — این کد را نگه دار.");
+  $("orderForm").reset();
+ }catch(error){
+  console.error("Order submission error:",error);
+  show(message,"ثبت سفارش انجام نشد: "+(error.message||"خطای نامشخص"),true);
+ }finally{
+  button.disabled=false;button.textContent="ثبت سفارش ←";
+ }
+});
+
+/* Existing tracking RPC is retained. For privacy, use account.html for order details. */
+$("trackForm").addEventListener("submit",async event=>{
+ event.preventDefault();
+ const message=$("trackMessage"),button=$("trackBtn");
+ clear(message);button.disabled=true;button.textContent="در حال بررسی...";
+ const code=$("trackingCode").value.trim().toUpperCase();
+ try{
+  const {data,error}=await db.rpc("track_order",{p_tracking_code:code});
+  if(error) throw error;
+  if(!data){show(message,"سفارشی با این کد پیدا نشد.",true);return;}
+  const labels={new:"ثبت شده",reviewing:"در حال بررسی",in_progress:"در حال انجام",completed:"تکمیل شده"};
+  show(message,"وضعیت سفارش: "+(labels[data]||data));
+ }catch(error){
+  console.error("Tracking error:",error);
+  show(message,"پیگیری انجام نشد: "+(error.message||"خطای نامشخص"),true);
+ }finally{
+  button.disabled=false;button.textContent="بررسی وضعیت سفارش ←";
+ }
+});
+})();
+</script>
+</body>
+</html>
