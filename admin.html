@@ -4,18 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>پنل مدیریت | وب‌ساز مرادی</title>
-  <meta name="description" content="پنل مدیریت سفارش‌های وب‌ساز مرادی">
+  <meta name="description" content="پنل مدیریت سفارش‌ها و پشتیبانی وب‌ساز مرادی">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     *{box-sizing:border-box}
     body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f3f5f9;color:#172033}
-    .wrap{max-width:1050px;margin:36px auto;padding:0 16px}
+    .wrap{max-width:1100px;margin:36px auto;padding:0 16px}
     header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}
-    h1{font-size:25px;margin:0} .muted{color:#64748b;font-size:13px}
-    .panel{background:#fff;border:1px solid #e5eaf2;border-radius:16px;padding:22px;box-shadow:0 8px 28px #15213a0a}
+    h1{font-size:25px;margin:0}
+    .muted{color:#64748b;font-size:13px}
+    .panel{background:#fff;border:1px solid #e5eaf2;border-radius:16px;padding:22px;box-shadow:0 8px 28px #15213a0a;margin-bottom:20px}
     .login{max-width:430px;margin:55px auto}
     label{display:block;font-size:14px;margin:14px 0 7px}
-    input,select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit;background:#fff}
+    input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit;background:#fff}
     button{border:0;border-radius:9px;padding:11px 16px;font:inherit;cursor:pointer;background:#2457d6;color:white}
     button.secondary{background:#e8edf7;color:#172033}
     button:disabled{opacity:.55;cursor:wait}
@@ -29,189 +31,512 @@
     td select{min-width:145px;padding:8px}
     .empty{text-align:center;color:#64748b;padding:35px}
     .hidden{display:none!important}
-    @media(max-width:600px){.wrap{margin:20px auto}.panel{padding:16px}h1{font-size:20px}header{align-items:flex-start;flex-direction:column}}
+
+    .chat-layout{display:grid;grid-template-columns:280px 1fr;gap:16px;margin-top:18px}
+    .customer-list{border:1px solid #e5eaf2;border-radius:12px;padding:10px;max-height:480px;overflow:auto}
+    .customer-item{display:block;width:100%;text-align:right;background:#f8fafc;color:#172033;margin-bottom:8px;padding:12px;border:1px solid #e5eaf2;overflow-wrap:anywhere}
+    .customer-item.active{background:#e8efff;border-color:#2457d6}
+    .customer-item small{display:block;color:#64748b;margin-top:6px}
+    .conversation{border:1px solid #e5eaf2;border-radius:12px;min-height:300px;display:flex;flex-direction:column;overflow:hidden}
+    .conversation-head{padding:13px;background:#f8fafc;border-bottom:1px solid #e5eaf2;font-size:13px;overflow-wrap:anywhere}
+    .messages{padding:15px;flex:1;min-height:260px;max-height:380px;overflow:auto;display:flex;flex-direction:column;gap:12px}
+    .message{max-width:85%;padding:11px 13px;border-radius:12px;font-size:13px;line-height:1.9;overflow-wrap:anywhere}
+    .message.customer{align-self:flex-start;background:#f1f5f9}
+    .message.admin{align-self:flex-end;background:#e8efff}
+    .message small{display:block;color:#64748b;margin-top:5px;font-size:10px}
+    .reply-box{display:flex;gap:8px;padding:12px;border-top:1px solid #e5eaf2}
+    .reply-box textarea{resize:vertical;min-height:45px;max-height:120px}
+    .reply-box button{white-space:nowrap}
+    @media(max-width:700px){
+      .wrap{margin:20px auto}
+      .panel{padding:16px}
+      h1{font-size:20px}
+      header{align-items:flex-start;flex-direction:column}
+      .chat-layout{grid-template-columns:1fr}
+      .customer-list{max-height:200px}
+      .message{max-width:95%}
+      .reply-box{flex-direction:column}
+    }
   </style>
 </head>
+
 <body>
-  <main class="wrap">
-    <header>
+<main class="wrap">
+
+  <header>
+    <div>
+      <h1>پنل مدیریت وب‌ساز مرادی</h1>
+      <div class="muted">مدیریت سفارش‌ها و پشتیبانی مشتریان</div>
+    </div>
+    <div class="actions hidden" id="topActions">
+      <button class="secondary" id="refreshBtn">بروزرسانی</button>
+      <button id="logoutBtn">خروج از حساب</button>
+    </div>
+  </header>
+
+  <!-- ورود مدیر -->
+  <section class="panel login" id="loginPanel">
+    <h2 style="margin-top:0">ورود مدیر</h2>
+    <p class="muted">با ایمیل و رمز حساب مدیر وارد شو.</p>
+
+    <form id="loginForm">
+      <label for="email">ایمیل مدیر</label>
+      <input id="email" type="email" autocomplete="username" required>
+
+      <label for="password">رمز عبور</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+
+      <div style="margin-top:18px">
+        <button id="loginBtn" type="submit">ورود</button>
+      </div>
+    </form>
+    <div class="error" id="loginError"></div>
+  </section>
+
+  <!-- سفارش‌ها -->
+  <section class="panel hidden" id="ordersPanel">
+    <div>
+      <h2 style="margin:0 0 5px">سفارش‌ها</h2>
+      <div class="muted" id="countText">در حال دریافت سفارش‌ها…</div>
+    </div>
+
+    <div class="error" id="ordersError"></div>
+    <div class="success" id="notice"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>نام مشتری</th>
+            <th>شماره تماس</th>
+            <th>نوع سایت</th>
+            <th>توضیحات</th>
+            <th>تاریخ ثبت</th>
+            <th>وضعیت</th>
+          </tr>
+        </thead>
+        <tbody id="ordersBody">
+          <tr><td colspan="6" class="empty">در حال بارگذاری…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- پشتیبانی آنلاین -->
+  <section class="panel hidden" id="chatPanel">
+    <div>
+      <h2 style="margin:0 0 5px">پشتیبانی آنلاین</h2>
+      <div class="muted">پیام‌های مشتریان را مشاهده و پاسخ ارسال کن.</div>
+    </div>
+
+    <div class="error" id="chatError"></div>
+    <div class="success" id="chatNotice"></div>
+
+    <div class="chat-layout">
       <div>
-        <h1>پنل مدیریت وب‌ساز مرادی</h1>
-        <div class="muted">مدیریت سفارش‌های ثبت‌شده</div>
-      </div>
-      <div class="actions hidden" id="topActions">
-        <button class="secondary" id="refreshBtn">بروزرسانی</button>
-        <button id="logoutBtn">خروج از حساب</button>
-      </div>
-    </header>
-
-    <section class="panel login" id="loginPanel">
-      <h2 style="margin-top:0">ورود مدیر</h2>
-      <p class="muted">با ایمیل و رمزی که برای حساب مدیر ساختی وارد شو.</p>
-      <form id="loginForm">
-        <label for="email">ایمیل مدیر</label>
-        <input id="email" type="email" autocomplete="username" required>
-        <label for="password">رمز عبور</label>
-        <input id="password" type="password" autocomplete="current-password" required>
-        <div style="margin-top:18px"><button id="loginBtn" type="submit">ورود</button></div>
-      </form>
-      <div class="error" id="loginError"></div>
-    </section>
-
-    <section class="panel hidden" id="ordersPanel">
-      <div class="actions" style="justify-content:space-between">
-        <div>
-          <h2 style="margin:0 0 5px">سفارش‌ها</h2>
-          <div class="muted" id="countText">در حال دریافت سفارش‌ها…</div>
+        <h3 style="font-size:15px">مشتری‌ها</h3>
+        <div class="customer-list" id="customerList">
+          <div class="empty">در حال دریافت پیام‌ها…</div>
         </div>
       </div>
-      <div class="error" id="ordersError"></div>
-      <div class="success" id="notice"></div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th>نام مشتری</th><th>شماره تماس</th><th>نوع سایت</th>
-            <th>توضیحات</th><th>تاریخ ثبت</th><th>وضعیت</th>
-          </tr></thead>
-          <tbody id="ordersBody"><tr><td colspan="6" class="empty">در حال بارگذاری…</td></tr></tbody>
-        </table>
+
+      <div class="conversation">
+        <div class="conversation-head" id="conversationTitle">
+          یک مشتری را انتخاب کن.
+        </div>
+
+        <div class="messages" id="messages">
+          <div class="empty">هنوز گفت‌وگویی انتخاب نشده است.</div>
+        </div>
+
+        <form class="reply-box" id="replyForm">
+          <textarea id="replyInput" maxlength="2000"
+            placeholder="پاسخ خود را بنویس…" required disabled></textarea>
+          <button id="replyBtn" type="submit" disabled>ارسال پاسخ</button>
+        </form>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
-  <script>
-    // آدرس پروژه و کلید عمومی (Publishable) سوپابیس
-    const SUPABASE_URL = 'https://oczpjbwwogsydzkouxtj.supabase.co';
-    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
+</main>
 
-    const { createClient } = supabase;
-    const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+<script>
+  const SUPABASE_URL = 'https://oczpjbwwogsydzkouxtj.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
 
-    const $ = (id) => document.getElementById(id);
-    const loginPanel = $('loginPanel');
-    const ordersPanel = $('ordersPanel');
-    const topActions = $('topActions');
-    const statusLabels = {
-      new: 'جدید',
-      reviewing: 'در حال بررسی',
-      in_progress: 'در حال انجام',
-      completed: 'تکمیل‌شده'
-    };
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-    function showError(id, message) {
-      const el = $(id); el.textContent = message; el.style.display = 'block';
-    }
-    function hideMessage(id) { $(id).style.display = 'none'; }
+  const $ = id => document.getElementById(id);
 
-    async function loadOrders() {
-      hideMessage('ordersError');
-      $('countText').textContent = 'در حال دریافت سفارش‌ها…';
-      const { data, error } = await db.from('orders')
-        .select('id, customer_name, phone, site_type, description, status, created_at')
-        .order('created_at', { ascending: false });
+  let selectedCustomerId = null;
+  let conversations = {};
+  let authorizedUserId = null;
+  let dashboardCheck = false;
 
-      if (error) {
-        $('countText').textContent = 'دریافت سفارش‌ها ناموفق بود';
-        showError('ordersError', 'خطا در دریافت سفارش‌ها: ' + error.message);
+  const statusLabels = {
+    new: 'جدید',
+    reviewing: 'در حال بررسی',
+    in_progress: 'در حال انجام',
+    completed: 'تکمیل‌شده'
+  };
+
+  function showError(id, message) {
+    const el = $(id);
+    el.textContent = message;
+    el.style.display = 'block';
+  }
+
+  function showSuccess(id, message) {
+    const el = $(id);
+    el.textContent = message;
+    el.style.display = 'block';
+  }
+
+  function hideMessage(id) {
+    $(id).style.display = 'none';
+  }
+
+  function showLogin() {
+    $('loginPanel').classList.remove('hidden');
+    $('ordersPanel').classList.add('hidden');
+    $('chatPanel').classList.add('hidden');
+    $('topActions').classList.add('hidden');
+    authorizedUserId = null;
+    selectedCustomerId = null;
+  }
+
+  async function showDashboard() {
+    if (dashboardCheck) return;
+    dashboardCheck = true;
+
+    try {
+      const { data: userData, error: userError } = await db.auth.getUser();
+
+      if (userError || !userData.user) {
+        showLogin();
         return;
       }
 
-      $('countText').textContent = `${data.length} سفارش`;
-      const body = $('ordersBody');
-      body.replaceChildren();
+      const userId = userData.user.id;
 
-      if (!data.length) {
-        const tr = document.createElement('tr');
-        const td = document.createElement('td');
-        td.colSpan = 6; td.className = 'empty'; td.textContent = 'هنوز سفارشی ثبت نشده است.';
-        tr.appendChild(td); body.appendChild(tr); return;
+      // بررسی دسترسی مدیر
+      const { data: isAdmin, error: adminError } =
+        await db.rpc('is_chat_admin');
+
+      if (adminError || isAdmin !== true) {
+        showLogin();
+        showError(
+          'loginError',
+          'این حساب دسترسی مدیریت ندارد. با حساب مدیر وارد شو.'
+        );
+        await db.auth.signOut({ scope: 'local' });
+        return;
       }
 
-      for (const order of data) {
-        const tr = document.createElement('tr');
-        const values = [
-          order.customer_name,
-          order.phone,
-          order.site_type,
-          order.description || '—',
-          new Date(order.created_at).toLocaleString('fa-IR')
-        ];
-        for (const value of values) {
-          const td = document.createElement('td');
-          td.textContent = value;
-          tr.appendChild(td);
-        }
-        const statusCell = document.createElement('td');
-        const select = document.createElement('select');
-        for (const [value, label] of Object.entries(statusLabels)) {
-          const option = document.createElement('option');
-          option.value = value; option.textContent = label;
-          select.appendChild(option);
-        }
-        select.value = order.status;
-        select.addEventListener('change', async () => {
-          select.disabled = true;
-          const { error: updateError } = await db.from('orders')
-            .update({ status: select.value }).eq('id', order.id);
-          select.disabled = false;
-          if (updateError) {
-            showError('ordersError', 'ذخیره وضعیت انجام نشد: ' + updateError.message);
-            select.value = order.status;
-          } else {
-            order.status = select.value;
-            $('notice').textContent = 'وضعیت سفارش ذخیره شد.';
-            $('notice').style.display = 'block';
-            hideMessage('ordersError');
-          }
-        });
-        statusCell.appendChild(select); tr.appendChild(statusCell);
-        body.appendChild(tr);
-      }
-    }
+      authorizedUserId = userId;
 
-    function showDashboard() {
-      loginPanel.classList.add('hidden');
-      ordersPanel.classList.remove('hidden');
-      topActions.classList.remove('hidden');
-      loadOrders();
-    }
-    function showLogin() {
-      loginPanel.classList.remove('hidden');
-      ordersPanel.classList.add('hidden');
-      topActions.classList.add('hidden');
-    }
+      $('loginPanel').classList.add('hidden');
+      $('ordersPanel').classList.remove('hidden');
+      $('chatPanel').classList.remove('hidden');
+      $('topActions').classList.remove('hidden');
 
-    $('loginForm').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      hideMessage('loginError');
-      $('loginBtn').disabled = true;
-      const { error } = await db.auth.signInWithPassword({
-        email: $('email').value.trim(),
-        password: $('password').value
-      });
-      $('loginBtn').disabled = false;
-      if (error) {
-        showError('loginError', 'ورود انجام نشد: ' + error.message);
-      } else {
-        $('password').value = '';
-        showDashboard();
-      }
-    });
+      await Promise.all([loadOrders(), loadChatInbox()]);
 
-    $('refreshBtn').addEventListener('click', loadOrders);
-    $('logoutBtn').addEventListener('click', async () => {
-      await db.auth.signOut();
+    } catch (error) {
       showLogin();
+      showError('loginError', 'خطا: ' + error.message);
+    } finally {
+      dashboardCheck = false;
+    }
+  }
+
+  // دریافت سفارش‌ها
+  async function loadOrders() {
+    hideMessage('ordersError');
+    $('countText').textContent = 'در حال دریافت سفارش‌ها…';
+
+    const { data, error } = await db.from('orders')
+      .select('id, customer_name, phone, site_type, description, status, created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      $('countText').textContent = 'دریافت سفارش‌ها ناموفق بود';
+      showError('ordersError', 'خطا در دریافت سفارش‌ها: ' + error.message);
+      return;
+    }
+
+    $('countText').textContent = `${data.length} سفارش`;
+
+    const body = $('ordersBody');
+    body.replaceChildren();
+
+    if (!data.length) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 6;
+      td.className = 'empty';
+      td.textContent = 'هنوز سفارشی ثبت نشده است.';
+      tr.appendChild(td);
+      body.appendChild(tr);
+      return;
+    }
+
+    for (const order of data) {
+      const tr = document.createElement('tr');
+
+      const values = [
+        order.customer_name,
+        order.phone,
+        order.site_type,
+        order.description || '—',
+        new Date(order.created_at).toLocaleString('fa-IR')
+      ];
+
+      for (const value of values) {
+        const td = document.createElement('td');
+        td.textContent = value ?? '—';
+        tr.appendChild(td);
+      }
+
+      const statusCell = document.createElement('td');
+      const select = document.createElement('select');
+
+      for (const [value, label] of Object.entries(statusLabels)) {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = label;
+        select.appendChild(option);
+      }
+
+      select.value = order.status;
+
+      select.addEventListener('change', async () => {
+        const newStatus = select.value;
+        select.disabled = true;
+
+        const { error: updateError } = await db.from('orders')
+          .update({ status: newStatus })
+          .eq('id', order.id);
+
+        select.disabled = false;
+
+        if (updateError) {
+          showError('ordersError', 'ذخیره وضعیت انجام نشد: ' + updateError.message);
+          select.value = order.status;
+        } else {
+          order.status = newStatus;
+          showSuccess('notice', 'وضعیت سفارش ذخیره شد.');
+          hideMessage('ordersError');
+        }
+      });
+
+      statusCell.appendChild(select);
+      tr.appendChild(statusCell);
+      body.appendChild(tr);
+    }
+  }
+
+  // دریافت تمام پیام‌ها
+  async function loadChatInbox() {
+    hideMessage('chatError');
+
+    const { data, error } = await db.from('chat_messages')
+      .select('id, user_id, message, is_admin, created_at')
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      showError('chatError', 'دریافت پیام‌ها ناموفق بود: ' + error.message);
+      return;
+    }
+
+    conversations = {};
+
+    for (const msg of data) {
+      if (!conversations[msg.user_id]) {
+        conversations[msg.user_id] = [];
+      }
+      conversations[msg.user_id].push(msg);
+    }
+
+    renderCustomerList();
+
+    if (
+      selectedCustomerId &&
+      conversations[selectedCustomerId]
+    ) {
+      renderConversation(selectedCustomerId);
+    } else {
+      selectedCustomerId = null;
+      $('conversationTitle').textContent = 'یک مشتری را انتخاب کن.';
+      $('messages').innerHTML =
+        '<div class="empty">یک مشتری را از فهرست انتخاب کن.</div>';
+      $('replyInput').disabled = true;
+      $('replyBtn').disabled = true;
+    }
+  }
+
+  // نمایش فهرست مشتری‌ها
+  function renderCustomerList() {
+    const list = $('customerList');
+    list.replaceChildren();
+
+    const ids = Object.keys(conversations);
+
+    if (!ids.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.textContent = 'هنوز پیامی دریافت نشده است.';
+      list.appendChild(empty);
+      return;
+    }
+
+    ids.sort((a, b) => {
+      const lastA = new Date(conversations[a].at(-1).created_at);
+      const lastB = new Date(conversations[b].at(-1).created_at);
+      return lastB - lastA;
     });
 
-    db.auth.getSession().then(({ data }) => {
-      if (data.session) showDashboard();
-      else showLogin();
+    for (const id of ids) {
+      const msgs = conversations[id];
+      const last = msgs[msgs.length - 1];
+
+      const button = document.createElement('button');
+      button.className = 'customer-item' +
+        (id === selectedCustomerId ? ' active' : '');
+
+      const title = document.createElement('strong');
+      title.textContent = 'مشتری';
+
+      const preview = document.createElement('small');
+      preview.textContent =
+        (last.is_admin ? 'پاسخ مدیر: ' : '') + last.message.slice(0, 55);
+
+      const count = document.createElement('small');
+      count.textContent = `${msgs.length} پیام`;
+
+      button.append(title, preview, count);
+
+      button.addEventListener('click', () => {
+        selectedCustomerId = id;
+        renderCustomerList();
+        renderConversation(id);
+      });
+
+      list.appendChild(button);
+    }
+  }
+
+  // نمایش گفت‌وگوی انتخاب‌شده
+  function renderConversation(customerId) {
+    const msgs = conversations[customerId] || [];
+
+    $('conversationTitle').textContent =
+      'گفت‌وگو با مشتری: ' + customerId;
+
+    const box = $('messages');
+    box.replaceChildren();
+
+    for (const msg of msgs) {
+      const item = document.createElement('div');
+      item.className = 'message ' + (msg.is_admin ? 'admin' : 'customer');
+
+      const sender = document.createElement('strong');
+      sender.textContent = msg.is_admin ? 'مدیر' : 'مشتری';
+
+      const content = document.createElement('div');
+      content.textContent = msg.message;
+
+      const time = document.createElement('small');
+      time.textContent =
+        new Date(msg.created_at).toLocaleString('fa-IR');
+
+      item.append(sender, content, time);
+      box.appendChild(item);
+    }
+
+    box.scrollTop = box.scrollHeight;
+    $('replyInput').disabled = false;
+    $('replyBtn').disabled = false;
+  }
+
+  // ارسال پاسخ مدیر
+  $('replyForm').addEventListener('submit', async event => {
+    event.preventDefault();
+
+    if (!selectedCustomerId) return;
+
+    const message = $('replyInput').value.trim();
+    if (!message) return;
+
+    $('replyBtn').disabled = true;
+    hideMessage('chatError');
+    hideMessage('chatNotice');
+
+    const { error } = await db.from('chat_messages').insert({
+      user_id: selectedCustomerId,
+      message: message,
+      is_admin: true
     });
-    db.auth.onAuthStateChange((_event, session) => {
-      if (session) showDashboard();
-      else showLogin();
+
+    $('replyBtn').disabled = false;
+
+    if (error) {
+      showError('chatError', 'ارسال پاسخ انجام نشد: ' + error.message);
+      return;
+    }
+
+    $('replyInput').value = '';
+    showSuccess('chatNotice', 'پاسخ با موفقیت ارسال شد.');
+    await loadChatInbox();
+  });
+
+  // ورود مدیر
+  $('loginForm').addEventListener('submit', async event => {
+    event.preventDefault();
+
+    hideMessage('loginError');
+    $('loginBtn').disabled = true;
+
+    const { error } = await db.auth.signInWithPassword({
+      email: $('email').value.trim(),
+      password: $('password').value
     });
-  </script>
+
+    $('loginBtn').disabled = false;
+
+    if (error) {
+      showError('loginError', 'ورود انجام نشد: ' + error.message);
+    } else {
+      $('password').value = '';
+      await showDashboard();
+    }
+  });
+
+  // بروزرسانی
+  $('refreshBtn').addEventListener('click', async () => {
+    await Promise.all([loadOrders(), loadChatInbox()]);
+  });
+
+  // خروج
+  $('logoutBtn').addEventListener('click', async () => {
+    await db.auth.signOut();
+    showLogin();
+  });
+
+  // بررسی نشست کاربر
+  db.auth.getSession().then(({ data }) => {
+    if (data.session) showDashboard();
+    else showLogin();
+  });
+
+  db.auth.onAuthStateChange((event, session) => {
+    if (session) {
+      showDashboard();
+    } else {
+      showLogin();
+    }
+  });
+</script>
 </body>
-</html>
+  </html>
