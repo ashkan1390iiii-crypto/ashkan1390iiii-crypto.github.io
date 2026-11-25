@@ -1714,8 +1714,9 @@ initializePage();
 
 })();
 async function loadManagedPortfolio(){
- const box=$("managedPortfolio"); if(!box)return;
- const {data,error}=await db.from("portfolio_projects").select("id,title,description,category,image_url,project_url").eq("is_published",true).order("sort_order").order("created_at",{ascending:false});
+ const publicDb=window.supabase.createClient("https://oczpjbwwogsydzkouxtj.supabase.co","sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0");
+ const box=document.getElementById("managedPortfolio"); if(!box)return;
+ const {data,error}=await publicDb.from("portfolio_projects").select("id,title,description,category,image_url,project_url").eq("is_published",true).order("sort_order").order("created_at",{ascending:false});
  if(error){console.warn("Portfolio load:",error.message);return;}
  box.replaceChildren();
  (data||[]).forEach(project=>{
@@ -1730,6 +1731,8 @@ async function loadManagedPortfolio(){
 loadManagedPortfolio();
 
 /* Public blog, consultation, privacy-conscious page counts */
+const publicDb=window.supabase.createClient("https://oczpjbwwogsydzkouxtj.supabase.co","sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0");
+const publicGet=id=>document.getElementById(id);
 (async()=>{
  const path=location.pathname||'/';
  try{await db.from('page_views').insert({page_path:path.slice(0,200)});}catch(e){console.debug('View counter unavailable');}
@@ -1742,7 +1745,7 @@ loadManagedPortfolio();
  }
  const form=$('consultationForm');
  if(form){
-  const {data}=await db.auth.getUser();const user=data?.user;
+  const {data}=await publicDb.auth.getUser();const user=data?.user;
   if(user){$('consultMessage').textContent='حساب شما متصل است.';const meta=user.user_metadata||{};$('consultName').value=meta.display_name||meta.full_name||'';}
   form.addEventListener('submit',async e=>{
    e.preventDefault();if(!user){$('consultMessage').textContent='برای رزرو مشاوره ابتدا وارد حساب شو.';return;}
