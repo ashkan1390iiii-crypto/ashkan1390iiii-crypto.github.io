@@ -277,7 +277,7 @@
             <th>نوع سایت</th>
             <th>توضیحات</th>
             <th>تاریخ ثبت</th>
-            <th>وضعیت</th><th>مبلغ</th><th>پرداخت</th>
+            <th>وضعیت</th><th>کد تخفیف</th><th>مبلغ</th><th>پرداخت</th>
           </tr>
         </thead>
         <tbody id="ordersBody">
@@ -626,7 +626,7 @@
       $('countText').textContent = 'در حال دریافت سفارش‌ها…';
 
       const { data, error } = await db.from('orders')
-        .select('id, customer_name, phone, site_type, description, status, created_at, amount, payment_status, user_id')
+        .select('id, customer_name, phone, site_type, description, status, created_at, amount, payment_status, user_id, discount_code, discount_percent')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -645,7 +645,7 @@
       if (!data.length) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.colSpan = 8;
+        td.colSpan = 9;
         td.className = 'empty';
         td.textContent = 'هنوز سفارشی ثبت نشده است.';
         tr.appendChild(td);
@@ -720,6 +720,10 @@
 
         statusCell.appendChild(select);
         tr.appendChild(statusCell);
+
+        const discountCell=document.createElement('td');
+        discountCell.textContent=order.discount_code?(order.discount_code+' · '+Number(order.discount_percent||0)+'٪'):'—';
+        tr.appendChild(discountCell);
 
         const amountCell = document.createElement('td');
         const amountInput = document.createElement('input');
