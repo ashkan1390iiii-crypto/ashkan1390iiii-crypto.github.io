@@ -1254,6 +1254,7 @@ $("year").textContent=new Date().getFullYear();
 
 /* Auth state */
 let currentUser=null;
+let selectedDiscountCode=null;
 
 async function refreshAuth(){
  const {data,error}=await db.auth.getUser();
@@ -1296,7 +1297,8 @@ $("orderForm").addEventListener("submit",async event=>{
   p_customer_name:$("customer").value.trim(),
   p_phone:$("phone").value.trim(),
   p_site_type:$("type").value,
-  p_description:$("description").value.trim() || ""
+  p_description:$("description").value.trim() || "",
+  p_discount_code:selectedDiscountCode
  };
 
  try{
@@ -1312,6 +1314,9 @@ $("orderForm").addEventListener("submit",async event=>{
 
   show(message,"سفارش ثبت شد. کد پیگیری شما: "+code+" — این کد را نگه دار.");
   addLocalNotice("سفارش جدید شما ثبت شد.");
+  selectedDiscountCode=null;
+  $("couponInput").value="";
+  $("couponResult").textContent="کد تخفیف سفارش قبلی ثبت شد. برای سفارش بعدی کد تازه بررسی کن.";
   $("orderForm").reset();
 
  }catch(error){
@@ -1627,10 +1632,20 @@ $("calculatePrice").addEventListener("click",()=>{
  const score=(type==="personal"?1:type==="company"?2:3)+pages+extras;
  $("priceEstimate").textContent="امتیاز پیچیدگی پروژه: "+score+" از ۹. این فقط برآورد سطح کار است و قیمت نهایی پس از بررسی اعلام می‌شود.";
 });
-$("couponForm").addEventListener("submit",e=>{
+$("couponForm").addEventListener("submit",async e=>{
  e.preventDefault();
  const code=$("couponInput").value.trim().toUpperCase();
- $("couponResult").textContent="کد «"+code+"» وارد شد؛ اعتبارسنجی و اعمال تخفیف واقعی پس از ساخت جدول کوپن در دیتابیس فعال می‌شود.";
+ selectedDiscountCode=null;
+ $("couponResult").textContent="در حال بررسی کد...";
+ try{
+  const {data,error}=await db.from("discount_codes").select("code,discount_percent,max_uses,used_count,expires_at").eq("code",code).eq("is_active",true).maybeSingle();
+  if(error)throw error;
+  if(!data||data.used_count>=data.max_uses||(data.expires_at&&new Date(data.expires_at)<=new Date())){
+   $("couponResult").textContent="این کد معتبر نیست، منقضی شده یا ظرفیت استفاده آن تمام شده است.";return;
+  }
+  selectedDiscountCode=data.code;
+  $("couponResult").textContent="کد معتبر است: "+data.discount_percent+"٪ تخفیف. هنگام ثبت سفارش به‌صورت امن ثبت و یک بار مصرف می‌شود؛ مبلغ نهایی را مدیر با توجه به تخفیف تأیید می‌کند.";
+ }catch(error){$("couponResult").textContent="بررسی کد انجام نشد: "+error.message;}
 });
 async function loadReviews(){
  const box=$("reviewList");
