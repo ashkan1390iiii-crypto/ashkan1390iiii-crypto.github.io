@@ -1735,25 +1735,25 @@ const publicDb=window.supabase.createClient("https://oczpjbwwogsydzkouxtj.supaba
 const publicGet=id=>document.getElementById(id);
 (async()=>{
  const path=location.pathname||'/';
- try{await db.from('page_views').insert({page_path:path.slice(0,200)});}catch(e){console.debug('View counter unavailable');}
- const blogBox=$('publicBlogPosts');
+ try{await publicDb.from('page_views').insert({page_path:path.slice(0,200)});}catch(e){console.debug('View counter unavailable');}
+ const blogBox=publicGet('publicBlogPosts');
  if(blogBox){
-  const {data,error}=await db.from('blog_posts').select('id,title,slug,excerpt,cover_url,published_at').eq('is_published',true).order('published_at',{ascending:false}).limit(9);
+  const {data,error}=await publicDb.from('blog_posts').select('id,title,slug,excerpt,cover_url,published_at').eq('is_published',true).order('published_at',{ascending:false}).limit(9);
   blogBox.replaceChildren();
   if(error||!data?.length){const p=document.createElement('p');p.className='muted';p.textContent='هنوز مقاله‌ای منتشر نشده است.';blogBox.append(p);}
   else data.forEach(post=>{const card=document.createElement('article');card.className='card';if(post.cover_url){const img=document.createElement('img');img.src=post.cover_url;img.alt=post.title;img.loading='lazy';img.style.cssText='width:100%;height:170px;object-fit:cover;border-radius:14px';card.append(img);}const h=document.createElement('h3');h.textContent=post.title;const p=document.createElement('p');p.textContent=post.excerpt||'';const a=document.createElement('a');a.className='card-link';a.href='blog.html?slug='+encodeURIComponent(post.slug);a.textContent='ادامه مقاله ←';card.append(h,p,a);blogBox.append(card);});
  }
- const form=$('consultationForm');
+ const form=publicGet('consultationForm');
  if(form){
   const {data}=await publicDb.auth.getUser();const user=data?.user;
-  if(user){$('consultMessage').textContent='حساب شما متصل است.';const meta=user.user_metadata||{};$('consultName').value=meta.display_name||meta.full_name||'';}
+  if(user){publicGet('consultMessage').textContent='حساب شما متصل است.';const meta=user.user_metadata||{};publicGet('consultName').value=meta.display_name||meta.full_name||'';}
   form.addEventListener('submit',async e=>{
-   e.preventDefault();if(!user){$('consultMessage').textContent='برای رزرو مشاوره ابتدا وارد حساب شو.';return;}
-   const requestedAt=new Date($('consultDate').value);
-   if(Number.isNaN(requestedAt.getTime())||requestedAt<=new Date()){$('consultMessage').textContent='زمان پیشنهادی باید در آینده باشد.';return;}
-   const btn=$('consultSubmit');btn.disabled=true;
-   const {error}=await db.from('consultation_bookings').insert({user_id:user.id,customer_name:$('consultName').value.trim(),contact:$('consultContact').value.trim(),requested_at:requestedAt.toISOString(),topic:$('consultTopic').value.trim()});
-   btn.disabled=false;$('consultMessage').textContent=error?'ثبت رزرو انجام نشد: '+error.message:'درخواست مشاوره ثبت شد؛ زمان نهایی پس از تأیید مدیر مشخص می‌شود.';
+   e.preventDefault();if(!user){publicGet('consultMessage').textContent='برای رزرو مشاوره ابتدا وارد حساب شو.';return;}
+   const requestedAt=new Date(publicGet('consultDate').value);
+   if(Number.isNaN(requestedAt.getTime())||requestedAt<=new Date()){publicGet('consultMessage').textContent='زمان پیشنهادی باید در آینده باشد.';return;}
+   const btn=publicGet('consultSubmit');btn.disabled=true;
+   const {error}=await publicDb.from('consultation_bookings').insert({user_id:user.id,customer_name:publicGet('consultName').value.trim(),contact:publicGet('consultContact').value.trim(),requested_at:requestedAt.toISOString(),topic:publicGet('consultTopic').value.trim()});
+   btn.disabled=false;publicGet('consultMessage').textContent=error?'ثبت رزرو انجام نشد: '+error.message:'درخواست مشاوره ثبت شد؛ زمان نهایی پس از تأیید مدیر مشخص می‌شود.';
    if(!error)form.reset();
   });
  }
