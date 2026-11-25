@@ -1314,7 +1314,7 @@ $("trackForm").addEventListener("submit",async event=>{
  const code=$("trackingCode").value.trim().toUpperCase();
 
  try{
-  const {data,error}=await db.rpc("track_order",{p_tracking_code:code});
+  const {data,error}=await db.rpc("track_order_details",{p_tracking_code:code});
 
   if(error) throw error;
 
@@ -1330,14 +1330,20 @@ $("trackForm").addEventListener("submit",async event=>{
    completed:"تکمیل شده"
   };
 
-  show(message,"وضعیت سفارش: "+(labels[data]||data));
+  const currentStatus=data.status;
+  show(message,"وضعیت سفارش: "+(labels[currentStatus]||currentStatus));
   const timeline=$("trackTimeline"); timeline.replaceChildren(); timeline.style.display="block";
   const stages=[["new","ثبت سفارش"],["reviewing","بررسی سفارش"],["in_progress","انجام پروژه"],["completed","تکمیل پروژه"]];
-  const current=stages.findIndex(s=>s[0]===data);
-  const heading=document.createElement("strong"); heading.textContent="مراحل سفارش"; timeline.append(heading);
+  const current=stages.findIndex(s=>s[0]===currentStatus);
+  const percent=current<0?0:(current+1)*25;
+  const heading=document.createElement("strong"); heading.textContent="مراحل سفارش · "+percent+"٪ پیشرفت"; timeline.append(heading);
+  const track=document.createElement("div"); track.style.cssText="height:9px;background:var(--surface2);border-radius:20px;overflow:hidden;margin:12px 0";
+  const fill=document.createElement("div"); fill.style.cssText="height:100%;width:"+percent+"%;background:var(--good);border-radius:20px;transition:width .3s"; track.append(fill); timeline.append(track);
   const list=document.createElement("div"); list.style.cssText="display:grid;gap:9px;margin-top:12px";
   stages.forEach((stage,index)=>{const row=document.createElement("div");row.style.cssText="display:flex;align-items:center;gap:10px;color:"+(index<=current?"var(--good)":"var(--muted)");const dot=document.createElement("span");dot.textContent=index<current?"✓":index===current?"●":"○";dot.style.fontSize="18px";const label=document.createElement("span");label.textContent=stage[1]+(index===current?" — مرحله فعلی":"");row.append(dot,label);list.append(row);});
   timeline.append(list);
+  const updated=document.createElement("p"); updated.className="muted-small"; updated.style.marginTop="12px";
+  updated.textContent="آخرین بروزرسانی ثبت‌شده: "+(data.updated_at?new Date(data.updated_at).toLocaleString("fa-IR"):"نامشخص"); timeline.append(updated);
 
  }catch(error){
   console.error("Tracking error:",error);
