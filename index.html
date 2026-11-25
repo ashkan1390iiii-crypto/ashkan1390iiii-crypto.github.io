@@ -1086,7 +1086,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 
 <!-- چت واقعی مشتری -->
 <div id="chatPanel" aria-label="پشتیبانی آنلاین">
- <strong>پشتیبانی وب‌ساز مرادی</strong>
+ <strong>پشتیبانی وب‌ساز مرادی <small id="chatSupportStatus" style="font-weight:400;color:var(--muted)">بررسی وضعیت...</small></strong>
  <div id="chatLoginNotice" class="chat-status">
   برای گفتگو ابتدا وارد حساب کاربری شو.
   <a class="chat-login-link" href="auth.html">ورود به حساب</a>
@@ -1423,9 +1423,18 @@ function startChatRefresh(){
 
  chatTimer=setInterval(()=>{
   if($("chatPanel").classList.contains("open") && currentUser){
-   loadChatMessages();
+   loadChatMessages();refreshSupportPresence();
   }
  },5000);
+}
+
+
+async function refreshSupportPresence(){
+ if(!currentUser)return;
+ await db.from('support_presence').upsert({user_id:currentUser.id,role:'customer',is_online:true,last_seen:new Date().toISOString()});
+ const {data}=await db.from('support_presence').select('is_online,last_seen').eq('role','admin').order('last_seen',{ascending:false}).limit(1).maybeSingle();
+ const online=!!data?.is_online && Date.now()-new Date(data.last_seen).getTime()<90000;
+ const el=$('chatSupportStatus');if(el)el.textContent=online?'· آنلاین':'· آفلاین';
 }
 
 async function loadChatMessages(){
@@ -1525,6 +1534,7 @@ $("chatLauncher").addEventListener("click",async()=>{
 
  if(isOpen){
   if(currentUser){
+   await refreshSupportPresence();
    await loadChatMessages();
   }else{
    updateChatAccess();
