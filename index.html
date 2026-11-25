@@ -1316,7 +1316,7 @@ $("trackForm").addEventListener("submit",async event=>{
  const code=$("trackingCode").value.trim().toUpperCase();
 
  try{
-  const {data,error}=await db.rpc("track_order_details",{p_tracking_code:code});
+  const {data,error}=await db.rpc("track_order",{p_tracking_code:code});
 
   if(error) throw error;
 
