@@ -131,6 +131,11 @@
         <button class="secondary section-nav" data-target="financePanel" type="button">گزارش مالی</button>
         <button class="secondary section-nav" data-target="customersPanel" type="button">مشتریان</button>
         <button class="secondary section-nav" data-target="portfolioPanel" type="button">نمونه‌کارها</button>
+        <button class="secondary section-nav" data-target="bookingsPanel" type="button">رزرو مشاوره</button>
+        <button class="secondary section-nav" data-target="blogPanel" type="button">وبلاگ</button>
+        <button class="secondary section-nav" data-target="analyticsPanel" type="button">آمار بازدید</button>
+        <button class="secondary section-nav" data-target="auditPanel" type="button">تاریخچه مدیر</button>
+        <button class="secondary section-nav" data-target="paymentPanel" type="button">پرداخت آنلاین</button>
       </div>
       <div>
         <h2 style="margin:0 0 5px">نمای کلی مدیریت</h2>
@@ -193,7 +198,49 @@
   </section>
 
 
-    <section class="panel hidden" id="ordersPanel">
+  
+  <section class="panel hidden" id="bookingsPanel">
+    <h2>رزروهای مشاوره</h2><div class="muted">درخواست‌های ثبت‌شده مشتریان و مدیریت وضعیت آن‌ها.</div>
+    <div class="table-wrap"><table><thead><tr><th>مشتری</th><th>تماس</th><th>زمان پیشنهادی</th><th>موضوع</th><th>وضعیت</th><th>یادداشت مدیر</th><th>ذخیره</th></tr></thead><tbody id="bookingsBody"></tbody></table></div>
+    <div class="error" id="bookingsError"></div>
+  </section>
+  <section class="panel hidden" id="blogPanel">
+    <h2>مدیریت وبلاگ</h2><div class="muted">مقاله‌ها را بنویس و برای نمایش عمومی منتشر کن.</div>
+    <form id="blogForm" style="display:grid;gap:9px;margin-top:14px">
+      <input id="blogTitle" placeholder="عنوان مقاله" required maxlength="180">
+      <input id="blogSlug" placeholder="آدرس انگلیسی؛ مثل website-design" required pattern="[a-z0-9-]+">
+      <input id="blogCover" type="url" placeholder="لینک تصویر HTTPS (اختیاری)">
+      <textarea id="blogExcerpt" placeholder="خلاصه مقاله" rows="2"></textarea>
+      <textarea id="blogBody" placeholder="متن مقاله" rows="7" required></textarea>
+      <label><input id="blogPublished" type="checkbox" style="width:auto"> انتشار عمومی</label>
+      <div class="actions"><button type="submit" id="blogSave">ثبت مقاله</button><button class="secondary" type="button" id="blogReset">پاک‌کردن فرم</button></div>
+    </form>
+    <div class="error" id="blogError"></div><div class="success" id="blogNotice"></div>
+    <div class="table-wrap"><table><thead><tr><th>عنوان</th><th>وضعیت</th><th>مدیریت</th></tr></thead><tbody id="blogBodyRows"></tbody></table></div>
+  </section>
+  <section class="panel hidden" id="analyticsPanel">
+    <h2>آمار بازدید سایت</h2><div class="muted">آمار از زمان فعال‌شدن این قابلیت جمع‌آوری می‌شود؛ بازدیدهای قدیمی در دسترس نیستند.</div>
+    <div class="dashboard-grid">
+      <div class="stat-card"><div class="stat-label">کل بازدیدهای ثبت‌شده</div><div class="stat-value" id="viewsTotal">—</div></div>
+      <div class="stat-card"><div class="stat-label">بازدید امروز</div><div class="stat-value" id="viewsToday">—</div></div>
+      <div class="stat-card"><div class="stat-label">صفحات ثبت‌شده</div><div class="stat-value" id="viewsPages">—</div></div>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>صفحه</th><th>تعداد بازدید</th></tr></thead><tbody id="viewsBody"></tbody></table></div>
+    <div class="error" id="analyticsError"></div>
+  </section>
+  <section class="panel hidden" id="auditPanel">
+    <h2>تاریخچه فعالیت مدیر</h2><div class="muted">تغییرات سفارش‌ها شامل وضعیت، مبلغ و وضعیت پرداخت ثبت می‌شوند.</div>
+    <div class="table-wrap"><table><thead><tr><th>زمان</th><th>نوع</th><th>شناسه</th><th>عملیات</th><th>جزئیات</th></tr></thead><tbody id="auditBody"></tbody></table></div>
+    <div class="error" id="auditError"></div>
+  </section>
+  <section class="panel hidden" id="paymentPanel">
+    <h2>اتصال درگاه پرداخت</h2>
+    <p class="muted" style="line-height:2">این سایت روی GitHub Pages میزبانی می‌شود و کلید محرمانه درگاه نباید داخل HTML قرار بگیرد. برای دریافت وجه واقعی، باید یک ارائه‌دهنده پرداخت سازگار با کشور و حساب پذیرنده انتخاب شود و درخواست پرداخت از سمت سرور امن انجام شود.</p>
+    <div class="stat-card"><strong>وضعیت فعلی: آماده‌سازی، بدون دریافت وجه واقعی</strong><p class="muted">مدیریت دستی مبلغ و وضعیت پرداخت سفارش‌ها همچنان فعال است. پس از انتخاب درگاه، اتصال امن سمت سرور اضافه می‌شود.</p></div>
+    <p style="margin-top:14px">هیچ پرداخت آزمایشی به‌عنوان پرداخت واقعی ثبت نمی‌شود.</p>
+  </section>
+
+  <section class="panel hidden" id="ordersPanel">
     <div>
       <h2 style="margin:0 0 5px">سفارش‌ها</h2>
       <div class="muted" id="countText">در حال دریافت سفارش‌ها…</div>
@@ -483,6 +530,11 @@
     $('financePanel').classList.add('hidden');
     $('customersPanel').classList.add('hidden');
     $('portfolioPanel').classList.add('hidden');
+    $('bookingsPanel').classList.add('hidden');
+    $('blogPanel').classList.add('hidden');
+    $('analyticsPanel').classList.add('hidden');
+    $('auditPanel').classList.add('hidden');
+    $('paymentPanel').classList.add('hidden');
     $('ticketsPanel').classList.add('hidden');
     $('chatPanel').classList.add('hidden');
     $('topActions').classList.add('hidden');
@@ -1104,6 +1156,10 @@
     $(id).scrollIntoView({behavior:'smooth',block:'start'});
     if(id==='customersPanel') renderCustomers();
     if(id==='portfolioPanel') loadPortfolio();
+    if(id==='bookingsPanel') loadBookings();
+    if(id==='blogPanel') loadBlogPosts();
+    if(id==='analyticsPanel') loadAnalytics();
+    if(id==='auditPanel') loadAuditLogs();
   }
   document.querySelectorAll('.section-nav').forEach(btn=>btn.addEventListener('click',()=>showAdminSection(btn.dataset.target)));
 
@@ -1171,6 +1227,63 @@
     if(result.error){showError('portfolioError','ذخیره نمونه‌کار ناموفق بود: '+result.error.message);return;}
     showSuccess('portfolioNotice','نمونه‌کار ذخیره شد.');resetPortfolioForm();await loadPortfolio();
   });
+
+
+  async function loadBookings(){
+    const {data,error}=await db.from('consultation_bookings').select('*').order('created_at',{ascending:false}).limit(100);
+    if(error){showError('bookingsError',error.message);return;}
+    const body=$('bookingsBody');body.replaceChildren();
+    (data||[]).forEach(b=>{
+      const tr=document.createElement('tr');
+      const values=[b.customer_name,b.contact,new Date(b.requested_at).toLocaleString('fa-IR'),b.topic||''];
+      values.forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.append(td);});
+      const statusTd=document.createElement('td'),sel=document.createElement('select');
+      [['pending','در انتظار'],['confirmed','تأییدشده'],['completed','انجام‌شده'],['cancelled','لغوشده']].forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;sel.append(o);});
+      sel.value=b.status;statusTd.append(sel);tr.append(statusTd);
+      const noteTd=document.createElement('td'),note=document.createElement('input');note.value=b.admin_note||'';note.placeholder='یادداشت داخلی';noteTd.append(note);tr.append(noteTd);
+      const actionTd=document.createElement('td'),save=document.createElement('button');save.textContent='ذخیره';save.addEventListener('click',async()=>{save.disabled=true;const {error}=await db.from('consultation_bookings').update({status:sel.value,admin_note:note.value,updated_at:new Date().toISOString()}).eq('id',b.id);save.disabled=false;if(error)showError('bookingsError',error.message);else showSuccess('bookingsError','رزرو بروزرسانی شد.');});actionTd.append(save);tr.append(actionTd);body.append(tr);
+    });
+  }
+  let editingBlogId=null;
+  function resetBlog(){editingBlogId=null;$('blogForm').reset();$('blogSave').textContent='ثبت مقاله';}
+  $('blogReset').addEventListener('click',resetBlog);
+  async function loadBlogPosts(){
+    const {data,error}=await db.from('blog_posts').select('*').order('created_at',{ascending:false});
+    if(error){showError('blogError',error.message);return;}
+    const body=$('blogBodyRows');body.replaceChildren();
+    (data||[]).forEach(post=>{
+      const tr=document.createElement('tr');
+      [post.title,post.is_published?'منتشرشده':'پیش‌نویس'].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.append(td);});
+      const td=document.createElement('td'),edit=document.createElement('button');edit.className='secondary';edit.textContent='ویرایش';
+      edit.addEventListener('click',()=>{editingBlogId=post.id;$('blogTitle').value=post.title;$('blogSlug').value=post.slug;$('blogCover').value=post.cover_url||'';$('blogExcerpt').value=post.excerpt||'';$('blogBody').value=post.body||'';$('blogPublished').checked=post.is_published;$('blogSave').textContent='ذخیره تغییرات';$('blogForm').scrollIntoView({behavior:'smooth'});});
+      const del=document.createElement('button');del.className='secondary';del.style.marginRight='6px';del.textContent='حذف';del.addEventListener('click',async()=>{if(!confirm('مقاله حذف شود؟'))return;const {error}=await db.from('blog_posts').delete().eq('id',post.id);if(error)showError('blogError',error.message);else loadBlogPosts();});
+      td.append(edit,del);tr.append(td);body.append(tr);
+    });
+  }
+  $('blogForm').addEventListener('submit',async e=>{
+    e.preventDefault();const payload={title:$('blogTitle').value.trim(),slug:$('blogSlug').value.trim(),cover_url:$('blogCover').value.trim(),excerpt:$('blogExcerpt').value.trim(),body:$('blogBody').value.trim(),is_published:$('blogPublished').checked,updated_at:new Date().toISOString(),published_at:$('blogPublished').checked?new Date().toISOString():null};
+    if(payload.cover_url&&!payload.cover_url.startsWith('https://')){showError('blogError','لینک تصویر باید HTTPS باشد.');return;}
+    const result=editingBlogId?await db.from('blog_posts').update(payload).eq('id',editingBlogId):await db.from('blog_posts').insert(payload);
+    if(result.error){showError('blogError',result.error.message);return;}
+    showSuccess('blogNotice','مقاله ذخیره شد.');resetBlog();loadBlogPosts();
+  });
+  async function loadAnalytics(){
+    const {data,error}=await db.from('page_views').select('page_path,created_at').order('created_at',{ascending:false}).limit(5000);
+    if(error){showError('analyticsError',error.message);return;}
+    const today=new Date();today.setHours(0,0,0,0);
+    $('viewsTotal').textContent=(data||[]).length;
+    $('viewsToday').textContent=(data||[]).filter(x=>new Date(x.created_at)>=today).length;
+    const counts={};(data||[]).forEach(x=>counts[x.page_path]=(counts[x.page_path]||0)+1);
+    $('viewsPages').textContent=Object.keys(counts).length;
+    const body=$('viewsBody');body.replaceChildren();
+    Object.entries(counts).sort((a,b)=>b[1]-a[1]).forEach(([path,count])=>{const tr=document.createElement('tr');const a=document.createElement('td');a.textContent=path;const b=document.createElement('td');b.textContent=count;tr.append(a,b);body.append(tr);});
+  }
+  async function loadAuditLogs(){
+    const {data,error}=await db.from('admin_activity_logs').select('*').order('created_at',{ascending:false}).limit(100);
+    if(error){showError('auditError',error.message);return;}
+    const body=$('auditBody');body.replaceChildren();
+    (data||[]).forEach(log=>{const tr=document.createElement('tr');[new Date(log.created_at).toLocaleString('fa-IR'),log.entity_type,log.entity_id,log.action,JSON.stringify(log.details)].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.append(td);});body.append(tr);});
+  }
 
   // بررسی نشست کاربر
   db.auth.getSession().then(({ data }) => {
