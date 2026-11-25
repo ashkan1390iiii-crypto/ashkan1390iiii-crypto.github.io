@@ -126,7 +126,12 @@
 
 
   <section class="panel hidden" id="dashboardPanel">
-    <div class="actions" style="justify-content:space-between">
+    <div class="actions" style="justify-content:space-between;flex-wrap:wrap">
+      <div class="actions">
+        <button class="secondary section-nav" data-target="financePanel" type="button">گزارش مالی</button>
+        <button class="secondary section-nav" data-target="customersPanel" type="button">مشتریان</button>
+        <button class="secondary section-nav" data-target="portfolioPanel" type="button">نمونه‌کارها</button>
+      </div>
       <div>
         <h2 style="margin:0 0 5px">نمای کلی مدیریت</h2>
         <div class="muted">خلاصه وضعیت سفارش‌ها و پشتیبانی</div>
@@ -138,6 +143,7 @@
       <div class="stat-card"><div class="stat-label">سفارش‌های جدید</div><div class="stat-value" id="statNewOrders">—</div><div class="stat-foot">در انتظار بررسی</div></div>
       <div class="stat-card"><div class="stat-label">سفارش‌های تکمیل‌شده</div><div class="stat-value" id="statCompleted">—</div><div class="stat-foot">به پایان رسیده</div></div>
       <div class="stat-card"><div class="stat-label">تیکت‌های باز</div><div class="stat-value" id="statOpenTickets">—</div><div class="stat-foot">نیازمند پیگیری</div></div>
+      <div class="stat-card"><div class="stat-label">مجموع مبالغ پرداخت‌شده</div><div class="stat-value" id="statRevenue">۰</div><div class="stat-foot">بر اساس پرداخت‌های ثبت‌شده</div></div>
     </div>
     <div class="dashboard-bottom">
       <div class="mini-panel">
@@ -151,7 +157,43 @@
     </div>
   </section>
 
-  <section class="panel hidden" id="ordersPanel">
+
+  <section class="panel hidden" id="financePanel">
+    <h2 style="margin:0 0 5px">گزارش مالی</h2>
+    <div class="muted">مبالغ ثبت‌شده سفارش‌ها؛ درآمد فقط از پرداخت‌های تأییدشده محاسبه می‌شود.</div>
+    <div class="dashboard-grid">
+      <div class="stat-card"><div class="stat-label">درآمد دریافت‌شده</div><div class="stat-value" id="financePaid">۰</div><div class="stat-foot">واحد پول را هنگام ثبت مبلغ یکسان نگه دار</div></div>
+      <div class="stat-card"><div class="stat-label">مبلغ در انتظار پرداخت</div><div class="stat-value" id="financePending">۰</div><div class="stat-foot">سفارش‌های پرداخت‌نشده</div></div>
+      <div class="stat-card"><div class="stat-label">مجموع مبالغ سفارش‌ها</div><div class="stat-value" id="financeTotal">۰</div><div class="stat-foot">همه سفارش‌ها</div></div>
+      <div class="stat-card"><div class="stat-label">تعداد پرداخت‌شده</div><div class="stat-value" id="financePaidCount">۰</div><div class="stat-foot">سفارش‌های تسویه‌شده</div></div>
+    </div>
+  </section>
+
+  <section class="panel hidden" id="customersPanel">
+    <h2 style="margin:0 0 5px">مدیریت مشتریان</h2>
+    <div class="muted">فهرست تجمیعی بر اساس سفارش‌ها و تیکت‌ها؛ اطلاعات تماس فقط برای مدیر نمایش داده می‌شود.</div>
+    <div class="table-tools"><input id="customerSearch" type="search" placeholder="جست‌وجوی مشتری…"></div>
+    <div class="table-wrap"><table><thead><tr><th>نام</th><th>شماره تماس</th><th>تعداد سفارش</th><th>تعداد تیکت</th><th>آخرین فعالیت</th></tr></thead><tbody id="customersBody"></tbody></table></div>
+  </section>
+
+  <section class="panel hidden" id="portfolioPanel">
+    <h2 style="margin:0 0 5px">مدیریت نمونه‌کارها</h2>
+    <div class="muted">نمونه‌کارهای منتشرشده برای نمایش عمومی آماده‌اند. لینک تصویر باید یک نشانی HTTPS معتبر باشد.</div>
+    <form id="portfolioForm" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px">
+      <input id="portfolioTitle" placeholder="عنوان پروژه" required maxlength="120">
+      <input id="portfolioCategory" placeholder="دسته‌بندی (مثلاً فروشگاهی)">
+      <input id="portfolioImage" type="url" placeholder="لینک تصویر (اختیاری)">
+      <input id="portfolioUrl" type="url" placeholder="لینک سایت پروژه (اختیاری)">
+      <textarea id="portfolioDescription" placeholder="توضیحات پروژه" style="grid-column:1/-1"></textarea>
+      <label style="display:flex;align-items:center;gap:8px"><input id="portfolioPublished" type="checkbox" style="width:auto"> انتشار عمومی</label>
+      <div class="actions"><button id="portfolioSave" type="submit">افزودن نمونه‌کار</button><button id="portfolioCancel" class="secondary" type="button">پاک‌کردن فرم</button></div>
+    </form>
+    <div class="error" id="portfolioError"></div><div class="success" id="portfolioNotice"></div>
+    <div class="table-wrap"><table><thead><tr><th>عنوان</th><th>دسته‌بندی</th><th>وضعیت انتشار</th><th>مدیریت</th></tr></thead><tbody id="portfolioBody"></tbody></table></div>
+  </section>
+
+
+    <section class="panel hidden" id="ordersPanel">
     <div>
       <h2 style="margin:0 0 5px">سفارش‌ها</h2>
       <div class="muted" id="countText">در حال دریافت سفارش‌ها…</div>
@@ -173,7 +215,7 @@
             <th>نوع سایت</th>
             <th>توضیحات</th>
             <th>تاریخ ثبت</th>
-            <th>وضعیت</th>
+            <th>وضعیت</th><th>مبلغ</th><th>پرداخت</th>
           </tr>
         </thead>
         <tbody id="ordersBody">
@@ -313,6 +355,15 @@
     $('statNewOrders').textContent = count('new');
     $('statCompleted').textContent = count('completed');
     $('statOpenTickets').textContent = tickets.filter(item => item.status !== 'closed').length;
+    const paid = orders.filter(item => item.payment_status === 'paid').reduce((s,item)=>s+Number(item.amount||0),0);
+    const pending = orders.filter(item => (item.payment_status||'pending') === 'pending').reduce((s,item)=>s+Number(item.amount||0),0);
+    const total = orders.reduce((s,item)=>s+Number(item.amount||0),0);
+    const money = n => new Intl.NumberFormat('fa-IR',{maximumFractionDigits:2}).format(n);
+    if($('statRevenue')) $('statRevenue').textContent = money(paid);
+    if($('financePaid')) $('financePaid').textContent = money(paid);
+    if($('financePending')) $('financePending').textContent = money(pending);
+    if($('financeTotal')) $('financeTotal').textContent = money(total);
+    if($('financePaidCount')) $('financePaidCount').textContent = money(orders.filter(item=>item.payment_status==='paid').length);
 
     const chart = $('orderStatusChart');
     chart.replaceChildren();
@@ -429,6 +480,9 @@
     $('loginPanel').classList.remove('hidden');
     $('dashboardPanel').classList.add('hidden');
     $('ordersPanel').classList.add('hidden');
+    $('financePanel').classList.add('hidden');
+    $('customersPanel').classList.add('hidden');
+    $('portfolioPanel').classList.add('hidden');
     $('ticketsPanel').classList.add('hidden');
     $('chatPanel').classList.add('hidden');
     $('topActions').classList.add('hidden');
@@ -471,6 +525,9 @@
       $('loginPanel').classList.add('hidden');
       $('dashboardPanel').classList.remove('hidden');
       $('ordersPanel').classList.remove('hidden');
+      $('financePanel').classList.remove('hidden');
+      $('customersPanel').classList.remove('hidden');
+      $('portfolioPanel').classList.remove('hidden');
       $('ticketsPanel').classList.remove('hidden');
       $('chatPanel').classList.remove('hidden');
       $('topActions').classList.remove('hidden');
@@ -497,7 +554,7 @@
       $('countText').textContent = 'در حال دریافت سفارش‌ها…';
 
       const { data, error } = await db.from('orders')
-        .select('id, customer_name, phone, site_type, description, status, created_at')
+        .select('id, customer_name, phone, site_type, description, status, created_at, amount, payment_status, user_id')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -575,6 +632,43 @@
 
         statusCell.appendChild(select);
         tr.appendChild(statusCell);
+
+        const amountCell = document.createElement('td');
+        const amountInput = document.createElement('input');
+        amountInput.type = 'number'; amountInput.min = '0'; amountInput.step = '0.01';
+        amountInput.value = Number(order.amount || 0); amountInput.style.minWidth = '110px';
+        amountInput.setAttribute('aria-label','مبلغ سفارش');
+        amountInput.addEventListener('change', async () => {
+          const amount = Number(amountInput.value);
+          if (!Number.isFinite(amount) || amount < 0) { amountInput.value = Number(order.amount || 0); return; }
+          amountInput.disabled = true;
+          const {error} = await db.from('orders').update({amount,updated_at:new Date().toISOString()}).eq('id',order.id);
+          amountInput.disabled = false;
+          if(error){showError('ordersError','ذخیره مبلغ ناموفق بود: '+error.message);amountInput.value=Number(order.amount||0);}
+          else {order.amount=amount;updateDashboardStats();showSuccess('notice','مبلغ سفارش ذخیره شد.');}
+        });
+        amountCell.appendChild(amountInput); tr.appendChild(amountCell);
+
+        const paymentCell = document.createElement('td');
+        const paymentSelect = document.createElement('select');
+        for (const [v,l] of [['pending','در انتظار پرداخت'],['paid','پرداخت‌شده'],['refunded','بازپرداخت‌شده']]) {
+          const o=document.createElement('option');o.value=v;o.textContent=l;paymentSelect.appendChild(o);
+        }
+        paymentSelect.value = order.payment_status || 'pending';
+        paymentSelect.addEventListener('change', async () => {
+          const payment_status=paymentSelect.value;paymentSelect.disabled=true;
+          const {error}=await db.from('orders').update({payment_status,updated_at:new Date().toISOString()}).eq('id',order.id);
+          paymentSelect.disabled=false;
+          if(error){showError('ordersError','ذخیره وضعیت پرداخت ناموفق بود: '+error.message);paymentSelect.value=order.payment_status||'pending';}
+          else {
+            order.payment_status=payment_status;updateDashboardStats();
+            if(order.user_id && payment_status==='paid') {
+              await db.from('notifications').insert({user_id:order.user_id,title:'پرداخت سفارش تأیید شد',message:'پرداخت سفارش شما با موفقیت ثبت شد.'});
+            }
+            showSuccess('notice','وضعیت پرداخت ذخیره شد.');
+          }
+        });
+        paymentCell.appendChild(paymentSelect);tr.appendChild(paymentCell);
         body.appendChild(tr);
       }
     } finally {
@@ -985,6 +1079,81 @@
     stopChatPolling();
     await db.auth.signOut();
     showLogin();
+  });
+
+
+  let editingPortfolioId = null;
+  function showAdminSection(id) {
+    for (const section of ['financePanel','customersPanel','portfolioPanel']) $(section).classList.toggle('hidden', section !== id);
+    $(id).scrollIntoView({behavior:'smooth',block:'start'});
+    if(id==='customersPanel') renderCustomers();
+    if(id==='portfolioPanel') loadPortfolio();
+  }
+  document.querySelectorAll('.section-nav').forEach(btn=>btn.addEventListener('click',()=>showAdminSection(btn.dataset.target)));
+
+  function renderCustomers() {
+    const map = new Map();
+    const add = (name,phone,kind,date) => {
+      const key = (phone||name||'نامشخص').trim().toLocaleLowerCase();
+      if(!map.has(key)) map.set(key,{name:name||'—',phone:phone||'—',orders:0,tickets:0,last:''});
+      const item=map.get(key); if(kind==='order')item.orders++;else item.tickets++;
+      if(date && (!item.last || new Date(date)>new Date(item.last))) item.last=date;
+    };
+    cachedOrders.forEach(x=>add(x.customer_name,x.phone,'order',x.created_at));
+    cachedTickets.forEach(x=>add(x.customer_name,x.phone,'ticket',x.created_at));
+    const body=$('customersBody');body.replaceChildren();
+    for(const item of [...map.values()].sort((a,b)=>b.orders-a.orders)){
+      const tr=document.createElement('tr');
+      [item.name,item.phone,item.orders,item.tickets,item.last?new Date(item.last).toLocaleString('fa-IR'):'—'].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.append(td);});
+      body.append(tr);
+    }
+    applyTableSearch('customerSearch','customersBody');
+  }
+  $('customerSearch').addEventListener('input',()=>applyTableSearch('customerSearch','customersBody'));
+
+  function resetPortfolioForm(){
+    editingPortfolioId=null;$('portfolioForm').reset();$('portfolioSave').textContent='افزودن نمونه‌کار';
+  }
+  $('portfolioCancel').addEventListener('click',resetPortfolioForm);
+  async function loadPortfolio(){
+    const {data,error}=await db.from('portfolio_projects').select('*').order('sort_order').order('created_at',{ascending:false});
+    if(error){showError('portfolioError','دریافت نمونه‌کارها ناموفق بود: '+error.message);return;}
+    const body=$('portfolioBody');body.replaceChildren();
+    for(const p of data||[]){
+      const tr=document.createElement('tr');
+      for(const v of [p.title,p.category,p.is_published?'منتشرشده':'پیش‌نویس']){
+        const td=document.createElement('td');td.textContent=v||'—';tr.append(td);
+      }
+      const td=document.createElement('td');
+      const edit=document.createElement('button');edit.type='button';edit.className='secondary';edit.textContent='ویرایش';
+      edit.addEventListener('click',()=>{
+        editingPortfolioId=p.id;$('portfolioTitle').value=p.title;$('portfolioCategory').value=p.category||'';
+        $('portfolioImage').value=p.image_url||'';$('portfolioUrl').value=p.project_url||'';
+        $('portfolioDescription').value=p.description||'';$('portfolioPublished').checked=p.is_published;
+        $('portfolioSave').textContent='ذخیره تغییرات';$('portfolioForm').scrollIntoView({behavior:'smooth'});
+      });
+      const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='حذف';del.style.marginRight='6px';
+      del.addEventListener('click',async()=>{
+        if(!confirm('این نمونه‌کار حذف شود؟'))return;
+        const {error}=await db.from('portfolio_projects').delete().eq('id',p.id);
+        if(error)showError('portfolioError','حذف ناموفق بود: '+error.message);else loadPortfolio();
+      });
+      td.append(edit,del);tr.append(td);body.append(tr);
+    }
+  }
+  $('portfolioForm').addEventListener('submit',async e=>{
+    e.preventDefault();hideMessage('portfolioError');hideMessage('portfolioNotice');
+    const payload={title:$('portfolioTitle').value.trim(),category:$('portfolioCategory').value.trim()||'سایر',
+      image_url:$('portfolioImage').value.trim(),project_url:$('portfolioUrl').value.trim(),
+      description:$('portfolioDescription').value.trim(),is_published:$('portfolioPublished').checked,updated_at:new Date().toISOString()};
+    if((payload.image_url && !payload.image_url.startsWith('https://'))||(payload.project_url && !payload.project_url.startsWith('https://'))){
+      showError('portfolioError','لینک‌ها باید با https:// شروع شوند.');return;
+    }
+    const result=editingPortfolioId
+      ? await db.from('portfolio_projects').update(payload).eq('id',editingPortfolioId)
+      : await db.from('portfolio_projects').insert(payload);
+    if(result.error){showError('portfolioError','ذخیره نمونه‌کار ناموفق بود: '+result.error.message);return;}
+    showSuccess('portfolioNotice','نمونه‌کار ذخیره شد.');resetPortfolioForm();await loadPortfolio();
   });
 
   // بررسی نشست کاربر
