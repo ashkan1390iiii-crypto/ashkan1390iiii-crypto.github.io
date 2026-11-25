@@ -1,98 +1,178 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>پنل مشتری | وب‌ساز مرادی</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<title>پروفایل مشتری | وب‌ساز مرادی</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}
-body{
- margin:0;background:#07111f;color:white;
- font-family:tahoma,Arial;padding:20px;
-}
-.container{max-width:850px;margin:40px auto}
-.header{
- background:#102238;padding:25px;border-radius:18px;
- border:1px solid #263d55;
-}
-h1{color:#42d9ff}
-.card{
- background:#102238;padding:22px;border-radius:16px;
- margin-top:18px;border:1px solid #263d55;
-}
-.info{color:#42d9ff;word-break:break-all}
-button{
- border:0;border-radius:10px;padding:13px 20px;
- background:#12bde8;color:#07111f;
- font-weight:bold;cursor:pointer;margin-top:15px;
-}
-a{color:#42d9ff}
-#status{color:#a9bbce;line-height:2}
+:root{--bg:#07111f;--panel:#10233a;--panel2:#17314d;--line:rgba(148,190,225,.2);--text:#f4f8ff;--muted:#a7b8cc;--accent:#5ee7f5;--good:#63e6a6;--bad:#ff8795}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 85% 0,#173653 0,transparent 35rem),var(--bg);color:var(--text);font-family:Vazirmatn,Tahoma,sans-serif}
+.wrap{width:min(950px,92%);margin:28px auto 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.brand{font-size:18px;font-weight:900}.links{display:flex;gap:8px;flex-wrap:wrap}
+a,.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 15px;border:1px solid transparent;border-radius:11px;background:var(--accent);color:#07111f;text-decoration:none;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.ghost{background:transparent;color:var(--text);border-color:var(--line)}button:disabled{opacity:.55;cursor:wait}
+.hero,.card{background:rgba(16,35,58,.94);border:1px solid var(--line);border-radius:19px;padding:21px;margin:14px 0}
+.hero{display:flex;align-items:center;gap:18px}.avatar{width:92px;height:92px;flex:0 0 92px;border-radius:50%;object-fit:cover;background:var(--panel2);border:2px solid var(--accent)}
+h1{font-size:25px;margin:0 0 5px}h2{font-size:19px;margin:0 0 14px}h3{font-size:15px;margin:0 0 8px}
+.muted{color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;margin:10px 0 6px;font-size:13px}input,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#071827;color:var(--text);font:inherit}
+input[type=file]{padding:9px}textarea{min-height:85px;resize:vertical}
+.field{min-width:0}.full{grid-column:1/-1}.status{margin-top:12px;color:var(--good);font-size:13px;white-space:pre-wrap}.status.error{color:var(--bad)}
+.item{padding:14px;margin:10px 0;background:#0b1c2e;border:1px solid var(--line);border-radius:13px}
+.item p{margin:6px 0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.9}
+.pill{display:inline-block;padding:4px 9px;border-radius:30px;background:#173d50;color:var(--accent);font-size:11px}
+.reply{padding:10px;margin:7px 0;border-radius:10px;background:#17314d;font-size:12px;white-space:pre-wrap}
+.reply.admin{border-right:3px solid var(--accent)}.reply.customer{border-right:3px solid var(--good)}
+.empty{text-align:center;padding:22px;color:var(--muted);font-size:13px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+@media(max-width:620px){.wrap{margin-top:16px}.hero{align-items:flex-start}.avatar{width:72px;height:72px;flex-basis:72px}.grid{grid-template-columns:1fr}.full{grid-column:auto}h1{font-size:20px}}
 </style>
 </head>
 <body>
-<div class="container">
+<main class="wrap">
+ <div class="top">
+  <div class="brand">👤 وب‌ساز مرادی | پروفایل مشتری</div>
+  <div class="links"><a class="ghost" href="index.html">صفحه اصلی</a><a class="ghost" href="tickets.html">صفحه تیکت‌ها</a></div>
+ </div>
 
-<div class="header">
-<h1>پنل مشتریان</h1>
-<p>به وب‌ساز مرادی خوش آمدید</p>
-</div>
+ <section class="hero">
+  <img id="avatarPreview" class="avatar" alt="عکس پروفایل" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%2317314d'/%3E%3Ctext x='50' y='62' text-anchor='middle' font-size='42' fill='%235ee7f5'%3E؟%3C/text%3E%3C/svg%3E">
+  <div><h1 id="welcome">پروفایل شما</h1><div class="muted" id="email">در حال بررسی حساب...</div><div class="muted" id="loginStatus">لطفاً صبر کنید.</div></div>
+ </section>
 
-<div class="card">
-<h3>اطلاعات حساب شما</h3>
-<p>ایمیل:</p>
-<p class="info" id="email">در حال بررسی...</p>
-<p id="status">لطفاً صبر کنید...</p>
-</div>
+ <section class="card">
+  <h2>اطلاعات پروفایل</h2>
+  <form id="profileForm">
+   <div class="grid">
+    <div class="field"><label for="displayName">نام نمایشی</label><input id="displayName" maxlength="80" placeholder="نام شما"></div>
+    <div class="field"><label for="avatarFile">انتخاب عکس پروفایل</label><input id="avatarFile" type="file" accept="image/png,image/jpeg,image/webp"></div>
+   </div>
+   <div class="actions"><button class="btn" id="saveProfile" type="submit">ذخیره تغییرات</button></div>
+   <div id="profileMessage" class="status" role="status"></div>
+   <p class="muted">برای بارگذاری عکس، باید فضای Storage با نام avatars در Supabase ساخته شده باشد.</p>
+  </form>
+ </section>
 
-<div class="card">
-<h3>سفارش‌های من</h3>
-<p>بخش سفارش‌های اختصاصی به‌زودی فعال می‌شود.</p>
-</div>
+ <section class="card">
+  <h2>سفارش‌های من</h2>
+  <div id="ordersList"><div class="empty">در حال دریافت سفارش‌ها...</div></div>
+ </section>
 
-<div class="card">
-<h3>دسترسی سریع</h3>
-<p><a href="index.html">بازگشت به صفحه اصلی</a></p>
-<button onclick="logout()">خروج از حساب</button>
-</div>
+ <section class="card">
+  <h2>تیکت‌ها و پاسخ‌های پشتیبانی</h2>
+  <div id="ticketsList"><div class="empty">در حال دریافت تیکت‌ها...</div></div>
+  <div class="actions"><a href="tickets.html">ثبت تیکت جدید / رفتن به پشتیبانی</a></div>
+ </section>
 
-</div>
-
+ <section class="card">
+  <h2>حساب کاربری</h2>
+  <p class="muted">ایمیل حساب: <span id="accountEmail">—</span></p>
+  <div class="actions"><button class="btn ghost" id="logoutBtn" type="button">خروج از حساب</button></div>
+  <div id="pageMessage" class="status"></div>
+ </section>
+</main>
 <script>
-const db = window.supabase.createClient(
- 'https://oczpjbwwogsydzkouxtj.supabase.co',
- 'sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0'
-);
-
-async function checkUser(){
- const {data,error}=await db.auth.getUser();
-
- if(error || !data.user){
-  location.href='auth.html';
-  return;
- }
-
- document.getElementById('email').textContent=
- data.user.email || 'نامشخص';
-
- document.getElementById('status').textContent=
- 'حساب شما با موفقیت وارد شده است.';
+(()=>{
+'use strict';
+const SUPABASE_URL='https://oczpjbwwogsydzkouxtj.supabase.co';
+const SUPABASE_KEY='sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+let user=null,avatarUrl='';
+const labels={new:'ثبت شده',open:'باز',reviewing:'در حال بررسی',in_progress:'در حال انجام',completed:'تکمیل شده',closed:'بسته شده',cancelled:'لغو شده'};
+function msg(id,text,error=false){$(id).textContent=text;$(id).className='status'+(error?' error':'')}
+function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n}
+function date(value){return value?new Date(value).toLocaleString('fa-IR'):'—'}
+function statusLabel(value){return labels[value]||value||'نامشخص'}
+function showAvatar(url){avatarUrl=url||'';if(url)$('avatarPreview').src=url}
+async function loadProfile(){
+ const meta=user.user_metadata||{};
+ const name=meta.display_name||meta.full_name||'';
+ $('displayName').value=name;
+ $('welcome').textContent=name?'سلام، '+name:'پروفایل شما';
+ $('email').textContent=user.email||'';
+ $('accountEmail').textContent=user.email||'—';
+ showAvatar(meta.avatar_url||'');
 }
-
-async function logout(){
+$('avatarFile').addEventListener('change',()=>{
+ const file=$('avatarFile').files[0];if(!file)return;
+ if(!/^image\/(png|jpeg|webp)$/.test(file.type)){msg('profileMessage','فقط تصویر PNG، JPG یا WEBP مجاز است.',true);return}
+ if(file.size>3*1024*1024){msg('profileMessage','حجم عکس باید کمتر از ۳ مگابایت باشد.',true);return}
+ $('avatarPreview').src=URL.createObjectURL(file);
+});
+$('profileForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(!user)return;
+ const button=$('saveProfile');button.disabled=true;msg('profileMessage','در حال ذخیره پروفایل...');
+ try{
+  let newAvatar=avatarUrl;
+  const file=$('avatarFile').files[0];
+  if(file){
+   const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
+   const path=user.id+'/avatar.'+ext;
+   const {error:uploadError}=await db.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type});
+   if(uploadError)throw new Error('بارگذاری عکس انجام نشد. مطمئن شو bucket عمومی avatars و مجوزهای آن ساخته شده‌اند. جزئیات: '+uploadError.message);
+   const {data}=db.storage.from('avatars').getPublicUrl(path);
+   newAvatar=data.publicUrl;
+  }
+  const displayName=$('displayName').value.trim();
+  const {data,error}=await db.auth.updateUser({data:{display_name:displayName,avatar_url:newAvatar}});
+  if(error)throw error;
+  user=data.user||user;showAvatar(newAvatar);$('welcome').textContent=displayName?'سلام، '+displayName:'پروفایل شما';
+  $('avatarFile').value='';msg('profileMessage','اطلاعات پروفایل با موفقیت ذخیره شد.');
+ }catch(error){msg('profileMessage',error.message||'ذخیره پروفایل ناموفق بود.',true)}
+ finally{button.disabled=false}
+});
+async function loadOrders(){
+ const box=$('ordersList');box.replaceChildren();
+ try{
+  const {data,error}=await db.from('orders').select('id,customer_name,phone,site_type,description,status,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50);
+  if(error)throw error;
+  if(!data?.length){box.append(el('div','empty','هنوز سفارشی برای این حساب ثبت نشده است.'));return}
+  data.forEach(o=>{
+   const card=el('article','item');card.append(el('h3','',o.site_type||'سفارش سایت'));
+   card.append(el('span','pill','وضعیت: '+statusLabel(o.status)));
+   card.append(el('p','',`نام: ${o.customer_name||'—'}\nشماره تماس: ${o.phone||'—'}\nتوضیحات: ${o.description||'—'}\nتاریخ ثبت: ${date(o.created_at)}`));
+   box.append(card);
+  });
+ }catch(error){box.append(el('div','empty','دریافت سفارش‌ها ممکن نشد: '+(error.message||'خطای نامشخص')))}
+}
+async function loadTickets(){
+ const box=$('ticketsList');box.replaceChildren();
+ try{
+  const {data,error}=await db.from('support_tickets').select('id,subject,message,status,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50);
+  if(error)throw error;
+  if(!data?.length){box.append(el('div','empty','هنوز تیکتی ثبت نکرده‌ای.'));return}
+  for(const t of data){
+   const card=el('article','item');card.append(el('h3','',t.subject||'بدون موضوع'));
+   card.append(el('span','pill','وضعیت: '+statusLabel(t.status)));
+   card.append(el('p','',`${t.message||''}\nتاریخ ثبت: ${date(t.created_at)}`));
+   const replies=el('div');
+   const {data:rows,error:replyError}=await db.from('support_ticket_replies').select('id,sender_role,message,created_at').eq('ticket_id',t.id).order('created_at',{ascending:true});
+   if(replyError)replies.append(el('p','muted','دریافت پاسخ‌ها ممکن نشد: '+replyError.message));
+   else if(!rows?.length)replies.append(el('p','muted','هنوز پاسخی برای این تیکت ثبت نشده است.'));
+   else rows.forEach(r=>{const item=el('div','reply '+(r.sender_role==='admin'?'admin':'customer'));item.textContent=(r.sender_role==='admin'?'پاسخ پشتیبانی':'پیام شما')+' · '+date(r.created_at)+'\n'+r.message;replies.append(item)});
+   card.append(replies);box.append(card);
+  }
+ }catch(error){box.append(el('div','empty','دریافت تیکت‌ها ممکن نشد: '+(error.message||'خطای نامشخص')))}
+}
+$('logoutBtn').addEventListener('click',async()=>{
+ const button=$('logoutBtn');button.disabled=true;
  const {error}=await db.auth.signOut();
-
- if(error){
-  alert('خروج انجام نشد: '+error.message);
-  return;
- }
-
+ if(error){msg('pageMessage','خروج انجام نشد: '+error.message,true);button.disabled=false;return}
  location.href='auth.html';
+});
+async function init(){
+ const {data,error}=await db.auth.getUser();user=!error?data.user:null;
+ if(!user){location.href='auth.html?next=account.html';return}
+ $('loginStatus').textContent='حساب شما با موفقیت وارد شده است.';
+ await loadProfile();
+ await Promise.all([loadOrders(),loadTickets()]);
 }
-
-checkUser();
+init();
+})();
 </script>
 </body>
 </html>
