@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07111f">
+<title>مرکز ابزارهای رایگان | وب‌ساز مرادی</title>
+<meta name="description" content="۲۰ ابزار رایگان و کاربردی برای تولیدکنندگان محتوا و طراحان وب؛ بدون نیاز به ثبت‌نام.">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07111f;--panel:#10233a;--panel2:#17314d;--line:rgba(148,190,225,.2);--text:#f4f8ff;--muted:#a7b8cc;--accent:#5ee7f5;--blue:#38a8ff;--good:#63e6a6;--bad:#ff8795}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 85% 0,#173653,transparent 34rem),var(--bg);color:var(--text);font-family:Vazirmatn,Tahoma,sans-serif;line-height:1.9}
+.wrap{width:min(1100px,92%);margin:28px auto 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+a{color:var(--accent);text-decoration:none}.hero,.panel,.tool{background:var(--panel);border:1px solid var(--line);border-radius:18px}
+.hero{padding:26px;margin:22px 0}.eyebrow{color:var(--accent);font-size:12px;font-weight:800}h1{font-size:clamp(25px,5vw,42px);margin:6px 0}h2{font-size:19px;margin:0 0 12px}.muted{color:var(--muted);font-size:13px}
+.layout{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}.panel{padding:18px}.tool-list{display:grid;gap:7px;max-height:680px;overflow:auto}
+.tool-pick{width:100%;text-align:right;padding:10px 12px;border:1px solid transparent;border-radius:10px;background:var(--panel2);color:var(--text);font:inherit;cursor:pointer}
+.tool-pick.active{border-color:var(--accent);background:#1c3a52}.workspace{min-height:450px}
+label{display:block;font-size:13px;font-weight:700;margin:12px 0 6px}select,textarea,input{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;background:#071827;color:var(--text);font:inherit;outline:none}
+textarea{min-height:170px;resize:vertical}select:focus,textarea:focus,input:focus{border-color:var(--accent)}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
+button.action{border:0;border-radius:10px;padding:10px 16px;background:linear-gradient(110deg,var(--accent),var(--blue));color:#061522;font:inherit;font-weight:900;cursor:pointer}
+button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.output{min-height:120px;white-space:pre-wrap;overflow-wrap:anywhere;background:#071827;border:1px solid var(--line);border-radius:11px;padding:13px;font-size:13px}
+.status{min-height:25px;color:var(--good);font-size:12px}.status.error{color:var(--bad)}
+.badge{display:inline-block;padding:3px 9px;border-radius:30px;background:#173d50;color:var(--accent);font-size:11px}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:28px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.tool-list{grid-template-columns:repeat(2,minmax(0,1fr));max-height:260px}.workspace{min-height:0}}
+@media(max-width:420px){.tool-list{grid-template-columns:1fr 1fr}.tool-pick{font-size:11px;padding:8px}}
+</style></head>
+<body><main class="wrap">
+<div class="top"><a href="index.html">← بازگشت به وب‌ساز مرادی</a><span class="badge">نسخه اول · ۲۰ ابزار فعال</span></div>
+<section class="hero"><span class="eyebrow">ابزارهای رایگان و فوری</span><h1>مرکز ابزارهای وب‌ساز مرادی</h1><p class="muted">۲۰ ابزار کاربردی برای متن، محتوا و کدنویسی سبک. پردازش‌ها داخل مرورگر انجام می‌شوند و متن ورودی به سرور ارسال نمی‌شود.</p></section>
+<div class="layout">
+<aside class="panel"><h2>فهرست ابزارها</h2><div class="tool-list" id="toolList"></div></aside>
+<section class="panel workspace">
+<h2 id="toolTitle">شمارش متن</h2><p class="muted" id="toolDescription">تعداد کلمات، حروف و زمان تقریبی مطالعه را محاسبه کن.</p>
+<label for="toolInput">متن ورودی</label><textarea id="toolInput" placeholder="متن یا داده‌ات را اینجا وارد کن..."></textarea>
+<div class="actions"><button class="action" id="runTool">اجرای ابزار</button><button class="action secondary" id="copyOutput">کپی نتیجه</button><button class="action secondary" id="clearTool">پاک‌کردن</button></div>
+<div class="status" id="toolStatus" role="status"></div><label>نتیجه</label><div class="output" id="toolOutput" aria-live="polite">نتیجه اینجا نمایش داده می‌شود.</div>
+</section></div>
+<footer>© <span id="year"></span> وب‌ساز مرادی · ابزارها رایگان و بدون نیاز به حساب کاربری هستند.</footer>
+</main>
+<script>
+(()=>{'use strict';
+const tools=[
+['شمارش متن','تعداد کلمات، حروف، جمله‌ها و زمان تقریبی مطالعه.',t=>{const words=t.trim()?t.trim().split(/\s+/u).length:0;const chars=[...t].length;const compact=[...t].filter(c=>!/\s/u.test(c)).length;const sentences=(t.match(/[.!؟?]+/g)||[]).length;return 'کلمات: '+words+'\nحروف با فاصله: '+chars+'\nحروف بدون فاصله: '+compact+'\nجمله‌ها: '+sentences+'\nزمان مطالعه: '+Math.ceil(words/200)+' دقیقه';}],
+['ساخت اسلاگ','تبدیل عنوان فارسی یا انگلیسی به شناسه مناسب URL.',t=>t.trim().toLowerCase().replace(/[؟?،,؛;:!()[\]{}"'«»]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-')],
+['تبدیل حروف','تبدیل حروف انگلیسی به بزرگ، کوچک یا حالت عنوان.',t=>{const mode=prompt('حالت را وارد کن: upper / lower / title','lower');if(mode==='upper')return t.toUpperCase();if(mode==='title')return t.toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());return t.toLowerCase();}],
+['حذف فاصله اضافی','فاصله‌های تکراری و فاصله ابتدا و انتهای خطوط را پاک می‌کند.',t=>t.split('\n').map(x=>x.trim().replace(/\s+/g,' ')).join('\n')],
+['حذف خطوط تکراری','خطوط تکراری را نگه نمی‌دارد.',t=>[...new Set(t.split('\n'))].join('\n')],
+['مرتب‌سازی خطوط','خطوط را به ترتیب الفبایی مرتب می‌کند.',t=>t.split('\n').sort((a,b)=>a.localeCompare(b,'fa')).join('\n')],
+['معکوس‌کردن خطوط','ترتیب خطوط را برعکس می‌کند.',t=>t.split('\n').reverse().join('\n')],
+['معکوس‌کردن متن','ترتیب نویسه‌های متن را برعکس می‌کند.',t=>[...t].reverse().join('')],
+['کدگذاری URL','متن را برای استفاده در URL کدگذاری می‌کند.',t=>encodeURIComponent(t)],
+['رمزگشایی URL','متن کدگذاری‌شده URL را باز می‌کند.',t=>decodeURIComponent(t)],
+['Base64 کدگذاری','متن یونیکد را به Base64 تبدیل می‌کند.',t=>btoa(unescape(encodeURIComponent(t)))],
+['Base64 رمزگشایی','Base64 را به متن یونیکد تبدیل می‌کند.',t=>decodeURIComponent(escape(atob(t.trim())))],
+['بررسی و زیباسازی JSON','درستی JSON را بررسی و آن را خواناتر می‌کند.',t=>JSON.stringify(JSON.parse(t),null,2)],
+['فشرده‌سازی JSON','فاصله‌های اضافی JSON را حذف می‌کند.',t=>JSON.stringify(JSON.parse(t))],
+['ایمن‌سازی HTML','نویسه‌های ویژه HTML را به entity تبدیل می‌کند.',t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')],
+['بازکردن entityهای HTML','چند entity رایج HTML را به متن تبدیل می‌کند.',t=>{const e=document.createElement('textarea');e.innerHTML=t;return e.value;}],
+['HEX به RGB','کد رنگ HEX را به مقدار RGB تبدیل می‌کند.',t=>{let h=t.trim().replace(/^#/,'');if(!/^[0-9a-f]{3}([0-9a-f]{3})?$/i.test(h))throw Error('کد HEX معتبر مثل #38a8ff وارد کن.');if(h.length===3)h=[...h].map(x=>x+x).join('');const n=parseInt(h,16);return 'rgb('+((n>>16)&255)+', '+((n>>8)&255)+', '+(n&255)+')';}],
+['RGB به HEX','مقادیر RGB را به کد HEX تبدیل می‌کند.',t=>{const m=t.match(/(\d{1,3})\D+(\d{1,3})\D+(\d{1,3})/);if(!m)throw Error('سه عدد RGB مثل 56, 168, 255 وارد کن.');const a=m.slice(1).map(Number);if(a.some(x=>x>255))throw Error('هر مقدار باید بین ۰ تا ۲۵۵ باشد.');return '#'+a.map(x=>x.toString(16).padStart(2,'0')).join('').toUpperCase();}],
+['ساخت گرادیان CSS','با دو رنگ HEX یک گرادیان CSS می‌سازد.',t=>{const a=t.match(/#[0-9a-f]{3,6}/ig)||[];if(a.length<2)throw Error('دو رنگ HEX مثل #5ee7f5 و #38a8ff وارد کن.');return 'background: linear-gradient(135deg, '+a[0]+', '+a[1]+');';}],
+['شمارش خطوط','تعداد خطوط خالی و غیرخالی را محاسبه می‌کند.',t=>'کل خطوط: '+(t===''?0:t.split('\n').length)+'\nخطوط غیرخالی: '+t.split('\n').filter(x=>x.trim()).length],
+['تولید عنوان و توضیح متا','از عنوان و توضیح واردشده تگ‌های متا می‌سازد.',t=>{const p=t.split('\n');const title=(p[0]||'عنوان صفحه').trim();const desc=(p.slice(1).join(' ')||'توضیح صفحه').trim();return '<title>'+title+'</title>\n<meta name="description" content="'+desc.replace(/"/g,'&quot;')+'">';}]
+];
+let active=0;
+const $=id=>document.getElementById(id);
+function renderList(){ $('toolList').replaceChildren();tools.forEach((tool,i)=>{const b=document.createElement('button');b.className='tool-pick'+(i===active?' active':'');b.textContent=(i+1)+'. '+tool[0];b.addEventListener('click',()=>selectTool(i));$('toolList').append(b);});}
+function selectTool(i){active=i;const t=tools[i];$('toolTitle').textContent=t[0];$('toolDescription').textContent=t[1];$('toolOutput').textContent='نتیجه اینجا نمایش داده می‌شود.';$('toolStatus').textContent='';renderList();}
+$('runTool').addEventListener('click',()=>{try{const result=tools[active][2]($('toolInput').value);$('toolOutput').textContent=String(result);$('toolStatus').textContent='انجام شد.';$('toolStatus').className='status';}catch(e){$('toolOutput').textContent='';$('toolStatus').textContent=e.message||'ورودی معتبر نیست.';$('toolStatus').className='status error';}});
+$('copyOutput').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('toolOutput').textContent);$('toolStatus').textContent='نتیجه کپی شد.';$('toolStatus').className='status';}catch(e){$('toolStatus').textContent='کپی خودکار در این مرورگر در دسترس نیست.';$('toolStatus').className='status error';}});
+$('clearTool').addEventListener('click',()=>{$('toolInput').value='';$('toolOutput').textContent='نتیجه اینجا نمایش داده می‌شود.';$('toolStatus').textContent='';});
+$('year').textContent=new Date().getFullYear();renderList();
+})();
+</script></body></html>
