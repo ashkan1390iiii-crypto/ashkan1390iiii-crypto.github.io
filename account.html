@@ -68,6 +68,11 @@ input[type=file]{padding:9px}textarea{min-height:85px;resize:vertical}
  </section>
 
  <section class="card">
+  <h2>اعلان‌های من</h2>
+  <div id="notificationsList"><div class="empty">در حال دریافت اعلان‌ها...</div></div>
+ </section>
+
+ <section class="card">
   <h2>حساب کاربری</h2>
   <p class="muted">ایمیل حساب: <span id="accountEmail">—</span></p>
   <div class="actions"><button class="btn ghost" id="logoutBtn" type="button">خروج از حساب</button></div>
@@ -139,6 +144,26 @@ async function loadOrders(){
   });
  }catch(error){box.append(el('div','empty','دریافت سفارش‌ها ممکن نشد: '+(error.message||'خطای نامشخص')))}
 }
+async function loadNotifications(){
+ const box=$('notificationsList');box.replaceChildren();
+ try{
+  const {data,error}=await db.from('notifications').select('id,title,message,is_read,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(40);
+  if(error)throw error;
+  if(!data?.length){box.append(el('div','empty','هنوز اعلانی دریافت نکرده‌ای.'));return}
+  const unread=data.filter(n=>!n.is_read).map(n=>n.id);
+  for(const n of data){
+   const card=el('article','item');
+   card.append(el('h3','',n.title||'اعلان جدید'));
+   card.append(el('span','pill',n.is_read?'خوانده‌شده':'جدید'));
+   card.append(el('p','',String(n.message||'')+'\\n'+date(n.created_at)));
+   box.append(card);
+  }
+  if(unread.length){
+   const {error:readError}=await db.from('notifications').update({is_read:true}).in('id',unread);
+   if(readError)console.warn('علامت‌گذاری اعلان‌ها ناموفق بود:',readError.message);
+  }
+ }catch(error){box.append(el('div','empty','دریافت اعلان‌ها ممکن نشد: '+(error.message||'خطای نامشخص')))}
+}
 async function loadTickets(){
  const box=$('ticketsList');box.replaceChildren();
  try{
@@ -169,7 +194,7 @@ async function init(){
  if(!user){location.href='auth.html?next=account.html';return}
  $('loginStatus').textContent='حساب شما با موفقیت وارد شده است.';
  await loadProfile();
- await Promise.all([loadOrders(),loadTickets()]);
+ await Promise.all([loadOrders(),loadTickets(),loadNotifications()]);
 }
 init();
 })();
