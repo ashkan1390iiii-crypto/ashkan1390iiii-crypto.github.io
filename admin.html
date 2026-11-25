@@ -366,6 +366,7 @@
   let ticketsLoading = false;
   let cachedOrders = [];
   let cachedTickets = [];
+  let presenceTimer = null;
 
   // تنظیمات اعلان صوتی
   let soundEnabled = localStorage.getItem('adminSoundEnabled') === 'true';
@@ -574,6 +575,9 @@
       }
 
       authorizedUserId = userId;
+      await updateAdminPresence(true);
+      if(presenceTimer)clearInterval(presenceTimer);
+      presenceTimer=setInterval(()=>updateAdminPresence(true),30000);
 
       $('loginPanel').classList.add('hidden');
       $('dashboardPanel').classList.remove('hidden');
@@ -1297,6 +1301,13 @@
     if(error){showError('auditError',error.message);return;}
     const body=$('auditBody');body.replaceChildren();
     (data||[]).forEach(log=>{const tr=document.createElement('tr');[new Date(log.created_at).toLocaleString('fa-IR'),log.entity_type,log.entity_id,log.action,JSON.stringify(log.details)].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.append(td);});body.append(tr);});
+  }
+
+
+  async function updateAdminPresence(isOnline=true){
+    if(!authorizedUserId)return;
+    const {error}=await db.from('support_presence').upsert({user_id:authorizedUserId,role:'admin',is_online:isOnline,last_seen:new Date().toISOString()});
+    if(error)console.warn('به‌روزرسانی وضعیت آنلاین مدیر ناموفق بود:',error.message);
   }
 
   // بررسی نشست کاربر
