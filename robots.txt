@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /account.html
+Disallow: /auth.html
+Disallow: /tickets.html
+
+Sitemap: https://ashkan1390iiii-crypto.github.io/sitemap.xml
