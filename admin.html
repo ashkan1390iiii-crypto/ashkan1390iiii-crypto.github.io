@@ -1044,7 +1044,7 @@
       button.addEventListener('click', async () => {
         selectedCustomerId = id;
         renderCustomerList();
-        renderConversation(id);
+        await renderConversation(id);
         await loadChatInbox();
       });
 
@@ -1053,7 +1053,7 @@
   }
 
   // نمایش گفت‌وگوی انتخاب‌شده
-  function renderConversation(customerId) {
+  async function renderConversation(customerId) {
     const msgs = conversations[customerId] || [];
 
     $('conversationTitle').textContent =
