@@ -749,6 +749,7 @@ a,button{-webkit-tap-highlight-color:transparent}
    </article>
   </div>
  </div>
+<div id="managedPortfolio" class="cards" style="margin-top:18px"></div>
 </section>
 
 <section class="section" id="pricing">
@@ -955,6 +956,7 @@ a,button{-webkit-tap-highlight-color:transparent}
     </div>
     <button class="btn" id="trackBtn" type="submit">بررسی وضعیت سفارش ←</button>
     <div class="notice" id="trackMessage" role="status" aria-live="polite"></div>
+<div id="trackTimeline" style="display:none;margin-top:14px;padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--surface)"></div>
    </form>
   </div>
  </div>
@@ -1329,6 +1331,13 @@ $("trackForm").addEventListener("submit",async event=>{
   };
 
   show(message,"وضعیت سفارش: "+(labels[data]||data));
+  const timeline=$("trackTimeline"); timeline.replaceChildren(); timeline.style.display="block";
+  const stages=[["new","ثبت سفارش"],["reviewing","بررسی سفارش"],["in_progress","انجام پروژه"],["completed","تکمیل پروژه"]];
+  const current=stages.findIndex(s=>s[0]===data);
+  const heading=document.createElement("strong"); heading.textContent="مراحل سفارش"; timeline.append(heading);
+  const list=document.createElement("div"); list.style.cssText="display:grid;gap:9px;margin-top:12px";
+  stages.forEach((stage,index)=>{const row=document.createElement("div");row.style.cssText="display:flex;align-items:center;gap:10px;color:"+(index<=current?"var(--good)":"var(--muted)");const dot=document.createElement("span");dot.textContent=index<current?"✓":index===current?"●":"○";dot.style.fontSize="18px";const label=document.createElement("span");label.textContent=stage[1]+(index===current?" — مرحله فعلی":"");row.append(dot,label);list.append(row);});
+  timeline.append(list);
 
  }catch(error){
   console.error("Tracking error:",error);
@@ -1653,6 +1662,21 @@ async function initializePage(){
 initializePage();
 
 })();
+async function loadManagedPortfolio(){
+ const box=$("managedPortfolio"); if(!box)return;
+ const {data,error}=await db.from("portfolio_projects").select("id,title,description,category,image_url,project_url").eq("is_published",true).order("sort_order").order("created_at",{ascending:false});
+ if(error){console.warn("Portfolio load:",error.message);return;}
+ box.replaceChildren();
+ (data||[]).forEach(project=>{
+  const card=document.createElement("article");card.className="card portfolio reveal";
+  if(project.image_url){const image=document.createElement("img");image.src=project.image_url;image.alt=project.title;image.loading="lazy";image.style.cssText="width:100%;height:180px;object-fit:cover;border-radius:14px 14px 0 0";card.append(image);}
+  else{const art=document.createElement("div");art.className="preview-art";const label=document.createElement("strong");label.textContent=project.category||"نمونه‌کار";art.append(label);card.append(art);}
+  const info=document.createElement("div");info.className="portfolio-info";const title=document.createElement("h3");title.textContent=project.title;const desc=document.createElement("p");desc.textContent=project.description||"";info.append(title,desc);
+  if(project.project_url&&project.project_url.startsWith("https://")){const link=document.createElement("a");link.className="card-link";link.href=project.project_url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="مشاهده پروژه ←";info.append(link);}
+  card.append(info);box.append(card);
+ });
+}
+loadManagedPortfolio();
 </script>
 </body>
 </html>
