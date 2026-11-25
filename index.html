@@ -1397,6 +1397,7 @@ function updateChatAccess(){
 
  $("chatLoginNotice").style.display=signedIn?"none":"block";
  $("chatInput").disabled=!signedIn;
+ $("chatAttachment").disabled=!signedIn;
  $("chatSend").disabled=!signedIn;
 
  if(!signedIn){
