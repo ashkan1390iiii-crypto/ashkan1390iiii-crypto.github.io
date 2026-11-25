@@ -337,7 +337,8 @@
 
         <form class="reply-box" id="replyForm">
           <textarea id="replyInput" maxlength="2000"
-            placeholder="پاسخ خود را بنویس…" required disabled></textarea>
+            placeholder="پاسخ خود را بنویس…" disabled></textarea>
+          <input id="adminChatAttachment" type="file" accept="image/png,image/jpeg,image/webp,application/pdf" aria-label="پیوست فایل" style="max-width:125px;font-size:10px" disabled>
           <button id="replyBtn" type="submit" disabled>ارسال پاسخ</button>
         </form>
       </div>
@@ -1063,7 +1064,12 @@
       sender.textContent = msg.is_admin ? 'مدیر' : 'مشتری';
 
       const content = document.createElement('div');
-      content.textContent = msg.message;
+      if(msg.message.startsWith('ATTACHMENT:')){
+        const [attachmentPath,caption]=msg.message.slice(11).split('::');
+        const {data:signed}=await db.storage.from('support-attachments').createSignedUrl(attachmentPath,3600);
+        if(signed?.signedUrl){const link=document.createElement('a');link.href=signed.signedUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent='مشاهده پیوست';content.append(link);}
+        if(caption){const note=document.createElement('p');note.textContent=caption;content.append(note);}
+      }else content.textContent=msg.message;
 
       const time = document.createElement('small');
       time.textContent =
@@ -1075,6 +1081,7 @@
 
     box.scrollTop = box.scrollHeight;
     $('replyInput').disabled = false;
+    $('adminChatAttachment').disabled = false;
     $('replyBtn').disabled = false;
   }
 
@@ -1085,17 +1092,23 @@
     if (!selectedCustomerId) return;
 
     const message = $('replyInput').value.trim();
-    if (!message) return;
+    const file=$('adminChatAttachment').files[0];
+    if (!message&&!file) return;
+    if(file && (!['image/png','image/jpeg','image/webp','application/pdf'].includes(file.type)||file.size>5*1024*1024)){showError('chatError','فقط PNG، JPG، WEBP یا PDF تا ۵ مگابایت مجاز است.');return;}
 
     $('replyBtn').disabled = true;
     hideMessage('chatError');
     hideMessage('chatNotice');
 
-    const { error } = await db.from('chat_messages').insert({
-      user_id: selectedCustomerId,
-      message: message,
-      is_admin: true
-    });
+    let storedMessage=message;
+    if(file){
+      const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_').slice(-90);
+      const path=selectedCustomerId+'/'+Date.now()+'-'+safeName;
+      const upload=await db.storage.from('support-attachments').upload(path,file,{upsert:false,contentType:file.type});
+      if(upload.error){$('replyBtn').disabled=false;showError('chatError',upload.error.message);return;}
+      storedMessage='ATTACHMENT:'+path+'::'+message;
+    }
+    const { error } = await db.from('chat_messages').insert({user_id:selectedCustomerId,message:storedMessage,is_admin:true});
 
     $('replyBtn').disabled = false;
 
@@ -1105,6 +1118,7 @@
     }
 
     $('replyInput').value = '';
+    $('adminChatAttachment').value = '';
     const customer = (cachedOrders.find(o=>o.user_id===selectedCustomerId) || {}).user_id || selectedCustomerId;
     const noticeResult = await db.from('notifications').insert({user_id:customer,title:'پیام جدید از پشتیبانی',message:'مدیر در گفت‌وگوی پشتیبانی به شما پاسخ داده است.'});
     if(noticeResult.error) console.warn('ثبت اعلان چت ناموفق بود:',noticeResult.error.message);
