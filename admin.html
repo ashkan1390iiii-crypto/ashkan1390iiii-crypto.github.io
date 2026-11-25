@@ -570,7 +570,7 @@
       if (!data.length) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.colSpan = 6;
+        td.colSpan = 8;
         td.className = 'empty';
         td.textContent = 'هنوز سفارشی ثبت نشده است.';
         tr.appendChild(td);
@@ -638,7 +638,7 @@
               }
             }
             updateDashboardStats();
-            showSuccess('notice', 'وضعیت سفارش ذخیره شد و اعلان مشتری ثبت شد.');
+            showSuccess('notice', 'وضعیت سفارش ذخیره شد.');
             hideMessage('ordersError');
           }
         });
