@@ -68,6 +68,16 @@ input[type=file]{padding:9px}textarea{min-height:85px;resize:vertical}
  </section>
 
  <section class="card">
+  <h2>باشگاه مشتریان</h2>
+  <p class="muted">به ازای هر ۱۰۰۰ واحد پولی از سفارش پرداخت‌شده، یک امتیاز دریافت می‌کنی.</p>
+  <div id="loyaltyPoints" class="item">در حال دریافت امتیازها...</div>
+ </section>
+ <section class="card">
+  <h2>رزروهای مشاوره من</h2>
+  <div id="myBookings"><div class="empty">در حال دریافت رزروها...</div></div>
+ </section>
+
+ <section class="card">
   <h2>اعلان‌های من</h2>
   <div id="notificationsList"><div class="empty">در حال دریافت اعلان‌ها...</div></div>
  </section>
@@ -189,12 +199,26 @@ $('logoutBtn').addEventListener('click',async()=>{
  if(error){msg('pageMessage','خروج انجام نشد: '+error.message,true);button.disabled=false;return}
  location.href='auth.html';
 });
+async function loadLoyalty(){
+ const box=$('loyaltyPoints');
+ const {data,error}=await db.from('customer_loyalty').select('points,updated_at').eq('user_id',user.id).maybeSingle();
+ if(error){box.textContent='دریافت امتیازها ممکن نشد.';return}
+ box.textContent='امتیاز فعلی شما: '+(data?.points||0).toLocaleString('fa-IR')+' امتیاز';
+}
+async function loadMyBookings(){
+ const box=$('myBookings');box.replaceChildren();
+ const {data,error}=await db.from('consultation_bookings').select('requested_at,topic,status,admin_note,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(30);
+ if(error){box.append(el('div','empty','دریافت رزروها ممکن نشد: '+error.message));return}
+ if(!data?.length){box.append(el('div','empty','هنوز درخواست مشاوره ثبت نکرده‌ای.'));return}
+ data.forEach(b=>{const card=el('article','item');card.append(el('h3','',b.topic||'جلسه مشاوره'));card.append(el('span','pill','وضعیت: '+statusLabel(b.status)));card.append(el('p','', 'زمان پیشنهادی: '+date(b.requested_at)+'\\nیادداشت مدیر: '+(b.admin_note||'هنوز یادداشتی ثبت نشده است.')));box.append(card)});
+}
+
 async function init(){
  const {data,error}=await db.auth.getUser();user=!error?data.user:null;
  if(!user){location.href='auth.html?next=account.html';return}
  $('loginStatus').textContent='حساب شما با موفقیت وارد شده است.';
  await loadProfile();
- await Promise.all([loadOrders(),loadTickets(),loadNotifications()]);
+ await Promise.all([loadOrders(),loadTickets(),loadNotifications(),loadLoyalty(),loadMyBookings()]);
 }
 init();
 })();
