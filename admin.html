@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
@@ -47,6 +48,35 @@
     .reply-box{display:flex;gap:8px;padding:12px;border-top:1px solid #e5eaf2}
     .reply-box textarea{resize:vertical;min-height:45px;max-height:120px}
     .reply-box button{white-space:nowrap}
+
+    .unread-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#dc2626;
+      color:white;
+      border-radius:30px;
+      padding:3px 9px;
+      font-size:11px;
+      font-weight:bold;
+      margin-right:5px;
+      min-width:22px;
+    }
+    .total-unread{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:#fff1f0;
+      color:#b42318;
+      border:1px solid #fecaca;
+      border-radius:9px;
+      padding:8px 12px;
+      font-size:12px;
+      font-weight:bold;
+      margin-top:10px;
+    }
+    .unread-label{color:#b42318!important;font-weight:bold}
+
     @media(max-width:700px){
       .wrap{margin:20px auto}
       .panel{padding:16px}
@@ -74,7 +104,6 @@
     </div>
   </header>
 
-  <!-- ورود مدیر -->
   <section class="panel login" id="loginPanel">
     <h2 style="margin-top:0">ورود مدیر</h2>
     <p class="muted">با ایمیل و رمز حساب مدیر وارد شو.</p>
@@ -93,7 +122,6 @@
     <div class="error" id="loginError"></div>
   </section>
 
-  <!-- سفارش‌ها -->
   <section class="panel hidden" id="ordersPanel">
     <div>
       <h2 style="margin:0 0 5px">سفارش‌ها</h2>
@@ -122,11 +150,11 @@
     </div>
   </section>
 
-  <!-- پشتیبانی آنلاین -->
   <section class="panel hidden" id="chatPanel">
     <div>
       <h2 style="margin:0 0 5px">پشتیبانی آنلاین</h2>
       <div class="muted">پیام‌های مشتریان را مشاهده و پاسخ ارسال کن.</div>
+      <div id="totalUnread" class="total-unread hidden"></div>
     </div>
 
     <div class="error" id="chatError"></div>
@@ -173,6 +201,9 @@
   let conversations = {};
   let authorizedUserId = null;
   let dashboardCheck = false;
+  let chatPollingTimer = null;
+  let ordersLoading = false;
+  let chatLoading = false;
 
   const statusLabels = {
     new: 'جدید',
@@ -197,13 +228,34 @@
     $(id).style.display = 'none';
   }
 
+  function stopChatPolling() {
+    if (chatPollingTimer) {
+      clearInterval(chatPollingTimer);
+      chatPollingTimer = null;
+    }
+  }
+
+  function startChatPolling() {
+    stopChatPolling();
+
+    chatPollingTimer = setInterval(() => {
+      if (authorizedUserId && !chatLoading) {
+        loadChatInbox();
+      }
+    }, 5000);
+  }
+
   function showLogin() {
+    stopChatPolling();
+
     $('loginPanel').classList.remove('hidden');
     $('ordersPanel').classList.add('hidden');
     $('chatPanel').classList.add('hidden');
     $('topActions').classList.add('hidden');
+
     authorizedUserId = null;
     selectedCustomerId = null;
+    conversations = {};
   }
 
   async function showDashboard() {
@@ -220,7 +272,6 @@
 
       const userId = userData.user.id;
 
-      // بررسی دسترسی مدیر
       const { data: isAdmin, error: adminError } =
         await db.rpc('is_chat_admin');
 
@@ -242,6 +293,7 @@
       $('topActions').classList.remove('hidden');
 
       await Promise.all([loadOrders(), loadChatInbox()]);
+      startChatPolling();
 
     } catch (error) {
       showLogin();
@@ -253,126 +305,188 @@
 
   // دریافت سفارش‌ها
   async function loadOrders() {
-    hideMessage('ordersError');
-    $('countText').textContent = 'در حال دریافت سفارش‌ها…';
+    if (ordersLoading) return;
+    ordersLoading = true;
 
-    const { data, error } = await db.from('orders')
-      .select('id, customer_name, phone, site_type, description, status, created_at')
-      .order('created_at', { ascending: false });
+    try {
+      hideMessage('ordersError');
+      $('countText').textContent = 'در حال دریافت سفارش‌ها…';
 
-    if (error) {
-      $('countText').textContent = 'دریافت سفارش‌ها ناموفق بود';
-      showError('ordersError', 'خطا در دریافت سفارش‌ها: ' + error.message);
-      return;
-    }
+      const { data, error } = await db.from('orders')
+        .select('id, customer_name, phone, site_type, description, status, created_at')
+        .order('created_at', { ascending: false });
 
-    $('countText').textContent = `${data.length} سفارش`;
+      if (error) {
+        $('countText').textContent = 'دریافت سفارش‌ها ناموفق بود';
+        showError('ordersError', 'خطا در دریافت سفارش‌ها: ' + error.message);
+        return;
+      }
 
-    const body = $('ordersBody');
-    body.replaceChildren();
+      $('countText').textContent = `${data.length} سفارش`;
 
-    if (!data.length) {
-      const tr = document.createElement('tr');
-      const td = document.createElement('td');
-      td.colSpan = 6;
-      td.className = 'empty';
-      td.textContent = 'هنوز سفارشی ثبت نشده است.';
-      tr.appendChild(td);
-      body.appendChild(tr);
-      return;
-    }
+      const body = $('ordersBody');
+      body.replaceChildren();
 
-    for (const order of data) {
-      const tr = document.createElement('tr');
-
-      const values = [
-        order.customer_name,
-        order.phone,
-        order.site_type,
-        order.description || '—',
-        new Date(order.created_at).toLocaleString('fa-IR')
-      ];
-
-      for (const value of values) {
+      if (!data.length) {
+        const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.textContent = value ?? '—';
+        td.colSpan = 6;
+        td.className = 'empty';
+        td.textContent = 'هنوز سفارشی ثبت نشده است.';
         tr.appendChild(td);
+        body.appendChild(tr);
+        return;
       }
 
-      const statusCell = document.createElement('td');
-      const select = document.createElement('select');
+      for (const order of data) {
+        const tr = document.createElement('tr');
 
-      for (const [value, label] of Object.entries(statusLabels)) {
-        const option = document.createElement('option');
-        option.value = value;
-        option.textContent = label;
-        select.appendChild(option);
-      }
+        const values = [
+          order.customer_name,
+          order.phone,
+          order.site_type,
+          order.description || '—',
+          new Date(order.created_at).toLocaleString('fa-IR')
+        ];
 
-      select.value = order.status;
-
-      select.addEventListener('change', async () => {
-        const newStatus = select.value;
-        select.disabled = true;
-
-        const { error: updateError } = await db.from('orders')
-          .update({ status: newStatus })
-          .eq('id', order.id);
-
-        select.disabled = false;
-
-        if (updateError) {
-          showError('ordersError', 'ذخیره وضعیت انجام نشد: ' + updateError.message);
-          select.value = order.status;
-        } else {
-          order.status = newStatus;
-          showSuccess('notice', 'وضعیت سفارش ذخیره شد.');
-          hideMessage('ordersError');
+        for (const value of values) {
+          const td = document.createElement('td');
+          td.textContent = value ?? '—';
+          tr.appendChild(td);
         }
-      });
 
-      statusCell.appendChild(select);
-      tr.appendChild(statusCell);
-      body.appendChild(tr);
+        const statusCell = document.createElement('td');
+        const select = document.createElement('select');
+
+        for (const [value, label] of Object.entries(statusLabels)) {
+          const option = document.createElement('option');
+          option.value = value;
+          option.textContent = label;
+          select.appendChild(option);
+        }
+
+        select.value = order.status;
+
+        select.addEventListener('change', async () => {
+          const newStatus = select.value;
+          select.disabled = true;
+
+          const { error: updateError } = await db.from('orders')
+            .update({ status: newStatus })
+            .eq('id', order.id);
+
+          select.disabled = false;
+
+          if (updateError) {
+            showError('ordersError', 'ذخیره وضعیت انجام نشد: ' + updateError.message);
+            select.value = order.status;
+          } else {
+            order.status = newStatus;
+            showSuccess('notice', 'وضعیت سفارش ذخیره شد.');
+            hideMessage('ordersError');
+          }
+        });
+
+        statusCell.appendChild(select);
+        tr.appendChild(statusCell);
+        body.appendChild(tr);
+      }
+    } finally {
+      ordersLoading = false;
     }
   }
 
-  // دریافت تمام پیام‌ها
+  // دریافت پیام‌ها و بروزرسانی وضعیت خوانده‌شدن
   async function loadChatInbox() {
-    hideMessage('chatError');
+    if (chatLoading || !authorizedUserId) return;
+    chatLoading = true;
 
-    const { data, error } = await db.from('chat_messages')
-      .select('id, user_id, message, is_admin, created_at')
-      .order('created_at', { ascending: true });
+    try {
+      hideMessage('chatError');
 
-    if (error) {
-      showError('chatError', 'دریافت پیام‌ها ناموفق بود: ' + error.message);
-      return;
-    }
+      const { data, error } = await db.from('chat_messages')
+        .select('id, user_id, message, is_admin, created_at, read_by_admin')
+        .order('created_at', { ascending: true });
 
-    conversations = {};
-
-    for (const msg of data) {
-      if (!conversations[msg.user_id]) {
-        conversations[msg.user_id] = [];
+      if (error) {
+        showError('chatError', 'دریافت پیام‌ها ناموفق بود: ' + error.message);
+        return;
       }
-      conversations[msg.user_id].push(msg);
+
+      // اگر گفت‌وگویی باز است، پیام‌های جدید همان گفت‌وگو خوانده می‌شوند.
+      if (selectedCustomerId) {
+        const hasUnread = data.some(msg =>
+          msg.user_id === selectedCustomerId &&
+          !msg.is_admin &&
+          !msg.read_by_admin
+        );
+
+        if (hasUnread) {
+          const { error: readError } = await db.from('chat_messages')
+            .update({ read_by_admin: true })
+            .eq('user_id', selectedCustomerId)
+            .eq('is_admin', false)
+            .eq('read_by_admin', false);
+
+          if (readError) {
+            showError('chatError', 'علامت‌گذاری پیام‌ها انجام نشد: ' + readError.message);
+          } else {
+            data.forEach(msg => {
+              if (msg.user_id === selectedCustomerId && !msg.is_admin) {
+                msg.read_by_admin = true;
+              }
+            });
+          }
+        }
+      }
+
+      conversations = {};
+
+      for (const msg of data) {
+        if (!conversations[msg.user_id]) {
+          conversations[msg.user_id] = [];
+        }
+        conversations[msg.user_id].push(msg);
+      }
+
+      renderCustomerList();
+      renderUnreadTotal();
+
+      if (
+        selectedCustomerId &&
+        conversations[selectedCustomerId]
+      ) {
+        renderConversation(selectedCustomerId);
+      } else {
+        selectedCustomerId = null;
+        $('conversationTitle').textContent = 'یک مشتری را انتخاب کن.';
+        $('messages').innerHTML =
+          '<div class="empty">یک مشتری را از فهرست انتخاب کن.</div>';
+        $('replyInput').disabled = true;
+        $('replyBtn').disabled = true;
+      }
+    } finally {
+      chatLoading = false;
+    }
+  }
+
+  // تعداد کل پیام‌های خوانده‌نشده
+  function renderUnreadTotal() {
+    let total = 0;
+
+    for (const msgs of Object.values(conversations)) {
+      total += msgs.filter(msg =>
+        !msg.is_admin && !msg.read_by_admin
+      ).length;
     }
 
-    renderCustomerList();
+    const badge = $('totalUnread');
 
-    if (
-      selectedCustomerId &&
-      conversations[selectedCustomerId]
-    ) {
-      renderConversation(selectedCustomerId);
+    if (total > 0) {
+      badge.textContent = `${total} پیام خوانده‌نشده`;
+      badge.classList.remove('hidden');
     } else {
-      selectedCustomerId = null;
-      $('conversationTitle').textContent = 'یک مشتری را انتخاب کن.';
-      $('messages').innerHTML =
-        '<div class="empty">یک مشتری را از فهرست انتخاب کن.</div>';
-      $('replyInput').disabled = true;
-      $('replyBtn').disabled = true;
+      badge.classList.add('hidden');
     }
   }
 
@@ -401,12 +515,23 @@
       const msgs = conversations[id];
       const last = msgs[msgs.length - 1];
 
+      const unreadCount = msgs.filter(msg =>
+        !msg.is_admin && !msg.read_by_admin
+      ).length;
+
       const button = document.createElement('button');
       button.className = 'customer-item' +
         (id === selectedCustomerId ? ' active' : '');
 
       const title = document.createElement('strong');
       title.textContent = 'مشتری';
+
+      if (unreadCount > 0) {
+        const badge = document.createElement('span');
+        badge.className = 'unread-badge';
+        badge.textContent = unreadCount;
+        title.appendChild(badge);
+      }
 
       const preview = document.createElement('small');
       preview.textContent =
@@ -415,12 +540,18 @@
       const count = document.createElement('small');
       count.textContent = `${msgs.length} پیام`;
 
+      if (unreadCount > 0) {
+        count.classList.add('unread-label');
+        count.textContent += ` | ${unreadCount} پیام جدید`;
+      }
+
       button.append(title, preview, count);
 
-      button.addEventListener('click', () => {
+      button.addEventListener('click', async () => {
         selectedCustomerId = id;
         renderCustomerList();
         renderConversation(id);
+        await loadChatInbox();
       });
 
       list.appendChild(button);
@@ -513,13 +644,14 @@
     }
   });
 
-  // بروزرسانی
+  // بروزرسانی دستی
   $('refreshBtn').addEventListener('click', async () => {
     await Promise.all([loadOrders(), loadChatInbox()]);
   });
 
   // خروج
   $('logoutBtn').addEventListener('click', async () => {
+    stopChatPolling();
     await db.auth.signOut();
     showLogin();
   });
@@ -539,4 +671,4 @@
   });
 </script>
 </body>
-  </html>
+</html>
