@@ -615,7 +615,7 @@
           select.disabled = true;
 
           const { error: updateError } = await db.from('orders')
-            .update({ status: newStatus })
+            .update({ status: newStatus, updated_at: new Date().toISOString() })
             .eq('id', order.id);
 
           select.disabled = false;
@@ -625,7 +625,23 @@
             select.value = order.status;
           } else {
             order.status = newStatus;
-            showSuccess('notice', 'وضعیت سفارش ذخیره شد.');
+            if (order.user_id) {
+              const statusMessages = {
+                new: ['سفارش ثبت شد', 'سفارش شما ثبت شده است.'],
+                reviewing: ['سفارش در حال بررسی', 'بررسی سفارش شما آغاز شده است.'],
+                in_progress: ['پروژه در حال انجام', 'کار روی سفارش شما آغاز شده است.'],
+                completed: ['سفارش تکمیل شد', 'پروژه شما تکمیل شده است.']
+              };
+              const noticeData = statusMessages[newStatus];
+              if (noticeData) {
+                const { error: notificationError } = await db.from('notifications').insert({
+                  user_id: order.user_id, title: noticeData[0], message: noticeData[1]
+                });
+                if (notificationError) console.warn('ثبت اعلان مشتری ناموفق بود:', notificationError.message);
+              }
+            }
+            updateDashboardStats();
+            showSuccess('notice', 'وضعیت سفارش ذخیره شد و اعلان مشتری ثبت شد.');
             hideMessage('ordersError');
           }
         });
