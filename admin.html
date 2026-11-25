@@ -1,0 +1,908 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>پنل مدیریت | وب‌ساز مرادی</title>
+  <meta name="description" content="پنل مدیریت سفارش‌ها و پشتیبانی وب‌ساز مرادی">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f3f5f9;color:#172033}
+    .wrap{max-width:1100px;margin:36px auto;padding:0 16px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}
+    h1{font-size:25px;margin:0}
+    .muted{color:#64748b;font-size:13px}
+    .panel{background:#fff;border:1px solid #e5eaf2;border-radius:16px;padding:22px;box-shadow:0 8px 28px #15213a0a;margin-bottom:20px}
+    .login{max-width:430px;margin:55px auto}
+    label{display:block;font-size:14px;margin:14px 0 7px}
+    input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit;background:#fff}
+    button{border:0;border-radius:9px;padding:11px 16px;font:inherit;cursor:pointer;background:#2457d6;color:white}
+    button.secondary{background:#e8edf7;color:#172033}
+    button:disabled{opacity:.55;cursor:wait}
+    .actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+    .error{color:#b42318;background:#fff1f0;padding:10px;border-radius:8px;margin-top:12px;display:none}
+    .success{color:#067647;background:#ecfdf3;padding:10px;border-radius:8px;margin-top:12px;display:none}
+    .table-wrap{overflow-x:auto;margin-top:18px}
+    table{width:100%;border-collapse:collapse;min-width:700px}
+    th,td{text-align:right;padding:13px 10px;border-bottom:1px solid #edf0f5;vertical-align:top;font-size:13px}
+    th{color:#475569;background:#f8fafc}
+    td select{min-width:145px;padding:8px}
+    .empty{text-align:center;color:#64748b;padding:35px}
+    .hidden{display:none!important}
+
+    .chat-layout{display:grid;grid-template-columns:280px 1fr;gap:16px;margin-top:18px}
+    .customer-list{border:1px solid #e5eaf2;border-radius:12px;padding:10px;max-height:480px;overflow:auto}
+    .customer-item{display:block;width:100%;text-align:right;background:#f8fafc;color:#172033;margin-bottom:8px;padding:12px;border:1px solid #e5eaf2;overflow-wrap:anywhere}
+    .customer-item.active{background:#e8efff;border-color:#2457d6}
+    .customer-item small{display:block;color:#64748b;margin-top:6px}
+    .conversation{border:1px solid #e5eaf2;border-radius:12px;min-height:300px;display:flex;flex-direction:column;overflow:hidden}
+    .conversation-head{padding:13px;background:#f8fafc;border-bottom:1px solid #e5eaf2;font-size:13px;overflow-wrap:anywhere}
+    .messages{padding:15px;flex:1;min-height:260px;max-height:380px;overflow:auto;display:flex;flex-direction:column;gap:12px}
+    .message{max-width:85%;padding:11px 13px;border-radius:12px;font-size:13px;line-height:1.9;overflow-wrap:anywhere}
+    .message.customer{align-self:flex-start;background:#f1f5f9}
+    .message.admin{align-self:flex-end;background:#e8efff}
+    .message small{display:block;color:#64748b;margin-top:5px;font-size:10px}
+    .reply-box{display:flex;gap:8px;padding:12px;border-top:1px solid #e5eaf2}
+    .reply-box textarea{resize:vertical;min-height:45px;max-height:120px}
+    .reply-box button{white-space:nowrap}
+
+    .unread-badge{
+      display:inline-flex;align-items:center;justify-content:center;
+      background:#dc2626;color:white;border-radius:30px;padding:3px 9px;
+      font-size:11px;font-weight:bold;margin-right:5px;min-width:22px;
+    }
+    .total-unread{
+      display:inline-flex;align-items:center;gap:6px;background:#fff1f0;
+      color:#b42318;border:1px solid #fecaca;border-radius:9px;
+      padding:8px 12px;font-size:12px;font-weight:bold;margin-top:10px;
+    }
+    .unread-label{color:#b42318!important;font-weight:bold}
+
+    @media(max-width:700px){
+      .wrap{margin:20px auto}
+      .panel{padding:16px}
+      h1{font-size:20px}
+      header{align-items:flex-start;flex-direction:column}
+      .chat-layout{grid-template-columns:1fr}
+      .customer-list{max-height:200px}
+      .message{max-width:95%}
+      .reply-box{flex-direction:column}
+    }
+  </style>
+</head>
+
+<body>
+<main class="wrap">
+
+  <header>
+    <div>
+      <h1>پنل مدیریت وب‌ساز مرادی</h1>
+      <div class="muted">مدیریت سفارش‌ها و پشتیبانی مشتریان</div>
+    </div>
+    <div class="actions hidden" id="topActions">
+      <button class="secondary" id="refreshBtn" type="button">بروزرسانی</button>
+      <button class="secondary" id="soundToggleBtn" type="button">🔕 اعلان صوتی: خاموش</button>
+      <button id="logoutBtn" type="button">خروج از حساب</button>
+    </div>
+  </header>
+
+  <section class="panel login" id="loginPanel">
+    <h2 style="margin-top:0">ورود مدیر</h2>
+    <p class="muted">با ایمیل و رمز حساب مدیر وارد شو.</p>
+
+    <form id="loginForm">
+      <label for="email">ایمیل مدیر</label>
+      <input id="email" type="email" autocomplete="username" required>
+
+      <label for="password">رمز عبور</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+
+      <div style="margin-top:18px">
+        <button id="loginBtn" type="submit">ورود</button>
+      </div>
+    </form>
+    <div class="error" id="loginError"></div>
+  </section>
+
+  <section class="panel hidden" id="ordersPanel">
+    <div>
+      <h2 style="margin:0 0 5px">سفارش‌ها</h2>
+      <div class="muted" id="countText">در حال دریافت سفارش‌ها…</div>
+    </div>
+
+    <div class="error" id="ordersError"></div>
+    <div class="success" id="notice"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>نام مشتری</th>
+            <th>شماره تماس</th>
+            <th>نوع سایت</th>
+            <th>توضیحات</th>
+            <th>تاریخ ثبت</th>
+            <th>وضعیت</th>
+          </tr>
+        </thead>
+        <tbody id="ordersBody">
+          <tr><td colspan="6" class="empty">در حال بارگذاری…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel hidden" id="ticketsPanel">
+    <div>
+      <h2 style="margin:0 0 5px">تیکت‌های پشتیبانی</h2>
+      <div class="muted" id="ticketsCount">در حال دریافت تیکت‌ها…</div>
+    </div>
+    <div class="error" id="ticketsError"></div>
+    <div class="success" id="ticketsNotice"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>نام مشتری</th>
+            <th>شماره تماس</th>
+            <th>موضوع</th>
+            <th>توضیحات</th>
+            <th>تاریخ ثبت</th>
+            <th>وضعیت</th>
+          </tr>
+        </thead>
+        <tbody id="ticketsBody">
+          <tr><td colspan="6" class="empty">در حال بارگذاری…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel hidden" id="ticketReplyPanel">
+    <div class="actions" style="justify-content:space-between"><h2 id="ticketReplyTitle">گفت‌وگوی تیکت</h2><button class="secondary" id="closeTicketReplies" type="button">بستن</button></div>
+    <div id="ticketReplyError" class="error"></div>
+    <div id="ticketReplyList" style="display:grid;gap:10px;margin:14px 0"></div>
+    <form id="ticketReplyForm" class="reply-box"><textarea id="ticketReplyInput" maxlength="3000" placeholder="پاسخ مدیر به مشتری..." required></textarea><button type="submit">ارسال پاسخ</button></form>
+  </section>
+
+  <section class="panel hidden" id="chatPanel">
+    <div>
+      <h2 style="margin:0 0 5px">پشتیبانی آنلاین</h2>
+      <div class="muted">پیام‌های مشتریان را مشاهده و پاسخ ارسال کن.</div>
+      <div id="totalUnread" class="total-unread hidden"></div>
+    </div>
+
+    <div class="error" id="chatError"></div>
+    <div class="success" id="chatNotice"></div>
+
+    <div class="chat-layout">
+      <div>
+        <h3 style="font-size:15px">مشتری‌ها</h3>
+        <div class="customer-list" id="customerList">
+          <div class="empty">در حال دریافت پیام‌ها…</div>
+        </div>
+      </div>
+
+      <div class="conversation">
+        <div class="conversation-head" id="conversationTitle">
+          یک مشتری را انتخاب کن.
+        </div>
+
+        <div class="messages" id="messages">
+          <div class="empty">هنوز گفت‌وگویی انتخاب نشده است.</div>
+        </div>
+
+        <form class="reply-box" id="replyForm">
+          <textarea id="replyInput" maxlength="2000"
+            placeholder="پاسخ خود را بنویس…" required disabled></textarea>
+          <button id="replyBtn" type="submit" disabled>ارسال پاسخ</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const SUPABASE_URL = 'https://oczpjbwwogsydzkouxtj.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+  const $ = id => document.getElementById(id);
+
+  let selectedCustomerId = null;
+  let conversations = {};
+  let authorizedUserId = null;
+  let dashboardCheck = false;
+  let chatPollingTimer = null;
+  let ordersLoading = false;
+  let chatLoading = false;
+  let ticketsLoading = false;
+
+  // تنظیمات اعلان صوتی
+  let soundEnabled = localStorage.getItem('adminSoundEnabled') === 'true';
+  let audioContext = null;
+  let knownCustomerMessageIds = null;
+
+  const statusLabels = {
+    new: 'جدید',
+    reviewing: 'در حال بررسی',
+    in_progress: 'در حال انجام',
+    completed: 'تکمیل‌شده'
+  };
+
+  function showError(id, message) {
+    const el = $(id);
+    el.textContent = message;
+    el.style.display = 'block';
+  }
+
+  function showSuccess(id, message) {
+    const el = $(id);
+    el.textContent = message;
+    el.style.display = 'block';
+  }
+
+  function hideMessage(id) {
+    $(id).style.display = 'none';
+  }
+
+  function updateSoundButton() {
+    const btn = $('soundToggleBtn');
+    if (!btn) return;
+    btn.textContent = soundEnabled
+      ? '🔔 اعلان صوتی: روشن'
+      : '🔕 اعلان صوتی: خاموش';
+  }
+
+  async function unlockAudio() {
+    try {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return false;
+
+      if (!audioContext) audioContext = new AudioContextClass();
+      if (audioContext.state === 'suspended') await audioContext.resume();
+      return audioContext.state === 'running';
+    } catch (error) {
+      console.log('فعال‌سازی صدا ناموفق بود:', error);
+      return false;
+    }
+  }
+
+  async function playNotificationSound() {
+    if (!soundEnabled) return;
+
+    const ready = await unlockAudio();
+    if (!ready || !audioContext) return;
+
+    try {
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+
+      oscillator.connect(gain);
+      gain.connect(audioContext.destination);
+
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+      gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.16, audioContext.currentTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.32);
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.34);
+    } catch (error) {
+      console.log('خطای پخش اعلان:', error);
+    }
+  }
+
+  $('soundToggleBtn').addEventListener('click', async () => {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem('adminSoundEnabled', String(soundEnabled));
+    updateSoundButton();
+
+    // با روشن‌کردن، یک صدای آزمایشی هم پخش می‌شود.
+    if (soundEnabled) {
+      await playNotificationSound();
+    }
+  });
+
+  updateSoundButton();
+
+  function stopChatPolling() {
+    if (chatPollingTimer) {
+      clearInterval(chatPollingTimer);
+      chatPollingTimer = null;
+    }
+  }
+
+  function startChatPolling() {
+    stopChatPolling();
+
+    chatPollingTimer = setInterval(() => {
+      if (authorizedUserId && !chatLoading) {
+        loadChatInbox();
+        loadTickets();
+      }
+    }, 5000);
+  }
+
+  function showLogin() {
+    stopChatPolling();
+
+    $('loginPanel').classList.remove('hidden');
+    $('ordersPanel').classList.add('hidden');
+    $('ticketsPanel').classList.add('hidden');
+    $('chatPanel').classList.add('hidden');
+    $('topActions').classList.add('hidden');
+
+    authorizedUserId = null;
+    selectedCustomerId = null;
+    conversations = {};
+    knownCustomerMessageIds = null;
+  }
+
+  async function showDashboard() {
+    if (dashboardCheck) return;
+    dashboardCheck = true;
+
+    try {
+      const { data: userData, error: userError } = await db.auth.getUser();
+
+      if (userError || !userData.user) {
+        showLogin();
+        return;
+      }
+
+      const userId = userData.user.id;
+
+      const { data: isAdmin, error: adminError } =
+        await db.rpc('is_chat_admin');
+
+      if (adminError || isAdmin !== true) {
+        showLogin();
+        showError(
+          'loginError',
+          'این حساب دسترسی مدیریت ندارد. با حساب مدیر وارد شو.'
+        );
+        await db.auth.signOut({ scope: 'local' });
+        return;
+      }
+
+      authorizedUserId = userId;
+
+      $('loginPanel').classList.add('hidden');
+      $('ordersPanel').classList.remove('hidden');
+      $('ticketsPanel').classList.remove('hidden');
+      $('chatPanel').classList.remove('hidden');
+      $('topActions').classList.remove('hidden');
+      updateSoundButton();
+
+      await Promise.all([loadOrders(), loadTickets(), loadChatInbox()]);
+      startChatPolling();
+
+    } catch (error) {
+      showLogin();
+      showError('loginError', 'خطا: ' + error.message);
+    } finally {
+      dashboardCheck = false;
+    }
+  }
+
+  // دریافت سفارش‌ها
+  async function loadOrders() {
+    if (ordersLoading) return;
+    ordersLoading = true;
+
+    try {
+      hideMessage('ordersError');
+      $('countText').textContent = 'در حال دریافت سفارش‌ها…';
+
+      const { data, error } = await db.from('orders')
+        .select('id, customer_name, phone, site_type, description, status, created_at')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        $('countText').textContent = 'دریافت سفارش‌ها ناموفق بود';
+        showError('ordersError', 'خطا در دریافت سفارش‌ها: ' + error.message);
+        return;
+      }
+
+      $('countText').textContent = `${data.length} سفارش`;
+
+      const body = $('ordersBody');
+      body.replaceChildren();
+
+      if (!data.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 6;
+        td.className = 'empty';
+        td.textContent = 'هنوز سفارشی ثبت نشده است.';
+        tr.appendChild(td);
+        body.appendChild(tr);
+        return;
+      }
+
+      for (const order of data) {
+        const tr = document.createElement('tr');
+
+        const values = [
+          order.customer_name,
+          order.phone,
+          order.site_type,
+          order.description || '—',
+          new Date(order.created_at).toLocaleString('fa-IR')
+        ];
+
+        for (const value of values) {
+          const td = document.createElement('td');
+          td.textContent = value ?? '—';
+          tr.appendChild(td);
+        }
+
+        const statusCell = document.createElement('td');
+        const select = document.createElement('select');
+
+        for (const [value, label] of Object.entries(statusLabels)) {
+          const option = document.createElement('option');
+          option.value = value;
+          option.textContent = label;
+          select.appendChild(option);
+        }
+
+        select.value = order.status;
+
+        select.addEventListener('change', async () => {
+          const newStatus = select.value;
+          select.disabled = true;
+
+          const { error: updateError } = await db.from('orders')
+            .update({ status: newStatus })
+            .eq('id', order.id);
+
+          select.disabled = false;
+
+          if (updateError) {
+            showError('ordersError', 'ذخیره وضعیت انجام نشد: ' + updateError.message);
+            select.value = order.status;
+          } else {
+            order.status = newStatus;
+            showSuccess('notice', 'وضعیت سفارش ذخیره شد.');
+            hideMessage('ordersError');
+          }
+        });
+
+        statusCell.appendChild(select);
+        const replyButton = document.createElement('button');
+        replyButton.type = 'button'; replyButton.textContent = 'مشاهده و پاسخ';
+        replyButton.style.marginTop = '8px';
+        replyButton.addEventListener('click', () => openTicketReplies(ticket));
+        statusCell.appendChild(replyButton);
+        tr.appendChild(statusCell);
+        body.appendChild(tr);
+      }
+    } finally {
+      ordersLoading = false;
+    }
+  }
+
+  let activeReplyTicket = null;
+  async function openTicketReplies(ticket) {
+    activeReplyTicket = ticket;
+    $('ticketReplyPanel').classList.remove('hidden');
+    $('ticketReplyTitle').textContent = 'پاسخ به تیکت: ' + (ticket.subject || 'بدون موضوع');
+    await loadTicketReplies();
+    $('ticketReplyPanel').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  async function loadTicketReplies() {
+    if (!activeReplyTicket) return;
+    const list = $('ticketReplyList'); list.replaceChildren();
+    const {data,error} = await db.from('support_ticket_replies').select('id, sender_role, message, created_at').eq('ticket_id', activeReplyTicket.id).order('created_at',{ascending:true});
+    if (error) { showError('ticketReplyError','دریافت پاسخ‌ها ناموفق بود: '+error.message); return; }
+    if (!data.length) { const e=document.createElement('p'); e.textContent='هنوز پاسخی ثبت نشده است.'; list.append(e); }
+    for (const reply of data) { const item=document.createElement('div'); item.style.cssText='padding:12px;border:1px solid #e5eaf2;border-radius:10px;background:'+(reply.sender_role==='admin'?'#e8efff':'#f8fafc'); const who=document.createElement('strong'); who.textContent=reply.sender_role==='admin'?'پاسخ مدیر':'پیام مشتری'; const msg=document.createElement('p'); msg.textContent=reply.message; const date=document.createElement('small'); date.textContent=reply.created_at?new Date(reply.created_at).toLocaleString('fa-IR'):''; item.append(who,msg,date); list.append(item); }
+  }
+  $('closeTicketReplies').addEventListener('click',()=>{$('ticketReplyPanel').classList.add('hidden');activeReplyTicket=null;});
+  $('ticketReplyForm').addEventListener('submit',async e=>{e.preventDefault(); if(!activeReplyTicket)return; const input=$('ticketReplyInput'); const message=input.value.trim(); if(!message)return; const btn=e.submitter; btn.disabled=true; const {error}=await db.from('support_ticket_replies').insert({ticket_id:activeReplyTicket.id,user_id:activeReplyTicket.user_id,sender_role:'admin',message}); btn.disabled=false; if(error){showError('ticketReplyError','ارسال پاسخ ناموفق بود: '+error.message);return;} input.value=''; hideMessage('ticketReplyError'); await loadTicketReplies(); showSuccess('ticketsNotice','پاسخ برای مشتری ارسال شد.'); });
+
+  // دریافت و مدیریت تیکت‌های پشتیبانی
+  async function loadTickets() {
+    if (ticketsLoading || !authorizedUserId) return;
+    ticketsLoading = true;
+
+    try {
+      hideMessage('ticketsError');
+      $('ticketsCount').textContent = 'در حال دریافت تیکت‌ها…';
+
+      const { data, error } = await db.from('support_tickets')
+        .select('id, user_id, customer_name, phone, subject, message, status, created_at')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        $('ticketsCount').textContent = 'دریافت تیکت‌ها ناموفق بود';
+        showError('ticketsError', 'خطا در دریافت تیکت‌ها: ' + error.message);
+        return;
+      }
+
+      $('ticketsCount').textContent = `${data.length} تیکت ثبت‌شده`;
+      const body = $('ticketsBody');
+      body.replaceChildren();
+
+      if (!data.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 6;
+        td.className = 'empty';
+        td.textContent = 'هنوز تیکتی ثبت نشده است.';
+        tr.appendChild(td);
+        body.appendChild(tr);
+        return;
+      }
+
+      const ticketStatuses = {
+        open: 'باز',
+        reviewing: 'در حال بررسی',
+        closed: 'بسته‌شده'
+      };
+
+      for (const ticket of data) {
+        const tr = document.createElement('tr');
+        const values = [
+          ticket.customer_name,
+          ticket.phone,
+          ticket.subject,
+          ticket.message,
+          ticket.created_at ? new Date(ticket.created_at).toLocaleString('fa-IR') : '—'
+        ];
+
+        for (const value of values) {
+          const td = document.createElement('td');
+          td.textContent = value ?? '—';
+          tr.appendChild(td);
+        }
+
+        const statusCell = document.createElement('td');
+        const select = document.createElement('select');
+        for (const [value, label] of Object.entries(ticketStatuses)) {
+          const option = document.createElement('option');
+          option.value = value;
+          option.textContent = label;
+          select.appendChild(option);
+        }
+
+        const originalStatus = ticket.status || 'open';
+        select.value = Object.prototype.hasOwnProperty.call(ticketStatuses, originalStatus)
+          ? originalStatus : 'open';
+
+        select.addEventListener('change', async () => {
+          const newStatus = select.value;
+          select.disabled = true;
+          hideMessage('ticketsError');
+          hideMessage('ticketsNotice');
+
+          const { error: updateError } = await db.from('support_tickets')
+            .update({ status: newStatus })
+            .eq('id', ticket.id);
+
+          select.disabled = false;
+          if (updateError) {
+            select.value = originalStatus in ticketStatuses ? originalStatus : 'open';
+            showError('ticketsError', 'ذخیره وضعیت تیکت انجام نشد: ' + updateError.message);
+          } else {
+            ticket.status = newStatus;
+            showSuccess('ticketsNotice', 'وضعیت تیکت با موفقیت ذخیره شد.');
+          }
+        });
+
+        statusCell.appendChild(select);
+        const replyButton = document.createElement('button');
+        replyButton.type = 'button'; replyButton.textContent = 'مشاهده و پاسخ';
+        replyButton.style.marginTop = '8px';
+        replyButton.addEventListener('click', () => openTicketReplies(ticket));
+        statusCell.appendChild(replyButton);
+        tr.appendChild(statusCell);
+        body.appendChild(tr);
+      }
+    } catch (error) {
+      $('ticketsCount').textContent = 'دریافت تیکت‌ها ناموفق بود';
+      showError('ticketsError', 'خطا در دریافت تیکت‌ها: ' + error.message);
+    } finally {
+      ticketsLoading = false;
+    }
+  }
+
+  // دریافت پیام‌ها، تشخیص پیام تازه و بروزرسانی وضعیت خوانده‌شدن
+  async function loadChatInbox() {
+    if (chatLoading || !authorizedUserId) return;
+    chatLoading = true;
+
+    try {
+      hideMessage('chatError');
+
+      const { data, error } = await db.from('chat_messages')
+        .select('id, user_id, message, is_admin, created_at, read_by_admin')
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        showError('chatError', 'دریافت پیام‌ها ناموفق بود: ' + error.message);
+        return;
+      }
+
+      // بار اول فقط شناسه پیام‌های موجود ثبت می‌شود تا پیام قدیمی صدا ایجاد نکند.
+      const currentCustomerMessageIds = new Set(
+        data.filter(msg => !msg.is_admin).map(msg => String(msg.id))
+      );
+
+      if (knownCustomerMessageIds !== null) {
+        const hasNewCustomerMessage = data.some(msg =>
+          !msg.is_admin && !knownCustomerMessageIds.has(String(msg.id))
+        );
+
+        if (hasNewCustomerMessage) {
+          playNotificationSound();
+        }
+      }
+
+      knownCustomerMessageIds = currentCustomerMessageIds;
+
+      // اگر گفت‌وگویی باز است، پیام‌های جدید همان گفت‌وگو خوانده می‌شوند.
+      if (selectedCustomerId) {
+        const hasUnread = data.some(msg =>
+          msg.user_id === selectedCustomerId &&
+          !msg.is_admin &&
+          !msg.read_by_admin
+        );
+
+        if (hasUnread) {
+          const { error: readError } = await db.from('chat_messages')
+            .update({ read_by_admin: true })
+            .eq('user_id', selectedCustomerId)
+            .eq('is_admin', false)
+            .eq('read_by_admin', false);
+
+          if (readError) {
+            showError('chatError', 'علامت‌گذاری پیام‌ها انجام نشد: ' + readError.message);
+          } else {
+            data.forEach(msg => {
+              if (msg.user_id === selectedCustomerId && !msg.is_admin) {
+                msg.read_by_admin = true;
+              }
+            });
+          }
+        }
+      }
+
+      conversations = {};
+
+      for (const msg of data) {
+        if (!conversations[msg.user_id]) {
+          conversations[msg.user_id] = [];
+        }
+        conversations[msg.user_id].push(msg);
+      }
+
+      renderCustomerList();
+      renderUnreadTotal();
+
+      if (selectedCustomerId && conversations[selectedCustomerId]) {
+        renderConversation(selectedCustomerId);
+      } else {
+        selectedCustomerId = null;
+        $('conversationTitle').textContent = 'یک مشتری را انتخاب کن.';
+        $('messages').innerHTML =
+          '<div class="empty">یک مشتری را از فهرست انتخاب کن.</div>';
+        $('replyInput').disabled = true;
+        $('replyBtn').disabled = true;
+      }
+    } finally {
+      chatLoading = false;
+    }
+  }
+
+  // تعداد کل پیام‌های خوانده‌نشده
+  function renderUnreadTotal() {
+    let total = 0;
+
+    for (const msgs of Object.values(conversations)) {
+      total += msgs.filter(msg =>
+        !msg.is_admin && !msg.read_by_admin
+      ).length;
+    }
+
+    const badge = $('totalUnread');
+
+    if (total > 0) {
+      badge.textContent = `${total} پیام خوانده‌نشده`;
+      badge.classList.remove('hidden');
+    } else {
+      badge.classList.add('hidden');
+    }
+  }
+
+  // نمایش فهرست مشتری‌ها
+  function renderCustomerList() {
+    const list = $('customerList');
+    list.replaceChildren();
+
+    const ids = Object.keys(conversations);
+
+    if (!ids.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.textContent = 'هنوز پیامی دریافت نشده است.';
+      list.appendChild(empty);
+      return;
+    }
+
+    ids.sort((a, b) => {
+      const lastA = new Date(conversations[a].at(-1).created_at);
+      const lastB = new Date(conversations[b].at(-1).created_at);
+      return lastB - lastA;
+    });
+
+    for (const id of ids) {
+      const msgs = conversations[id];
+      const last = msgs[msgs.length - 1];
+
+      const unreadCount = msgs.filter(msg =>
+        !msg.is_admin && !msg.read_by_admin
+      ).length;
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'customer-item' +
+        (id === selectedCustomerId ? ' active' : '');
+
+      const title = document.createElement('strong');
+      title.textContent = 'مشتری';
+
+      if (unreadCount > 0) {
+        const badge = document.createElement('span');
+        badge.className = 'unread-badge';
+        badge.textContent = unreadCount;
+        title.appendChild(badge);
+      }
+
+      const preview = document.createElement('small');
+      preview.textContent =
+        (last.is_admin ? 'پاسخ مدیر: ' : '') + last.message.slice(0, 55);
+
+      const count = document.createElement('small');
+      count.textContent = `${msgs.length} پیام`;
+
+      if (unreadCount > 0) {
+        count.classList.add('unread-label');
+        count.textContent += ` | ${unreadCount} پیام جدید`;
+      }
+
+      button.append(title, preview, count);
+
+      button.addEventListener('click', async () => {
+        selectedCustomerId = id;
+        renderCustomerList();
+        renderConversation(id);
+        await loadChatInbox();
+      });
+
+      list.appendChild(button);
+    }
+  }
+
+  // نمایش گفت‌وگوی انتخاب‌شده
+  function renderConversation(customerId) {
+    const msgs = conversations[customerId] || [];
+
+    $('conversationTitle').textContent =
+      'گفت‌وگو با مشتری: ' + customerId;
+
+    const box = $('messages');
+    box.replaceChildren();
+
+    for (const msg of msgs) {
+      const item = document.createElement('div');
+      item.className = 'message ' + (msg.is_admin ? 'admin' : 'customer');
+
+      const sender = document.createElement('strong');
+      sender.textContent = msg.is_admin ? 'مدیر' : 'مشتری';
+
+      const content = document.createElement('div');
+      content.textContent = msg.message;
+
+      const time = document.createElement('small');
+      time.textContent =
+        new Date(msg.created_at).toLocaleString('fa-IR');
+
+      item.append(sender, content, time);
+      box.appendChild(item);
+    }
+
+    box.scrollTop = box.scrollHeight;
+    $('replyInput').disabled = false;
+    $('replyBtn').disabled = false;
+  }
+
+  // ارسال پاسخ مدیر
+  $('replyForm').addEventListener('submit', async event => {
+    event.preventDefault();
+
+    if (!selectedCustomerId) return;
+
+    const message = $('replyInput').value.trim();
+    if (!message) return;
+
+    $('replyBtn').disabled = true;
+    hideMessage('chatError');
+    hideMessage('chatNotice');
+
+    const { error } = await db.from('chat_messages').insert({
+      user_id: selectedCustomerId,
+      message: message,
+      is_admin: true
+    });
+
+    $('replyBtn').disabled = false;
+
+    if (error) {
+      showError('chatError', 'ارسال پاسخ انجام نشد: ' + error.message);
+      return;
+    }
+
+    $('replyInput').value = '';
+    showSuccess('chatNotice', 'پاسخ با موفقیت ارسال شد.');
+    await loadChatInbox();
+  });
+
+  // ورود مدیر
+  $('loginForm').addEventListener('submit', async event => {
+    event.preventDefault();
+
+    hideMessage('loginError');
+    $('loginBtn').disabled = true;
+
+    const { error } = await db.auth.signInWithPassword({
+      email: $('email').value.trim(),
+      password: $('password').value
+    });
+
+    $('loginBtn').disabled = false;
+
+    if (error) {
+      showError('loginError', 'ورود انجام نشد: ' + error.message);
+    } else {
+      $('password').value = '';
+      await showDashboard();
+    }
+  });
+
+  // بروزرسانی دستی
+  $('refreshBtn').addEventListener('click', async () => {
+    await Promise.all([loadOrders(), loadTickets(), loadChatInbox()]);
+  });
+
+  // خروج
+  $('logoutBtn').addEventListener('click', async () => {
+    stopChatPolling();
+    await db.auth.signOut();
+    showLogin();
+  });
+
+  // بررسی نشست کاربر
+  db.auth.getSession().then(({ data }) => {
+    if (data.session) showDashboard();
+    else showLogin();
+  });
+
+  db.auth.onAuthStateChange((event, session) => {
+    if (session) {
+      showDashboard();
+    } else {
+      showLogin();
+    }
+  });
+</script>
+</body>
+</html>
