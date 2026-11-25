@@ -60,6 +60,24 @@
     }
     .unread-label{color:#b42318!important;font-weight:bold}
 
+
+    .dashboard-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:18px}
+    .stat-card{padding:17px;border:1px solid #e5eaf2;border-radius:14px;background:linear-gradient(145deg,#fff,#f8faff)}
+    .stat-card .stat-label{font-size:12px;color:#64748b}
+    .stat-card .stat-value{font-size:27px;font-weight:800;margin-top:9px;color:#172033}
+    .stat-card .stat-foot{font-size:11px;color:#64748b;margin-top:5px}
+    .dashboard-bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+    .mini-panel{border:1px solid #e5eaf2;border-radius:13px;padding:16px;background:#fff}
+    .mini-panel h3{font-size:14px;margin:0 0 14px}
+    .status-row{display:grid;grid-template-columns:95px 1fr 30px;gap:10px;align-items:center;margin:12px 0;font-size:12px}
+    .status-track{height:9px;background:#edf1f7;border-radius:20px;overflow:hidden}
+    .status-fill{height:100%;background:linear-gradient(90deg,#2457d6,#6d91f4);border-radius:20px;width:0;transition:width .3s}
+    .table-tools{display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap}
+    .table-tools input{max-width:340px}
+    .table-tools .muted{margin-right:auto}
+    @media(max-width:850px){.dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-bottom{grid-template-columns:1fr}}
+    @media(max-width:420px){.dashboard-grid{gap:9px}.stat-card{padding:12px}.stat-card .stat-value{font-size:23px}.status-row{grid-template-columns:80px 1fr 25px}}
+
     @media(max-width:700px){
       .wrap{margin:20px auto}
       .panel{padding:16px}
@@ -106,6 +124,33 @@
     <div class="error" id="loginError"></div>
   </section>
 
+
+  <section class="panel hidden" id="dashboardPanel">
+    <div class="actions" style="justify-content:space-between">
+      <div>
+        <h2 style="margin:0 0 5px">نمای کلی مدیریت</h2>
+        <div class="muted">خلاصه وضعیت سفارش‌ها و پشتیبانی</div>
+      </div>
+      <span class="muted" id="dashboardUpdated">آمار پس از بارگذاری نمایش داده می‌شود</span>
+    </div>
+    <div class="dashboard-grid">
+      <div class="stat-card"><div class="stat-label">کل سفارش‌ها</div><div class="stat-value" id="statOrders">—</div><div class="stat-foot">تمام سفارش‌های ثبت‌شده</div></div>
+      <div class="stat-card"><div class="stat-label">سفارش‌های جدید</div><div class="stat-value" id="statNewOrders">—</div><div class="stat-foot">در انتظار بررسی</div></div>
+      <div class="stat-card"><div class="stat-label">سفارش‌های تکمیل‌شده</div><div class="stat-value" id="statCompleted">—</div><div class="stat-foot">به پایان رسیده</div></div>
+      <div class="stat-card"><div class="stat-label">تیکت‌های باز</div><div class="stat-value" id="statOpenTickets">—</div><div class="stat-foot">نیازمند پیگیری</div></div>
+    </div>
+    <div class="dashboard-bottom">
+      <div class="mini-panel">
+        <h3>وضعیت سفارش‌ها</h3>
+        <div id="orderStatusChart"></div>
+      </div>
+      <div class="mini-panel">
+        <h3>راهنمای سریع</h3>
+        <div class="muted" style="line-height:2.1">• برای تغییر وضعیت، از فهرست سفارش‌ها استفاده کن.<br>• پاسخ تیکت‌ها از بخش تیکت‌های پشتیبانی ارسال می‌شود.<br>• پیام‌های آنلاین هر ۵ ثانیه بروزرسانی می‌شوند.</div>
+      </div>
+    </div>
+  </section>
+
   <section class="panel hidden" id="ordersPanel">
     <div>
       <h2 style="margin:0 0 5px">سفارش‌ها</h2>
@@ -114,6 +159,10 @@
 
     <div class="error" id="ordersError"></div>
     <div class="success" id="notice"></div>
+    <div class="table-tools">
+      <input id="orderSearch" type="search" placeholder="جست‌وجو در نام، تماس یا توضیحات سفارش…">
+      <span class="muted">برای پیدا کردن سریع سفارش‌ها جست‌وجو کن.</span>
+    </div>
 
     <div class="table-wrap">
       <table>
@@ -141,6 +190,9 @@
     </div>
     <div class="error" id="ticketsError"></div>
     <div class="success" id="ticketsNotice"></div>
+    <div class="table-tools">
+      <input id="ticketSearch" type="search" placeholder="جست‌وجو در نام، تماس یا موضوع تیکت…">
+    </div>
     <div class="table-wrap">
       <table>
         <thead>
@@ -222,6 +274,8 @@
   let ordersLoading = false;
   let chatLoading = false;
   let ticketsLoading = false;
+  let cachedOrders = [];
+  let cachedTickets = [];
 
   // تنظیمات اعلان صوتی
   let soundEnabled = localStorage.getItem('adminSoundEnabled') === 'true';
@@ -249,6 +303,45 @@
 
   function hideMessage(id) {
     $(id).style.display = 'none';
+  }
+
+  function updateDashboardStats() {
+    const orders = cachedOrders;
+    const tickets = cachedTickets;
+    const count = status => orders.filter(item => item.status === status).length;
+    $('statOrders').textContent = orders.length;
+    $('statNewOrders').textContent = count('new');
+    $('statCompleted').textContent = count('completed');
+    $('statOpenTickets').textContent = tickets.filter(item => item.status !== 'closed').length;
+
+    const chart = $('orderStatusChart');
+    chart.replaceChildren();
+    const rows = [
+      ['جدید', count('new')],
+      ['در حال بررسی', count('reviewing')],
+      ['در حال انجام', count('in_progress')],
+      ['تکمیل‌شده', count('completed')]
+    ];
+    const max = Math.max(1, ...rows.map(row => row[1]));
+    for (const [label, value] of rows) {
+      const row = document.createElement('div');
+      row.className = 'status-row';
+      const name = document.createElement('span'); name.textContent = label;
+      const track = document.createElement('div'); track.className = 'status-track';
+      const fill = document.createElement('div'); fill.className = 'status-fill';
+      fill.style.width = (value / max * 100) + '%';
+      track.appendChild(fill);
+      const number = document.createElement('strong'); number.textContent = value;
+      row.append(name, track, number); chart.appendChild(row);
+    }
+    $('dashboardUpdated').textContent = 'آخرین بروزرسانی: ' + new Date().toLocaleTimeString('fa-IR');
+  }
+
+  function applyTableSearch(inputId, bodyId) {
+    const query = $(inputId).value.trim().toLocaleLowerCase();
+    for (const row of $(bodyId).querySelectorAll('tr')) {
+      row.hidden = query && !row.textContent.toLocaleLowerCase().includes(query);
+    }
   }
 
   function updateSoundButton() {
@@ -334,6 +427,7 @@
     stopChatPolling();
 
     $('loginPanel').classList.remove('hidden');
+    $('dashboardPanel').classList.add('hidden');
     $('ordersPanel').classList.add('hidden');
     $('ticketsPanel').classList.add('hidden');
     $('chatPanel').classList.add('hidden');
@@ -375,6 +469,7 @@
       authorizedUserId = userId;
 
       $('loginPanel').classList.add('hidden');
+      $('dashboardPanel').classList.remove('hidden');
       $('ordersPanel').classList.remove('hidden');
       $('ticketsPanel').classList.remove('hidden');
       $('chatPanel').classList.remove('hidden');
@@ -411,6 +506,8 @@
         return;
       }
 
+      cachedOrders = data;
+      updateDashboardStats();
       $('countText').textContent = `${data.length} سفارش`;
 
       const body = $('ordersBody');
@@ -477,11 +574,6 @@
         });
 
         statusCell.appendChild(select);
-        const replyButton = document.createElement('button');
-        replyButton.type = 'button'; replyButton.textContent = 'مشاهده و پاسخ';
-        replyButton.style.marginTop = '8px';
-        replyButton.addEventListener('click', () => openTicketReplies(ticket));
-        statusCell.appendChild(replyButton);
         tr.appendChild(statusCell);
         body.appendChild(tr);
       }
@@ -528,6 +620,8 @@
         return;
       }
 
+      cachedTickets = data;
+      updateDashboardStats();
       $('ticketsCount').textContent = `${data.length} تیکت ثبت‌شده`;
       const body = $('ticketsBody');
       body.replaceChildren();
@@ -877,6 +971,9 @@
       await showDashboard();
     }
   });
+
+  $('orderSearch').addEventListener('input', () => applyTableSearch('orderSearch', 'ordersBody'));
+  $('ticketSearch').addEventListener('input', () => applyTableSearch('ticketSearch', 'ticketsBody'));
 
   // بروزرسانی دستی
   $('refreshBtn').addEventListener('click', async () => {
