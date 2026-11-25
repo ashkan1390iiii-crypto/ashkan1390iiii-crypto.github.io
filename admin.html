@@ -136,6 +136,7 @@
         <button class="secondary section-nav" data-target="analyticsPanel" type="button">آمار بازدید</button>
         <button class="secondary section-nav" data-target="auditPanel" type="button">تاریخچه مدیر</button>
         <button class="secondary section-nav" data-target="paymentPanel" type="button">پرداخت آنلاین</button>
+        <button class="secondary section-nav" data-target="discountPanel" type="button">کدهای تخفیف</button>
       </div>
       <div>
         <h2 style="margin:0 0 5px">نمای کلی مدیریت</h2>
@@ -238,6 +239,20 @@
     <p class="muted" style="line-height:2">این سایت روی GitHub Pages میزبانی می‌شود و کلید محرمانه درگاه نباید داخل HTML قرار بگیرد. برای دریافت وجه واقعی، باید یک ارائه‌دهنده پرداخت سازگار با کشور و حساب پذیرنده انتخاب شود و درخواست پرداخت از سمت سرور امن انجام شود.</p>
     <div class="stat-card"><strong>وضعیت فعلی: آماده‌سازی، بدون دریافت وجه واقعی</strong><p class="muted">مدیریت دستی مبلغ و وضعیت پرداخت سفارش‌ها همچنان فعال است. پس از انتخاب درگاه، اتصال امن سمت سرور اضافه می‌شود.</p></div>
     <p style="margin-top:14px">هیچ پرداخت آزمایشی به‌عنوان پرداخت واقعی ثبت نمی‌شود.</p>
+  </section>
+
+  <section class="panel hidden" id="discountPanel">
+    <h2>باشگاه مشتریان و کدهای تخفیف</h2>
+    <div class="muted">کدهای تخفیف را بساز و فعال یا غیرفعال کن.</div>
+    <form id="discountForm" class="actions" style="align-items:end;margin-top:15px">
+      <div style="flex:1;min-width:130px"><label for="discountCode">کد</label><input id="discountCode" maxlength="30" required pattern="[A-Za-z0-9_-]+"></div>
+      <div style="width:130px"><label for="discountPercent">درصد</label><input id="discountPercent" type="number" min="1" max="100" value="10" required></div>
+      <div style="width:140px"><label for="discountMaxUses">حداکثر استفاده</label><input id="discountMaxUses" type="number" min="1" value="100" required></div>
+      <div style="min-width:180px;flex:1"><label for="discountExpiry">تاریخ انقضا (اختیاری)</label><input id="discountExpiry" type="datetime-local"></div>
+      <button type="submit">ساخت کد تخفیف</button>
+    </form>
+    <div class="error" id="discountError"></div><div class="success" id="discountNotice"></div>
+    <div class="table-wrap"><table><thead><tr><th>کد</th><th>تخفیف</th><th>استفاده</th><th>انقضا</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="discountBody"></tbody></table></div>
   </section>
 
   <section class="panel hidden" id="ordersPanel">
@@ -1172,7 +1187,7 @@
 
   let editingPortfolioId = null;
   function showAdminSection(id) {
-    for (const section of ['financePanel','customersPanel','portfolioPanel','bookingsPanel','blogPanel','analyticsPanel','auditPanel','paymentPanel']) $(section).classList.toggle('hidden', section !== id);
+    for (const section of ['financePanel','customersPanel','portfolioPanel','bookingsPanel','blogPanel','analyticsPanel','auditPanel','paymentPanel','discountPanel']) $(section).classList.toggle('hidden', section !== id);
     $(id).scrollIntoView({behavior:'smooth',block:'start'});
     if(id==='customersPanel') renderCustomers();
     if(id==='portfolioPanel') loadPortfolio();
@@ -1180,6 +1195,7 @@
     if(id==='blogPanel') loadBlogPosts();
     if(id==='analyticsPanel') loadAnalytics();
     if(id==='auditPanel') loadAuditLogs();
+    if(id==='discountPanel') loadDiscountCodes();
   }
   document.querySelectorAll('.section-nav').forEach(btn=>btn.addEventListener('click',()=>showAdminSection(btn.dataset.target)));
 
@@ -1248,6 +1264,31 @@
     showSuccess('portfolioNotice','نمونه‌کار ذخیره شد.');resetPortfolioForm();await loadPortfolio();
   });
 
+
+  async function loadDiscountCodes(){
+    const {data,error}=await db.from('discount_codes').select('*').order('created_at',{ascending:false});
+    if(error){showError('discountError',error.message);return;}
+    const body=$('discountBody');body.replaceChildren();
+    (data||[]).forEach(item=>{
+      const tr=document.createElement('tr');
+      [item.code,item.discount_percent+'%',item.used_count+'/'+item.max_uses,item.expires_at?new Date(item.expires_at).toLocaleString('fa-IR'):'بدون انقضا',item.is_active?'فعال':'غیرفعال'].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.append(td);});
+      const td=document.createElement('td'),toggle=document.createElement('button');toggle.className='secondary';toggle.textContent=item.is_active?'غیرفعال‌کردن':'فعال‌کردن';
+      toggle.addEventListener('click',async()=>{toggle.disabled=true;const {error}=await db.from('discount_codes').update({is_active:!item.is_active}).eq('id',item.id);toggle.disabled=false;if(error)showError('discountError',error.message);else loadDiscountCodes();});
+      const del=document.createElement('button');del.className='secondary';del.style.marginRight='6px';del.textContent='حذف';del.addEventListener('click',async()=>{if(!confirm('این کد تخفیف حذف شود؟'))return;const {error}=await db.from('discount_codes').delete().eq('id',item.id);if(error)showError('discountError',error.message);else loadDiscountCodes();});
+      td.append(toggle,del);tr.append(td);body.append(tr);
+    });
+  }
+  $('discountForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const code=$('discountCode').value.trim().toUpperCase();
+    const percent=Number($('discountPercent').value),maxUses=Number($('discountMaxUses').value);
+    if(!/^[A-Z0-9_-]{3,30}$/.test(code)||percent<1||percent>100||maxUses<1){showError('discountError','اطلاعات کد تخفیف معتبر نیست.');return;}
+    const expiry=$('discountExpiry').value?new Date($('discountExpiry').value).toISOString():null;
+    const {error}=await db.from('discount_codes').insert({code,discount_percent:percent,max_uses:maxUses,expires_at:expiry,is_active:true});
+    if(error){showError('discountError',error.message);return;}
+    $('discountForm').reset();$('discountPercent').value=10;$('discountMaxUses').value=100;
+    showSuccess('discountNotice','کد تخفیف ساخته شد.');loadDiscountCodes();
+  });
 
   async function loadBookings(){
     const {data,error}=await db.from('consultation_bookings').select('*').order('created_at',{ascending:false}).limit(100);
