@@ -706,7 +706,7 @@
     for (const reply of data) { const item=document.createElement('div'); item.style.cssText='padding:12px;border:1px solid #e5eaf2;border-radius:10px;background:'+(reply.sender_role==='admin'?'#e8efff':'#f8fafc'); const who=document.createElement('strong'); who.textContent=reply.sender_role==='admin'?'پاسخ مدیر':'پیام مشتری'; const msg=document.createElement('p'); msg.textContent=reply.message; const date=document.createElement('small'); date.textContent=reply.created_at?new Date(reply.created_at).toLocaleString('fa-IR'):''; item.append(who,msg,date); list.append(item); }
   }
   $('closeTicketReplies').addEventListener('click',()=>{$('ticketReplyPanel').classList.add('hidden');activeReplyTicket=null;});
-  $('ticketReplyForm').addEventListener('submit',async e=>{e.preventDefault(); if(!activeReplyTicket)return; const input=$('ticketReplyInput'); const message=input.value.trim(); if(!message)return; const btn=e.submitter; btn.disabled=true; const {error}=await db.from('support_ticket_replies').insert({ticket_id:activeReplyTicket.id,user_id:activeReplyTicket.user_id,sender_role:'admin',message}); btn.disabled=false; if(error){showError('ticketReplyError','ارسال پاسخ ناموفق بود: '+error.message);return;} input.value=''; hideMessage('ticketReplyError'); await loadTicketReplies(); showSuccess('ticketsNotice','پاسخ برای مشتری ارسال شد.'); });
+  $('ticketReplyForm').addEventListener('submit',async e=>{e.preventDefault(); if(!activeReplyTicket)return; const input=$('ticketReplyInput'); const message=input.value.trim(); if(!message)return; const btn=e.submitter; btn.disabled=true; const {error}=await db.from('support_ticket_replies').insert({ticket_id:activeReplyTicket.id,user_id:activeReplyTicket.user_id,sender_role:'admin',message}); btn.disabled=false; if(error){showError('ticketReplyError','ارسال پاسخ ناموفق بود: '+error.message);return;} input.value=''; hideMessage('ticketReplyError'); if(activeReplyTicket.user_id){const n=await db.from('notifications').insert({user_id:activeReplyTicket.user_id,title:'پاسخ جدید به تیکت',message:'مدیر به تیکت پشتیبانی شما پاسخ داده است.'});if(n.error)console.warn('ثبت اعلان تیکت ناموفق بود:',n.error.message);} await loadTicketReplies(); showSuccess('ticketsNotice','پاسخ برای مشتری ارسال شد.'); });
 
   // دریافت و مدیریت تیکت‌های پشتیبانی
   async function loadTickets() {
@@ -1053,6 +1053,9 @@
     }
 
     $('replyInput').value = '';
+    const customer = (cachedOrders.find(o=>o.user_id===selectedCustomerId) || {}).user_id || selectedCustomerId;
+    const noticeResult = await db.from('notifications').insert({user_id:customer,title:'پیام جدید از پشتیبانی',message:'مدیر در گفت‌وگوی پشتیبانی به شما پاسخ داده است.'});
+    if(noticeResult.error) console.warn('ثبت اعلان چت ناموفق بود:',noticeResult.error.message);
     showSuccess('chatNotice', 'پاسخ با موفقیت ارسال شد.');
     await loadChatInbox();
   });
