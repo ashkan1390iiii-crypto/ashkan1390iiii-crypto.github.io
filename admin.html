@@ -1170,7 +1170,7 @@
 
   let editingPortfolioId = null;
   function showAdminSection(id) {
-    for (const section of ['financePanel','customersPanel','portfolioPanel']) $(section).classList.toggle('hidden', section !== id);
+    for (const section of ['financePanel','customersPanel','portfolioPanel','bookingsPanel','blogPanel','analyticsPanel','auditPanel','paymentPanel']) $(section).classList.toggle('hidden', section !== id);
     $(id).scrollIntoView({behavior:'smooth',block:'start'});
     if(id==='customersPanel') renderCustomers();
     if(id==='portfolioPanel') loadPortfolio();
