@@ -277,7 +277,7 @@
             <th>نوع سایت</th>
             <th>توضیحات</th>
             <th>تاریخ ثبت</th>
-            <th>وضعیت</th><th>کد تخفیف</th><th>مبلغ</th><th>پرداخت</th>
+            <th>وضعیت</th><th>کد تخفیف</th><th>مبلغ</th><th>پرداخت</th><th>مسئول انجام</th><th>موعد تحویل</th><th>یادداشت داخلی</th>
           </tr>
         </thead>
         <tbody id="ordersBody">
@@ -376,6 +376,8 @@
   let authorizedUserId = null;
   let dashboardCheck = false;
   let chatPollingTimer = null;
+  let ordersPollingTimer = null;
+  let knownOrderIds = null;
   let ordersLoading = false;
   let chatLoading = false;
   let ticketsLoading = false;
@@ -520,6 +522,17 @@
 
   updateSoundButton();
 
+  function stopOrderPolling() {
+    if(ordersPollingTimer){clearInterval(ordersPollingTimer);ordersPollingTimer=null;}
+  }
+
+  function startOrderPolling() {
+    stopOrderPolling();
+    ordersPollingTimer=setInterval(()=>{
+      if(authorizedUserId && !ordersLoading) loadOrders();
+    },15000);
+  }
+
   function stopChatPolling() {
     if (chatPollingTimer) {
       clearInterval(chatPollingTimer);
@@ -542,6 +555,8 @@
     if(presenceTimer){clearInterval(presenceTimer);presenceTimer=null;}
     if(authorizedUserId) updateAdminPresence(false);
     stopChatPolling();
+    stopOrderPolling();
+    knownOrderIds=null;
 
     $('loginPanel').classList.remove('hidden');
     $('dashboardPanel').classList.add('hidden');
@@ -607,6 +622,7 @@
 
       await Promise.all([loadOrders(), loadTickets(), loadChatInbox()]);
       startChatPolling();
+      startOrderPolling();
 
     } catch (error) {
       showLogin();
@@ -626,7 +642,7 @@
       $('countText').textContent = 'در حال دریافت سفارش‌ها…';
 
       const { data, error } = await db.from('orders')
-        .select('id, customer_name, phone, site_type, description, status, created_at, amount, payment_status, user_id, discount_code, discount_percent')
+        .select('id, customer_name, phone, site_type, description, status, created_at, amount, payment_status, user_id, discount_code, discount_percent, assigned_to, admin_note, due_at')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -635,6 +651,15 @@
         return;
       }
 
+      if (knownOrderIds !== null) {
+        const previous = knownOrderIds;
+        const arrived = data.filter(item => !previous.has(String(item.id)));
+        if (arrived.length) {
+          showSuccess('notice', arrived.length === 1 ? 'سفارش جدید ثبت شد؛ برای بررسی به فهرست سفارش‌ها مراجعه کن.' : String(arrived.length) + ' سفارش جدید ثبت شد؛ برای بررسی به فهرست سفارش‌ها مراجعه کن.');
+          playNotificationSound();
+        }
+      }
+      knownOrderIds = new Set(data.map(item => String(item.id)));
       cachedOrders = data;
       updateDashboardStats();
       $('countText').textContent = `${data.length} سفارش`;
@@ -645,7 +670,7 @@
       if (!data.length) {
         const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.colSpan = 9;
+        td.colSpan = 12;
         td.className = 'empty';
         td.textContent = 'هنوز سفارشی ثبت نشده است.';
         tr.appendChild(td);
@@ -761,6 +786,43 @@
           }
         });
         paymentCell.appendChild(paymentSelect);tr.appendChild(paymentCell);
+
+        const assignedCell=document.createElement('td');
+        const assignedInput=document.createElement('input');
+        assignedInput.type='text';assignedInput.maxLength=100;assignedInput.placeholder='نام مسئول اجرا';
+        assignedInput.value=order.assigned_to||'';assignedInput.style.minWidth='150px';
+        assignedInput.addEventListener('change',async()=>{
+          const assigned_to=assignedInput.value.trim();assignedInput.disabled=true;
+          const {error}=await db.from('orders').update({assigned_to,updated_at:new Date().toISOString()}).eq('id',order.id);
+          assignedInput.disabled=false;
+          if(error){showError('ordersError','ذخیره مسئول انجام ناموفق بود: '+error.message);assignedInput.value=order.assigned_to||'';}
+          else{order.assigned_to=assigned_to;showSuccess('notice','مسئول انجام سفارش ذخیره شد.');}
+        });
+        assignedCell.appendChild(assignedInput);tr.appendChild(assignedCell);
+
+        const dueCell=document.createElement('td');
+        const dueInput=document.createElement('input');dueInput.type='datetime-local';dueInput.style.minWidth='190px';
+        if(order.due_at){const d=new Date(order.due_at);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());dueInput.value=d.toISOString().slice(0,16);}
+        dueInput.addEventListener('change',async()=>{
+          const due_at=dueInput.value?new Date(dueInput.value).toISOString():null;dueInput.disabled=true;
+          const {error}=await db.from('orders').update({due_at,updated_at:new Date().toISOString()}).eq('id',order.id);
+          dueInput.disabled=false;
+          if(error){showError('ordersError','ذخیره موعد تحویل ناموفق بود: '+error.message);if(order.due_at){const d=new Date(order.due_at);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());dueInput.value=d.toISOString().slice(0,16);}else dueInput.value='';}
+          else{order.due_at=due_at;showSuccess('notice','موعد تحویل ذخیره شد.');}
+        });
+        dueCell.appendChild(dueInput);tr.appendChild(dueCell);
+
+        const noteCell=document.createElement('td');
+        const noteInput=document.createElement('input');noteInput.type='text';noteInput.maxLength=500;
+        noteInput.placeholder='یادداشت فقط برای مدیر';noteInput.value=order.admin_note||'';noteInput.style.minWidth='190px';
+        noteInput.addEventListener('change',async()=>{
+          const admin_note=noteInput.value.trim();noteInput.disabled=true;
+          const {error}=await db.from('orders').update({admin_note,updated_at:new Date().toISOString()}).eq('id',order.id);
+          noteInput.disabled=false;
+          if(error){showError('ordersError','ذخیره یادداشت ناموفق بود: '+error.message);noteInput.value=order.admin_note||'';}
+          else{order.admin_note=admin_note;showSuccess('notice','یادداشت داخلی ذخیره شد.');}
+        });
+        noteCell.appendChild(noteInput);tr.appendChild(noteCell);
         body.appendChild(tr);
       }
     } finally {
@@ -1185,6 +1247,7 @@
   // خروج
   $('logoutBtn').addEventListener('click', async () => {
     stopChatPolling();
+    stopOrderPolling();
     await db.auth.signOut();
     showLogin();
   });
