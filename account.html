@@ -203,7 +203,7 @@ async function loadLoyalty(){
  const box=$('loyaltyPoints');
  const {data,error}=await db.from('customer_loyalty').select('points,updated_at').eq('user_id',user.id).maybeSingle();
  if(error){box.textContent='دریافت امتیازها ممکن نشد.';return}
- box.textContent='امتیاز فعلی شما: '+(data?.points||0).toLocaleString('fa-IR')+' امتیاز';
+ const points=data?.points||0;const level=points>=100?'VIP':points>=50?'طلایی':points>=10?'نقره‌ای':'تازه‌وارد';box.textContent='امتیاز فعلی: '+points.toLocaleString('fa-IR')+' · سطح مشتری: '+level;
 }
 async function loadMyBookings(){
  const box=$('myBookings');box.replaceChildren();
