@@ -1095,7 +1095,8 @@ a,button{-webkit-tap-highlight-color:transparent}
   <div class="chat-status">در حال آماده‌سازی گفتگو...</div>
  </div>
  <form id="chatForm" class="chat-form">
-  <input id="chatInput" maxlength="2000" placeholder="پیامت رو بنویس..." required disabled>
+  <input id="chatInput" maxlength="2000" placeholder="پیامت رو بنویس..." disabled>
+  <input id="chatAttachment" type="file" accept="image/png,image/jpeg,image/webp,application/pdf" aria-label="پیوست فایل" style="max-width:115px;font-size:10px" disabled>
   <button id="chatSend" type="submit" disabled>ارسال</button>
  </form>
  <div id="chatStatus" class="chat-status"></div>
@@ -1487,7 +1488,12 @@ async function loadChatMessages(){
    sender.textContent=msg.is_admin?"پشتیبانی":"شما";
 
    const content=document.createElement("div");
-   content.textContent=msg.message;
+   if(msg.message.startsWith("ATTACHMENT:")){
+    const [attachmentPath,caption]=msg.message.slice(11).split("::");
+    const {data:signed}=await db.storage.from('support-attachments').createSignedUrl(attachmentPath,3600);
+    if(signed?.signedUrl){const link=document.createElement("a");link.href=signed.signedUrl;link.target="_blank";link.rel="noopener noreferrer";link.textContent="مشاهده پیوست";content.append(link);}
+    if(caption){const note=document.createElement("p");note.textContent=caption;content.append(note);}
+   }else content.textContent=msg.message;
 
    const time=document.createElement("small");
    time.textContent=new Date(msg.created_at).toLocaleString("fa-IR");
@@ -1536,8 +1542,9 @@ $("chatForm").addEventListener("submit",async event=>{
  event.preventDefault();
 
  const message=$("chatInput").value.trim();
-
- if(!message) return;
+ const file=$("chatAttachment").files[0];
+ if(!message&&!file) return;
+ if(file && (!['image/png','image/jpeg','image/webp','application/pdf'].includes(file.type)||file.size>5*1024*1024)){chatStatus("فقط PNG، JPG، WEBP یا PDF تا ۵ مگابایت مجاز است.");return;}
 
  const {data:userData,error:userError}=await db.auth.getUser();
 
@@ -1552,15 +1559,18 @@ $("chatForm").addEventListener("submit",async event=>{
  chatStatus("در حال ارسال پیام...");
 
  try{
-  const {error}=await db.from("chat_messages").insert({
-   user_id:userData.user.id,
-   message:message,
-   is_admin:false
-  });
-
-  if(error) throw error;
-
+  let storedMessage=message;
+  if(file){
+   const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_').slice(-90);
+   const path=userData.user.id+'/'+Date.now()+'-'+safeName;
+   const upload=await db.storage.from('support-attachments').upload(path,file,{upsert:false,contentType:file.type});
+   if(upload.error)throw upload.error;
+   storedMessage='ATTACHMENT:'+path+'::'+message;
+  }
+  const {error}=await db.from("chat_messages").insert({user_id:userData.user.id,message:storedMessage,is_admin:false});
+  if(error)throw error;
   $("chatInput").value="";
+  $("chatAttachment").value="";
   lastChatSignature="";
   chatStatus("پیام ارسال شد.");
 
@@ -1573,6 +1583,7 @@ $("chatForm").addEventListener("submit",async event=>{
  }finally{
   $("chatSend").disabled=!currentUser;
   $("chatInput").disabled=!currentUser;
+  $("chatAttachment").disabled=!currentUser;
  }
 });
 
