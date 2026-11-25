@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#07111f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <meta name="description" content="وب‌ساز مرادی؛ طراحی سایت فروشگاهی، شرکتی و شخصی با طراحی مدرن، واکنش‌گرا، ساختار مناسب سئو و پشتیبانی آنلاین.">
 <meta name="robots" content="index, follow">
 <meta name="author" content="وب‌ساز مرادی">
@@ -1733,6 +1735,11 @@ loadManagedPortfolio();
  }
 })();
 
+
+/* PWA install and offline shell */
+let installPromptEvent=null;
+window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPromptEvent=event;let btn=document.getElementById('installAppButton');if(!btn){btn=document.createElement('button');btn.id='installAppButton';btn.className='btn';btn.textContent='نصب اپلیکیشن';btn.style.cssText='position:fixed;bottom:18px;left:18px;z-index:90;box-shadow:0 8px 25px #0005';document.body.append(btn);}btn.hidden=false;btn.onclick=async()=>{if(!installPromptEvent)return;installPromptEvent.prompt();await installPromptEvent.userChoice;installPromptEvent=null;btn.remove();};});
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(err=>console.warn('PWA registration failed',err)));
 </script>
 </body>
 </html>
