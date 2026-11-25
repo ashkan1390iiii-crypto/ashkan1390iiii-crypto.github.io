@@ -1307,6 +1307,8 @@ $("trackForm").addEventListener("submit",async event=>{
  const button=$("trackBtn");
 
  clear(message);
+ $("trackTimeline").replaceChildren();
+ $("trackTimeline").style.display="none";
 
  button.disabled=true;
  button.textContent="در حال بررسی...";
