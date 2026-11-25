@@ -413,6 +413,11 @@
     $(id).style.display = 'none';
   }
 
+  async function saveOrderAdminDetails(order, patch) {
+    const payload={order_id:order.id,assigned_to:order.assigned_to||'',admin_note:order.admin_note||'',due_at:order.due_at||null,updated_at:new Date().toISOString(),...patch};
+    return db.from('order_admin_details').upsert(payload,{onConflict:'order_id'});
+  }
+
   function updateDashboardStats() {
     const orders = cachedOrders;
     const tickets = cachedTickets;
@@ -642,7 +647,7 @@
       $('countText').textContent = 'در حال دریافت سفارش‌ها…';
 
       const { data, error } = await db.from('orders')
-        .select('id, customer_name, phone, site_type, description, status, created_at, amount, payment_status, user_id, discount_code, discount_percent, assigned_to, admin_note, due_at')
+        .select('id, customer_name, phone, site_type, description, status, created_at, amount, payment_status, user_id, discount_code, discount_percent')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -651,6 +656,10 @@
         return;
       }
 
+      const {data: detailRows, error: detailError} = await db.from('order_admin_details').select('order_id, assigned_to, admin_note, due_at');
+      if(detailError) showError('ordersError','دریافت جزئیات داخلی سفارش‌ها ناموفق بود: '+detailError.message);
+      const detailMap=new Map((detailRows||[]).map(item=>[String(item.order_id),item]));
+      data.forEach(item=>Object.assign(item,detailMap.get(String(item.id))||{}));
       if (knownOrderIds !== null) {
         const previous = knownOrderIds;
         const arrived = data.filter(item => !previous.has(String(item.id)));
@@ -793,7 +802,7 @@
         assignedInput.value=order.assigned_to||'';assignedInput.style.minWidth='150px';
         assignedInput.addEventListener('change',async()=>{
           const assigned_to=assignedInput.value.trim();assignedInput.disabled=true;
-          const {error}=await db.from('orders').update({assigned_to,updated_at:new Date().toISOString()}).eq('id',order.id);
+          const {error}=await saveOrderAdminDetails(order,{assigned_to});
           assignedInput.disabled=false;
           if(error){showError('ordersError','ذخیره مسئول انجام ناموفق بود: '+error.message);assignedInput.value=order.assigned_to||'';}
           else{order.assigned_to=assigned_to;showSuccess('notice','مسئول انجام سفارش ذخیره شد.');}
@@ -805,7 +814,7 @@
         if(order.due_at){const d=new Date(order.due_at);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());dueInput.value=d.toISOString().slice(0,16);}
         dueInput.addEventListener('change',async()=>{
           const due_at=dueInput.value?new Date(dueInput.value).toISOString():null;dueInput.disabled=true;
-          const {error}=await db.from('orders').update({due_at,updated_at:new Date().toISOString()}).eq('id',order.id);
+          const {error}=await saveOrderAdminDetails(order,{due_at});
           dueInput.disabled=false;
           if(error){showError('ordersError','ذخیره موعد تحویل ناموفق بود: '+error.message);if(order.due_at){const d=new Date(order.due_at);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());dueInput.value=d.toISOString().slice(0,16);}else dueInput.value='';}
           else{order.due_at=due_at;showSuccess('notice','موعد تحویل ذخیره شد.');}
@@ -817,7 +826,7 @@
         noteInput.placeholder='یادداشت فقط برای مدیر';noteInput.value=order.admin_note||'';noteInput.style.minWidth='190px';
         noteInput.addEventListener('change',async()=>{
           const admin_note=noteInput.value.trim();noteInput.disabled=true;
-          const {error}=await db.from('orders').update({admin_note,updated_at:new Date().toISOString()}).eq('id',order.id);
+          const {error}=await saveOrderAdminDetails(order,{admin_note});
           noteInput.disabled=false;
           if(error){showError('ordersError','ذخیره یادداشت ناموفق بود: '+error.message);noteInput.value=order.admin_note||'';}
           else{order.admin_note=admin_note;showSuccess('notice','یادداشت داخلی ذخیره شد.');}
