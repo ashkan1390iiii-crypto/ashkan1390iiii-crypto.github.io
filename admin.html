@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
@@ -50,30 +49,14 @@
     .reply-box button{white-space:nowrap}
 
     .unread-badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      background:#dc2626;
-      color:white;
-      border-radius:30px;
-      padding:3px 9px;
-      font-size:11px;
-      font-weight:bold;
-      margin-right:5px;
-      min-width:22px;
+      display:inline-flex;align-items:center;justify-content:center;
+      background:#dc2626;color:white;border-radius:30px;padding:3px 9px;
+      font-size:11px;font-weight:bold;margin-right:5px;min-width:22px;
     }
     .total-unread{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      background:#fff1f0;
-      color:#b42318;
-      border:1px solid #fecaca;
-      border-radius:9px;
-      padding:8px 12px;
-      font-size:12px;
-      font-weight:bold;
-      margin-top:10px;
+      display:inline-flex;align-items:center;gap:6px;background:#fff1f0;
+      color:#b42318;border:1px solid #fecaca;border-radius:9px;
+      padding:8px 12px;font-size:12px;font-weight:bold;margin-top:10px;
     }
     .unread-label{color:#b42318!important;font-weight:bold}
 
@@ -99,9 +82,9 @@
       <div class="muted">مدیریت سفارش‌ها و پشتیبانی مشتریان</div>
     </div>
     <div class="actions hidden" id="topActions">
-      <button class="secondary" id="refreshBtn">بروزرسانی</button>
-<button class="secondary" id="soundToggleBtn" type="button">🔔 اعلان صوتی: خاموش</button>
-<button id="logoutBtn">خروج از حساب</button>
+      <button class="secondary" id="refreshBtn" type="button">بروزرسانی</button>
+      <button class="secondary" id="soundToggleBtn" type="button">🔕 اعلان صوتی: خاموش</button>
+      <button id="logoutBtn" type="button">خروج از حساب</button>
     </div>
   </header>
 
@@ -206,6 +189,11 @@
   let ordersLoading = false;
   let chatLoading = false;
 
+  // تنظیمات اعلان صوتی
+  let soundEnabled = localStorage.getItem('adminSoundEnabled') === 'true';
+  let audioContext = null;
+  let knownCustomerMessageIds = null;
+
   const statusLabels = {
     new: 'جدید',
     reviewing: 'در حال بررسی',
@@ -227,56 +215,68 @@
 
   function hideMessage(id) {
     $(id).style.display = 'none';
-// تنظیمات اعلان صوتی
-let soundEnabled = localStorage.getItem('adminSoundEnabled') === 'true';
-let audioContext = null;
-
-function updateSoundButton() {
-  const btn = $('soundToggleBtn');
-  btn.textContent = soundEnabled
-    ? '🔔 اعلان صوتی: روشن'
-    : '🔕 اعلان صوتی: خاموش';
-}
-
-function playNotificationSound() {
-  if (!soundEnabled) return;
-
-  try {
-    if (!audioContext) {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-
-    if (audioContext.state === 'suspended') {
-      audioContext.resume();
-    }
-
-    const oscillator = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-
-    oscillator.connect(gain);
-    gain.connect(audioContext.destination);
-
-    oscillator.frequency.value = 880;
-    gain.gain.value = 0.15;
-
-    oscillator.start();
-    oscillator.stop(audioContext.currentTime + 0.25);
-  } catch (error) {
-    console.log('خطای پخش اعلان:', error);
   }
-}
 
-$('soundToggleBtn').addEventListener('click', () => {
-  soundEnabled = !soundEnabled;
-  localStorage.setItem('adminSoundEnabled', soundEnabled);
+  function updateSoundButton() {
+    const btn = $('soundToggleBtn');
+    if (!btn) return;
+    btn.textContent = soundEnabled
+      ? '🔔 اعلان صوتی: روشن'
+      : '🔕 اعلان صوتی: خاموش';
+  }
+
+  async function unlockAudio() {
+    try {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return false;
+
+      if (!audioContext) audioContext = new AudioContextClass();
+      if (audioContext.state === 'suspended') await audioContext.resume();
+      return audioContext.state === 'running';
+    } catch (error) {
+      console.log('فعال‌سازی صدا ناموفق بود:', error);
+      return false;
+    }
+  }
+
+  async function playNotificationSound() {
+    if (!soundEnabled) return;
+
+    const ready = await unlockAudio();
+    if (!ready || !audioContext) return;
+
+    try {
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+
+      oscillator.connect(gain);
+      gain.connect(audioContext.destination);
+
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+      gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.16, audioContext.currentTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.32);
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.34);
+    } catch (error) {
+      console.log('خطای پخش اعلان:', error);
+    }
+  }
+
+  $('soundToggleBtn').addEventListener('click', async () => {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem('adminSoundEnabled', String(soundEnabled));
+    updateSoundButton();
+
+    // با روشن‌کردن، یک صدای آزمایشی هم پخش می‌شود.
+    if (soundEnabled) {
+      await playNotificationSound();
+    }
+  });
+
   updateSoundButton();
-
-  if (soundEnabled) {
-    playNotificationSound();
-  }
-});
-
-updateSoundButton(); }
 
   function stopChatPolling() {
     if (chatPollingTimer) {
@@ -306,6 +306,7 @@ updateSoundButton(); }
     authorizedUserId = null;
     selectedCustomerId = null;
     conversations = {};
+    knownCustomerMessageIds = null;
   }
 
   async function showDashboard() {
@@ -341,6 +342,7 @@ updateSoundButton(); }
       $('ordersPanel').classList.remove('hidden');
       $('chatPanel').classList.remove('hidden');
       $('topActions').classList.remove('hidden');
+      updateSoundButton();
 
       await Promise.all([loadOrders(), loadChatInbox()]);
       startChatPolling();
@@ -446,7 +448,7 @@ updateSoundButton(); }
     }
   }
 
-  // دریافت پیام‌ها و بروزرسانی وضعیت خوانده‌شدن
+  // دریافت پیام‌ها، تشخیص پیام تازه و بروزرسانی وضعیت خوانده‌شدن
   async function loadChatInbox() {
     if (chatLoading || !authorizedUserId) return;
     chatLoading = true;
@@ -462,6 +464,23 @@ updateSoundButton(); }
         showError('chatError', 'دریافت پیام‌ها ناموفق بود: ' + error.message);
         return;
       }
+
+      // بار اول فقط شناسه پیام‌های موجود ثبت می‌شود تا پیام قدیمی صدا ایجاد نکند.
+      const currentCustomerMessageIds = new Set(
+        data.filter(msg => !msg.is_admin).map(msg => String(msg.id))
+      );
+
+      if (knownCustomerMessageIds !== null) {
+        const hasNewCustomerMessage = data.some(msg =>
+          !msg.is_admin && !knownCustomerMessageIds.has(String(msg.id))
+        );
+
+        if (hasNewCustomerMessage) {
+          playNotificationSound();
+        }
+      }
+
+      knownCustomerMessageIds = currentCustomerMessageIds;
 
       // اگر گفت‌وگویی باز است، پیام‌های جدید همان گفت‌وگو خوانده می‌شوند.
       if (selectedCustomerId) {
@@ -502,10 +521,7 @@ updateSoundButton(); }
       renderCustomerList();
       renderUnreadTotal();
 
-      if (
-        selectedCustomerId &&
-        conversations[selectedCustomerId]
-      ) {
+      if (selectedCustomerId && conversations[selectedCustomerId]) {
         renderConversation(selectedCustomerId);
       } else {
         selectedCustomerId = null;
@@ -570,6 +586,7 @@ updateSoundButton(); }
       ).length;
 
       const button = document.createElement('button');
+      button.type = 'button';
       button.className = 'customer-item' +
         (id === selectedCustomerId ? ' active' : '');
 
