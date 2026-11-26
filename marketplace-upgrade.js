@@ -43,6 +43,7 @@ function addHeaderAccountMenu(){
    db.auth.getUser().then(async({data,error})=>{
     const user=!error?data?.user:null,meta=user?.user_metadata||{};
     const displayName=String(meta.display_name||meta.full_name||meta.name||'').trim();
+    if(authLink){authLink.href=user?'account.html':'auth.html';authLink.textContent=user?'پروفایل من':'ورود / ثبت‌نام';}
     const initial=Array.from(displayName||user?.email||'ح')[0]||'ح';avatarInitial.textContent=initial;heading.textContent=displayName||'حساب کاربری من';
     if(!user)return;
     const path=typeof meta.avatar_path==='string'?meta.avatar_path:'';
@@ -52,7 +53,7 @@ function addHeaderAccountMenu(){
     }else if(typeof meta.avatar_url==='string'&&meta.avatar_url.startsWith('https://')){
      avatarImage.src=meta.avatar_url;avatarImage.hidden=false;avatarInitial.hidden=true;avatarImage.onerror=()=>{avatarImage.hidden=true;avatarInitial.hidden=false;};
     }
-   }).catch(()=>{});
+   }).catch(()=>{avatarInitial.hidden=false;avatarImage.hidden=true;});
   }catch(_){}
  }
  document.addEventListener('click',event=>{if(!menu.contains(event.target))menu.open=false;});
