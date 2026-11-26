@@ -11,13 +11,36 @@ function addSearch(){
 }
 
 function addCategoryBar(){
- const header=$('header');if($('.market-category-bar'))return;
- const bar=document.createElement('nav');bar.className='market-category-bar';bar.setAttribute('aria-label','دسترسی سریع');
- const items=[['⌂ خانه','index.html'],['خدمات طراحی سایت','services.html'],['نمونه‌کارها','portfolio.html'],['تعرفه‌ها','pricing.html'],['محاسبه قیمت','calculator.html'],['ثبت سفارش','order.html'],['پیگیری سفارش','tracking.html'],['مقایسه پلن‌ها','compare.html'],['مشاوره','consultation.html'],['ابزارها','tools.html'],['مقالات','articles.html'],['وبلاگ','blog.html'],['سؤالات متداول','faq.html'],['تماس با ما','contact.html'],['پشتیبانی و تیکت','tickets.html'],['حساب کاربری','account.html']];
- items.forEach(([label,href])=>{const a=document.createElement('a');a.textContent=label;a.href=href;if(location.pathname.endsWith('/'+href)||location.pathname===href)a.setAttribute('aria-current','page');bar.append(a)});
- if(header)header.after(bar);else document.body.insertBefore(bar,document.body.firstChild);
+ if($('.market-category-bar'))return;
+ const groups=[
+  {title:'طراحی وب‌سایت',icon:'▣',links:[['طراحی سایت فروشگاهی','services.html'],['طراحی سایت شرکتی','services.html'],['طراحی سایت شخصی','services.html'],['نمونه‌کارهای طراحی','portfolio.html'],['خدمات طراحی سایت','services.html']]},
+  {title:'سفارش و حساب کاربری',icon:'◉',links:[['ثبت سفارش جدید','order.html'],['پیگیری سفارش','tracking.html'],['پروفایل مشتری','account.html'],['مقایسه پلن‌ها','compare.html'],['تعرفه خدمات','pricing.html']]},
+  {title:'مشاوره و ابزارها',icon:'◇',links:[['درخواست مشاوره','consultation.html'],['محاسبه قیمت','calculator.html'],['ابزارهای آنلاین','tools.html'],['مقالات آموزشی','articles.html'],['وبلاگ','blog.html']]},
+  {title:'راهنما و پشتیبانی',icon:'؟',links:[['پشتیبانی و ثبت تیکت','tickets.html'],['سؤالات متداول','faq.html'],['تماس با ما','contact.html'],['قوانین و شرایط','terms.html'],['حریم خصوصی','privacy.html']]}
+ ];
+ const quick=[['پیشنهاد پلن‌ها','pricing.html'],['نمونه‌کارها','portfolio.html'],['ثبت سفارش','order.html'],['پشتیبانی','tickets.html']];
+ const nav=document.createElement('nav');nav.className='market-category-bar';nav.setAttribute('aria-label','منوی اصلی سایت');
+ const trigger=document.createElement('button');trigger.type='button';trigger.className='market-menu-trigger';trigger.setAttribute('aria-expanded','false');trigger.innerHTML='<span aria-hidden="true">☰</span> دسته‌بندی خدمات <span aria-hidden="true">⌄</span>';
+ const panel=document.createElement('div');panel.className='market-mega-menu';panel.hidden=true;
+ const rail=document.createElement('div');rail.className='market-mega-rail';rail.setAttribute('role','tablist');rail.setAttribute('aria-label','دسته‌بندی خدمات');
+ const content=document.createElement('div');content.className='market-mega-content';
+ function showGroup(index){
+  rail.querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('active',i===index);b.setAttribute('aria-selected',String(i===index))});
+  content.replaceChildren();
+  const group=groups[index];const heading=document.createElement('h3');heading.textContent=group.title;content.append(heading);
+  const list=document.createElement('div');list.className='market-mega-links';
+  group.links.forEach(([label,href])=>{const a=document.createElement('a');a.href=href;a.textContent=label;list.append(a)});
+  content.append(list);
+ }
+ groups.forEach((group,i)=>{const b=document.createElement('button');b.type='button';b.textContent=group.icon+'  '+group.title;b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===0));b.addEventListener('mouseenter',()=>showGroup(i));b.addEventListener('focus',()=>showGroup(i));b.addEventListener('click',()=>showGroup(i));rail.append(b)});
+ panel.append(rail,content);showGroup(0);
+ trigger.addEventListener('click',()=>{const open=panel.hidden;panel.hidden=!open;trigger.setAttribute('aria-expanded',String(open))});
+ document.addEventListener('click',e=>{if(!nav.contains(e.target)){panel.hidden=true;trigger.setAttribute('aria-expanded','false')}});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){panel.hidden=true;trigger.setAttribute('aria-expanded','false')}});
+ nav.append(trigger,panel);
+ quick.forEach(([label,href])=>{const a=document.createElement('a');a.href=href;a.textContent=label;if(location.pathname.endsWith('/'+href)||location.pathname===href)a.setAttribute('aria-current','page');nav.append(a)});
+ const header=$('header');if(header)header.after(nav);else document.body.insertBefore(nav,document.body.firstChild);
 }
-
 function enhancePortfolio(){
  const section=[...document.querySelectorAll('section')].find(s=>s.querySelector('.portfolio')&&s.querySelector('h2'));
  if(!section||$('.market-filter',section))return;
