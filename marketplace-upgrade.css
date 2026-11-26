@@ -125,3 +125,30 @@ footer .copy{border-top:1px solid #eee}
  .market-mega-links{grid-template-columns:1fr;gap:7px}
  .market-mega-links a{font-size:12px}
 }
+
+
+/* Digikala-style account, orders and settings controls */
+.nav .actions{display:flex;align-items:center;gap:9px}
+.market-account-menu{position:relative;order:2}
+.market-account-menu>summary{list-style:none;display:flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:7px 12px;border:1px solid #e0e0e2;border-radius:9px;background:#fff;color:#30343b;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
+.market-account-menu>summary::-webkit-details-marker{display:none}
+.market-account-menu>summary:hover,.market-account-menu[open]>summary{border-color:#ef394e;color:#ef394e}
+.market-account-avatar{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#fff1f2;color:#ef394e;font-size:18px}
+.market-account-chevron{font-size:13px;color:#777}
+.market-account-panel{position:absolute;top:calc(100% + 9px);left:0;z-index:100;display:grid;gap:3px;width:230px;padding:10px;border:1px solid #e5e5e7;border-radius:12px;background:#fff;box-shadow:0 14px 38px rgba(0,0,0,.15);direction:rtl}
+.market-account-heading{padding:6px 9px 9px;color:#242830;font-size:13px}
+.market-account-login{display:flex;align-items:center;justify-content:center;min-height:39px;padding:8px 12px;border-radius:8px;background:#ef394e;color:#fff!important;font-size:12px;font-weight:900;text-decoration:none}
+.market-account-login:hover{background:#d92f43}
+.market-account-divider{height:1px;margin:5px 0;background:#eee}
+.market-account-link{display:flex;align-items:center;gap:10px;width:100%;min-height:37px;padding:8px 10px;border:0;border-radius:8px;background:transparent;color:#424750;text-align:right;text-decoration:none;font:inherit;font-size:12px;cursor:pointer}
+.market-account-link>span:first-child{width:20px;color:#777;text-align:center;font-size:15px}
+.market-account-link:hover{background:#fff1f2;color:#ef394e}
+.market-account-link:hover>span:first-child{color:#ef394e}
+.market-account-theme{border-top:1px solid #eee;border-radius:0;margin-top:4px;padding-top:11px}
+@media(max-width:680px){
+ .nav .actions{gap:6px}
+ .market-account-menu>summary{min-height:38px;padding:5px 8px;gap:5px;font-size:11px}
+ .market-account-avatar{width:23px;height:23px}
+ .market-account-panel{position:fixed;top:68px;left:10px;right:auto;width:min(260px,calc(100vw - 20px));max-height:70vh;overflow:auto}
+ .nav .actions #accountLink{min-height:36px;padding:6px 9px;font-size:10px}
+}
