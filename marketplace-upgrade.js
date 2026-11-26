@@ -9,6 +9,15 @@ function addSearch(){
  wrap.append(input,button);wrap.addEventListener('submit',e=>{e.preventDefault();const q=input.value.trim().toLocaleLowerCase('fa');if(!q)return;const found=pageLinks.find(x=>x[0].toLocaleLowerCase('fa').includes(q));if(found)location.href=found[1];else{const target=document.querySelector('main,section');if(target){target.scrollIntoView({behavior:'smooth'});input.value='';input.placeholder='بخش موردنظر پیدا نشد';}}});
  nav.insertBefore(wrap,actions);
 }
+
+function addCategoryBar(){
+ const header=$('header');if(!header||$('.market-category-bar'))return;
+ const bar=document.createElement('nav');bar.className='market-category-bar';bar.setAttribute('aria-label','دسترسی سریع');
+ const items=[['⌂ خانه','index.html'],['طراحی فروشگاهی','services.html'],['نمونه‌کارها','portfolio.html'],['تعرفه‌ها','pricing.html'],['محاسبه قیمت','calculator.html'],['ثبت سفارش','order.html'],['پیگیری سفارش','tracking.html'],['پشتیبانی','tickets.html']];
+ items.forEach(([label,href])=>{const a=document.createElement('a');a.textContent=label;a.href=href;bar.append(a)});
+ header.after(bar);
+}
+
 function enhancePortfolio(){
  const section=[...document.querySelectorAll('section')].find(s=>s.querySelector('.portfolio')&&s.querySelector('h2'));
  if(!section||$('.market-filter',section))return;
@@ -43,5 +52,5 @@ async function addProjectProgress(){
  data.forEach(o=>{const index=Math.max(0,stages.indexOf(o.status));const item=document.createElement('div');item.className='market-progress-item';const head=document.createElement('div');head.className='market-progress-head';const name=document.createElement('span');name.textContent=(o.site_type||'پروژه طراحی سایت')+' · #'+o.id;const status=document.createElement('span');status.textContent=labels[o.status]||'در انتظار بررسی';head.append(name,status);const track=document.createElement('div');track.className='market-progress-track';const fill=document.createElement('div');fill.className='market-progress-fill';fill.style.width=((index+1)*25)+'%';track.append(fill);const small=document.createElement('small');small.textContent='ثبت‌شده در '+new Date(o.created_at).toLocaleDateString('fa-IR')+(o.tracking_code?' · کد پیگیری: '+o.tracking_code:'');item.append(head,track,small);target.append(item)});
  }catch(e){const target=$('.market-progress-content',card);target.textContent=e.message||'دریافت وضعیت پروژه ممکن نشد.'}
 }
-document.addEventListener('DOMContentLoaded',()=>{addSearch();enhancePortfolio();addPlanComparison();addProjectProgress()});
+document.addEventListener('DOMContentLoaded',()=>{addSearch();addCategoryBar();enhancePortfolio();addPlanComparison();addProjectProgress()});
 })();
