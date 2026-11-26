@@ -25,3 +25,69 @@
 .market-progress small{color:var(--muted)}
 @media(max-width:900px){.market-search{display:none}}
 @media(max-width:620px){.market-compare{padding:14px}.market-compare th,.market-compare td{padding:9px 7px}.market-progress-head{font-size:12px}}
+
+
+/* Digikala-inspired storefront layout */
+body{
+ --bg:#f5f5f5;--surface:#ffffff;--surface2:#f1f2f4;
+ --text:#232933;--muted:#62666d;--accent:#ef394e;--accent2:#d32f45;
+ --line:#e0e0e2;--good:#00a049;--bad:#d32f2f;--warning:#b7791f;
+ --shadow:0 8px 28px rgba(0,0,0,.07);
+ background:#f5f5f5;color:#232933;
+}
+header{background:rgba(255,255,255,.97);border-bottom:1px solid #e0e0e2;box-shadow:0 2px 10px rgba(0,0,0,.035)}
+.nav{min-height:74px;flex-wrap:wrap;padding-block:10px;column-gap:18px;row-gap:8px}
+.brand{order:1;color:#232933}
+.brand-mark{border-radius:10px}
+.nav .market-search{order:2;flex:1 1 260px;max-width:510px;min-width:190px}
+.nav .market-search input{height:44px;border:1px solid #e0e0e2;border-radius:9px;background:#f1f2f4;color:#232933;padding-inline:15px}
+.nav .market-search input:focus{outline:2px solid rgba(239,57,78,.18);border-color:#ef394e}
+.nav .market-search button{height:44px;padding-inline:18px;border-radius:9px;background:#ef394e;color:#fff}
+.nav .actions{order:3}
+.nav .links{order:4;flex:1 0 100%;display:flex;gap:22px;min-height:42px;border-top:1px solid #f0f0f1;padding-top:7px;color:#424750}
+.nav .links a{padding:5px 0;font-size:12px}
+.nav .links a:hover,.nav .links a.active{color:#ef394e}
+.nav-more summary{cursor:pointer;list-style:none}
+.nav-more-menu{position:absolute;z-index:50;display:grid;min-width:190px;padding:8px;border:1px solid #e5e5e7;border-radius:12px;background:#fff;box-shadow:0 12px 35px rgba(0,0,0,.12)}
+.nav-more-menu a{padding:8px 10px;border-radius:8px}
+.nav-more-menu a:hover{background:#fff1f2}
+.btn{background:#ef394e;color:#fff;border-radius:9px;box-shadow:none}
+.btn:hover{background:#d92f43;filter:none;box-shadow:0 5px 14px rgba(239,57,78,.18)}
+.btn.ghost{background:#fff;color:#333;border-color:#e0e0e2}
+.icon-btn,.profile-menu>summary{background:#fff;color:#424750;border-color:#e0e0e2;border-radius:9px}
+.icon-btn:hover,.profile-menu>summary:hover{border-color:#ef394e;color:#ef394e}
+#themeButton{display:none}
+.market-category-bar{display:flex;align-items:center;gap:22px;min-height:44px;overflow-x:auto;white-space:nowrap;border-bottom:1px solid #e8e8e8;background:#fff;padding:0 max(4%,calc((100% - 1160px)/2));scrollbar-width:none}
+.market-category-bar::-webkit-scrollbar{display:none}
+.market-category-bar a{font-size:12px;color:#53565c;padding:11px 0}
+.market-category-bar a:first-child{font-weight:900;color:#ef394e}
+.market-category-bar a:hover{color:#ef394e}
+.hero{min-height:490px;padding-block:48px 36px}
+.hero-art .browser,.panel,.card,.stat,.step,.faq,.form-card,.market-compare,.market-progress{box-shadow:0 3px 16px rgba(0,0,0,.045);border-color:#e8e8e8}
+.card,.stat,.step,.faq,.panel,.form-card{border-radius:14px}
+.card:hover,.stat:hover,.step:hover{border-color:#ef394e;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.eyebrow{color:#d92f43;background:#fff1f2;border-color:#ffd6db}
+.gradient{background-image:linear-gradient(100deg,#ef394e,#b91f36)}
+.trust b{color:#00a049}
+.section{padding-block:60px}
+.cta{background:linear-gradient(110deg,#fff,#fff1f2);border-color:#ffd6db;border-radius:16px}
+footer{background:#fff;border-top:1px solid #e5e5e7;color:#424750}
+footer .copy{border-top:1px solid #eee}
+@media(max-width:900px){
+ .nav .market-search{display:flex;max-width:none}
+ .nav .links{gap:14px}
+}
+@media(max-width:680px){
+ .nav{min-height:auto;padding-block:9px}
+ .nav .brand{max-width:48%}
+ .nav .brand-mark{width:38px;height:38px}
+ .nav .market-search{order:4;flex:1 0 100%;max-width:none;display:flex}
+ .nav .links{order:5;display:none;position:static;flex:1 0 100%;max-height:65vh;overflow:auto;border:1px solid #eee;border-radius:12px;background:#fff;padding:9px;box-shadow:0 10px 25px rgba(0,0,0,.06)}
+ .nav .links.open{display:grid;gap:2px}
+ .nav .links a{padding:9px 10px;border-radius:8px}
+ .nav .actions{margin-inline-start:auto}
+ .actions .btn{display:inline-flex;min-height:36px;padding:6px 9px;font-size:10px}
+ #menuToggle{display:block}
+ .market-category-bar{gap:17px}
+ .hero{padding-top:35px}
+}
