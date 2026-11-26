@@ -94,6 +94,13 @@
       .message{max-width:95%}
       .reply-box{flex-direction:column}
     }
+  
+    .site-admin-nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;padding:12px;background:#fff;border:1px solid #e5eaf2;border-radius:14px;box-shadow:0 5px 18px #15213a08}
+    .site-admin-nav a{display:inline-flex;align-items:center;justify-content:center;padding:10px 13px;border-radius:9px;background:#f1f5fb;color:#26344d;text-decoration:none;font-size:13px;transition:.15s}
+    .site-admin-nav a:hover{background:#e4ebf8}
+    .site-admin-nav a.active{background:#2457d6;color:#fff}
+    .page-heading{font-size:20px;margin:0 0 14px}
+
   </style>
 </head>
 
@@ -111,6 +118,24 @@
       <button id="logoutBtn" type="button">خروج از حساب</button>
     </div>
   </header>
+
+  <nav class="site-admin-nav hidden" id="siteAdminNav" aria-label="منوی مدیریت">
+    <a href="admin.html?page=home" data-page="home">داشبورد</a>
+    <a href="admin.html?page=orders" data-page="orders">سفارش‌ها</a>
+    <a href="admin.html?page=tickets" data-page="tickets">تیکت‌ها</a>
+    <a href="admin.html?page=chat" data-page="chat">چت آنلاین</a>
+    <a href="admin.html?page=finance" data-page="finance">امور مالی</a>
+    <a href="admin.html?page=customers" data-page="customers">مشتریان</a>
+    <a href="admin.html?page=portfolio" data-page="portfolio">نمونه‌کارها</a>
+    <a href="admin.html?page=bookings" data-page="bookings">رزروها</a>
+    <a href="admin.html?page=blog" data-page="blog">وبلاگ</a>
+    <a href="admin.html?page=analytics" data-page="analytics">آمار بازدید</a>
+    <a href="admin.html?page=audit" data-page="audit">تاریخچه مدیر</a>
+    <a href="admin.html?page=payments" data-page="payments">پرداخت</a>
+    <a href="admin.html?page=discounts" data-page="discounts">تخفیف‌ها</a>
+    <a href="admin.html?page=tools" data-page="tools">موجودی، سئو و نقش‌ها</a>
+    <a href="admin.html?page=suite" data-page="suite">امکانات پیشرفته</a>
+  </nav>
 
   <section class="panel login" id="loginPanel">
     <h2 style="margin-top:0">ورود مدیر</h2>
@@ -133,19 +158,6 @@
 
   <section class="panel hidden" id="dashboardPanel">
     <div class="actions" style="justify-content:space-between;flex-wrap:wrap">
-      <div class="admin-nav">
-        <button class="secondary section-nav" data-target="financePanel" type="button">گزارش مالی</button>
-        <button class="secondary section-nav" data-target="customersPanel" type="button">مشتریان</button>
-        <button class="secondary section-nav" data-target="portfolioPanel" type="button">نمونه‌کارها</button>
-        <button class="secondary section-nav" data-target="bookingsPanel" type="button">رزرو مشاوره</button>
-        <button class="secondary section-nav" data-target="blogPanel" type="button">وبلاگ</button>
-        <button class="secondary section-nav" data-target="analyticsPanel" type="button">آمار بازدید</button>
-        <button class="secondary section-nav" data-target="auditPanel" type="button">تاریخچه مدیر</button>
-        <button class="secondary section-nav" data-target="paymentPanel" type="button">پرداخت آنلاین</button>
-        <button class="secondary section-nav" data-target="discountPanel" type="button">کدهای تخفیف</button>
-        <button class="secondary section-nav" data-target="toolsPanel" type="button">موجودی، سئو و نقش‌ها</button>
-        <button class="secondary section-nav" data-target="suitePanel" type="button">امکانات پیشرفته</button>
-      </div>
       <div>
         <h2 style="margin:0 0 5px">نمای کلی مدیریت</h2>
         <div class="muted">خلاصه وضعیت سفارش‌ها و پشتیبانی</div>
@@ -597,6 +609,7 @@
     $('ticketsPanel').classList.add('hidden');
     $('chatPanel').classList.add('hidden');
     $('topActions').classList.add('hidden');
+    $('siteAdminNav').classList.add('hidden');
 
     authorizedUserId = null;
     selectedCustomerId = null;
@@ -642,9 +655,11 @@
       $('ticketsPanel').classList.remove('hidden');
       $('chatPanel').classList.remove('hidden');
       $('topActions').classList.remove('hidden');
+      $('siteAdminNav').classList.remove('hidden');
       updateSoundButton();
 
       await Promise.all([loadOrders(), loadTickets(), loadChatInbox()]);
+      showCurrentAdminRoute();
       startChatPolling();
       startOrderPolling();
 
@@ -1268,20 +1283,51 @@
 
 
   let editingPortfolioId = null;
-  function showAdminSection(id) {
-    const sections = ['financePanel','customersPanel','portfolioPanel','bookingsPanel','blogPanel','analyticsPanel','auditPanel','paymentPanel','discountPanel','toolsPanel','suitePanel'];
-    for (const section of sections) $(section).classList.toggle('hidden', section !== id);
-    document.querySelectorAll('.section-nav').forEach(btn=>btn.classList.toggle('active', btn.dataset.target === id));
-    $(id).scrollIntoView({behavior:'smooth',block:'start'});
-    if(id==='customersPanel') renderCustomers();
-    if(id==='portfolioPanel') loadPortfolio();
-    if(id==='bookingsPanel') loadBookings();
-    if(id==='blogPanel') loadBlogPosts();
-    if(id==='analyticsPanel') loadAnalytics();
-    if(id==='auditPanel') loadAuditLogs();
-    if(id==='discountPanel') loadDiscountCodes();
+  const adminRoutes = {
+    home: 'dashboardPanel', orders: 'ordersPanel', tickets: 'ticketsPanel', chat: 'chatPanel',
+    finance: 'financePanel', customers: 'customersPanel', portfolio: 'portfolioPanel',
+    bookings: 'bookingsPanel', blog: 'blogPanel', analytics: 'analyticsPanel',
+    audit: 'auditPanel', payments: 'paymentPanel', discounts: 'discountPanel',
+    tools: 'toolsPanel', suite: 'suitePanel'
+  };
+  const adminRouteTitles = {
+    home:'داشبورد',orders:'سفارش‌ها',tickets:'تیکت‌های پشتیبانی',chat:'چت آنلاین',
+    finance:'گزارش مالی',customers:'مشتریان',portfolio:'نمونه‌کارها',bookings:'رزرو مشاوره',
+    blog:'مدیریت وبلاگ',analytics:'آمار بازدید',audit:'تاریخچه مدیر',payments:'پرداخت آنلاین',
+    discounts:'کدهای تخفیف',tools:'موجودی، سئو و نقش‌ها',suite:'امکانات پیشرفته'
+  };
+  function showAdminRoute(route, updateUrl=true) {
+    const page = Object.prototype.hasOwnProperty.call(adminRoutes, route) ? route : 'home';
+    Object.values(adminRoutes).forEach(id => $(id).classList.add('hidden'));
+    $(adminRoutes[page]).classList.remove('hidden');
+    document.querySelectorAll('#siteAdminNav a').forEach(a => a.classList.toggle('active', a.dataset.page === page));
+    document.title = adminRouteTitles[page] + ' | پنل مدیریت وب‌ساز مرادی';
+    if(updateUrl) history.pushState({page}, '', 'admin.html?page=' + encodeURIComponent(page));
+    if(page==='customers') renderCustomers();
+    if(page==='portfolio') loadPortfolio();
+    if(page==='bookings') loadBookings();
+    if(page==='blog') loadBlogPosts();
+    if(page==='analytics') loadAnalytics();
+    if(page==='audit') loadAuditLogs();
+    if(page==='discounts') loadDiscountCodes();
+    window.scrollTo({top:0,behavior:'smooth'});
   }
-  document.querySelectorAll('.section-nav').forEach(btn=>btn.addEventListener('click',()=>showAdminSection(btn.dataset.target)));
+  function showAdminSection(id) {
+    const route = Object.keys(adminRoutes).find(key => adminRoutes[key] === id);
+    if(route) showAdminRoute(route);
+  }
+  document.querySelectorAll('#siteAdminNav a').forEach(link => link.addEventListener('click', event => {
+    event.preventDefault();
+    showAdminRoute(link.dataset.page);
+  }));
+  window.addEventListener('popstate', () => {
+    const route = new URLSearchParams(location.search).get('page') || 'home';
+    showAdminRoute(route, false);
+  });
+  function showCurrentAdminRoute() {
+    const route = new URLSearchParams(location.search).get('page') || 'home';
+    showAdminRoute(route, false);
+  }
 
   function renderCustomers() {
     const map = new Map();
