@@ -1,6 +1,6 @@
 (()=>{'use strict';
 const $=(s,r=document)=>r.querySelector(s);
-const pageLinks=[['صفحه اصلی','index.html'],['خدمات','services.html'],['نمونه‌کارها','portfolio.html'],['تعرفه‌ها','pricing.html'],['ثبت سفارش','order.html'],['ابزارها','tools.html'],['مقالات','articles.html'],['پرسش‌های متداول','faq.html'],['پشتیبانی','tickets.html']];
+const pageLinks=[['صفحه اصلی','index.html'],['خانه','index.html'],['خدمات','services.html'],['طراحی سایت','services.html'],['نمونه‌کارها','portfolio.html'],['تعرفه‌ها','pricing.html'],['قیمت','calculator.html'],['محاسبه قیمت','calculator.html'],['ثبت سفارش','order.html'],['سفارش','order.html'],['پیگیری سفارش','tracking.html'],['پیگیری','tracking.html'],['پروفایل','account.html'],['حساب کاربری','account.html'],['ورود','auth.html'],['ابزارها','tools.html'],['مقالات','articles.html'],['وبلاگ','blog.html'],['پرسش‌های متداول','faq.html'],['سوالات','faq.html'],['مقایسه','compare.html'],['مشاوره','consultation.html'],['تماس','contact.html'],['پشتیبانی','tickets.html'],['تیکت','tickets.html']];
 function addSearch(){
  const nav=$('.nav'),actions=nav&&$('.actions',nav);if(!nav||!actions||$('.market-search',nav))return;
  const wrap=document.createElement('form');wrap.className='market-search';wrap.setAttribute('role','search');
@@ -13,8 +13,8 @@ function addSearch(){
 function addCategoryBar(){
  const header=$('header');if(!header||$('.market-category-bar'))return;
  const bar=document.createElement('nav');bar.className='market-category-bar';bar.setAttribute('aria-label','دسترسی سریع');
- const items=[['⌂ خانه','index.html'],['طراحی فروشگاهی','services.html'],['نمونه‌کارها','portfolio.html'],['تعرفه‌ها','pricing.html'],['محاسبه قیمت','calculator.html'],['ثبت سفارش','order.html'],['پیگیری سفارش','tracking.html'],['پشتیبانی','tickets.html']];
- items.forEach(([label,href])=>{const a=document.createElement('a');a.textContent=label;a.href=href;bar.append(a)});
+ const items=[['⌂ خانه','index.html'],['خدمات طراحی سایت','services.html'],['نمونه‌کارها','portfolio.html'],['تعرفه‌ها','pricing.html'],['محاسبه قیمت','calculator.html'],['ثبت سفارش','order.html'],['پیگیری سفارش','tracking.html'],['مقایسه پلن‌ها','compare.html'],['مشاوره','consultation.html'],['ابزارها','tools.html'],['مقالات','articles.html'],['وبلاگ','blog.html'],['سؤالات متداول','faq.html'],['تماس با ما','contact.html'],['پشتیبانی و تیکت','tickets.html'],['حساب کاربری','account.html']];
+ items.forEach(([label,href])=>{const a=document.createElement('a');a.textContent=label;a.href=href;if(location.pathname.endsWith('/'+href)||location.pathname===href)a.setAttribute('aria-current','page');bar.append(a)});
  header.after(bar);
 }
 
