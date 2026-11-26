@@ -41,7 +41,7 @@ button.secondary{background:#263b52;color:white}
 <p>حساب کاربری مشتریان</p>
 
 <input id="email" type="email" placeholder="ایمیل">
-<input id="password" type="password" placeholder="رمز عبور">
+<input id="password" type="password" placeholder="رمز عبور (حداقل ۱۰ کاراکتر برای ثبت‌نام)" autocomplete="current-password">
 
 <button onclick="signup()">ثبت‌نام</button>
 <button class="secondary" onclick="login()">ورود به حساب</button>
@@ -67,8 +67,8 @@ async function signup(){
  const email = document.getElementById('email').value.trim();
  const password = document.getElementById('password').value;
 
- if(!email || password.length < 8){
-  message.textContent='ایمیل را وارد کن و رمز حداقل ۸ کاراکتری بگذار.';
+ if(!email || password.length < 10){
+  message.textContent='ایمیل را وارد کن و برای ثبت‌نام رمز حداقل ۱۰ کاراکتری انتخاب کن.';
   return;
  }
 
