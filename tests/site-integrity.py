@@ -43,6 +43,8 @@ for page, parser in parsed.items():
         path_text = unquote(parts.path)
         if not path_text:
             target = page
+        elif path_text == "/":
+            target = ROOT / "index.html"
         elif path_text.startswith("/"):
             target = ROOT / path_text.lstrip("/")
         else:
