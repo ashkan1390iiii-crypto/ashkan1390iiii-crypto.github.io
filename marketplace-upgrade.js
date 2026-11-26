@@ -1,6 +1,6 @@
 (()=>{'use strict';
 const $=(s,r=document)=>r.querySelector(s);
-const pageLinks=[['صفحه اصلی','index.html'],['خانه','index.html'],['خدمات','services.html'],['طراحی سایت','services.html'],['نمونه‌کارها','portfolio.html'],['تعرفه‌ها','pricing.html'],['قیمت','calculator.html'],['محاسبه قیمت','calculator.html'],['ثبت سفارش','order.html'],['سفارش','order.html'],['پیگیری سفارش','tracking.html'],['پیگیری','tracking.html'],['پروفایل','account.html'],['حساب کاربری','account.html'],['ورود','auth.html'],['ابزارها','tools.html'],['مقالات','articles.html'],['وبلاگ','blog.html'],['پرسش‌های متداول','faq.html'],['سوالات','faq.html'],['مقایسه','compare.html'],['مشاوره','consultation.html'],['تماس','contact.html'],['پشتیبانی','tickets.html'],['تیکت','tickets.html']];
+const pageLinks=[['صفحه اصلی','index.html'],['خانه','index.html'],['سایت‌ساز آنلاین','site-builder.html'],['دستیار هوشمند','ai-assistant.html'],['خدمات','services.html'],['طراحی سایت','services.html'],['نمونه‌کارها','portfolio.html'],['تعرفه‌ها','pricing.html'],['قیمت','calculator.html'],['محاسبه قیمت','calculator.html'],['ثبت سفارش','order.html'],['سفارش','order.html'],['پیگیری سفارش','tracking.html'],['پیگیری','tracking.html'],['پروفایل','account.html'],['حساب کاربری','account.html'],['ورود','auth.html'],['ابزارها','tools.html'],['مقالات','articles.html'],['وبلاگ','blog.html'],['پرسش‌های متداول','faq.html'],['سوالات','faq.html'],['مقایسه','compare.html'],['مشاوره','consultation.html'],['تماس','contact.html'],['پشتیبانی','tickets.html'],['تیکت','tickets.html']];
 function addSearch(){
  const nav=$('.nav'),actions=nav&&$('.actions',nav);if(!nav||!actions||$('.market-search',nav))return;
  const wrap=document.createElement('form');wrap.className='market-search';wrap.setAttribute('role','search');
@@ -92,12 +92,12 @@ function addCategoryBar(){
  if($('.market-category-bar'))return;
  const header=$('header');if(!header||!$('.nav',header))return;
  const groups=[
-  {title:'طراحی وب‌سایت',icon:'▣',links:[['طراحی سایت فروشگاهی','services.html'],['طراحی سایت شرکتی','services.html'],['طراحی سایت شخصی','services.html'],['نمونه‌کارهای طراحی','portfolio.html'],['خدمات طراحی سایت','services.html']]},
+  {title:'طراحی وب‌سایت',icon:'▣',links:[['سایت‌ساز آنلاین','site-builder.html'],['دستیار هوشمند انتخاب خدمات','ai-assistant.html'],['طراحی سایت فروشگاهی','services.html'],['طراحی سایت شرکتی','services.html'],['طراحی سایت شخصی','services.html'],['نمونه‌کارهای طراحی','portfolio.html'],['خدمات طراحی سایت','services.html']]},
   {title:'سفارش و حساب کاربری',icon:'◉',links:[['ثبت سفارش جدید','order.html'],['پیگیری سفارش','tracking.html'],['پروفایل مشتری','account.html'],['مقایسه پلن‌ها','compare.html'],['تعرفه خدمات','pricing.html']]},
   {title:'مشاوره و ابزارها',icon:'◇',links:[['درخواست مشاوره','consultation.html'],['محاسبه قیمت','calculator.html'],['ابزارهای آنلاین','tools.html'],['مقالات آموزشی','articles.html'],['وبلاگ','blog.html']]},
   {title:'راهنما و پشتیبانی',icon:'؟',links:[['پشتیبانی و ثبت تیکت','tickets.html'],['سؤالات متداول','faq.html'],['تماس با ما','contact.html'],['قوانین و شرایط','terms.html'],['حریم خصوصی','privacy.html']]}
  ];
- const quick=[['پیشنهاد پلن‌ها','pricing.html'],['نمونه‌کارها','portfolio.html'],['ثبت سفارش','order.html'],['پشتیبانی','tickets.html']];
+ const quick=[['سایت‌ساز آنلاین','site-builder.html'],['دستیار هوشمند','ai-assistant.html'],['پیشنهاد پلن‌ها','pricing.html'],['نمونه‌کارها','portfolio.html'],['ثبت سفارش','order.html'],['پشتیبانی','tickets.html']];
  const nav=document.createElement('nav');nav.className='market-category-bar';nav.setAttribute('aria-label','منوی اصلی سایت');
  const trigger=document.createElement('button');trigger.type='button';trigger.className='market-menu-trigger';trigger.setAttribute('aria-expanded','false');trigger.innerHTML='<span aria-hidden="true">☰</span> دسته‌بندی خدمات <span aria-hidden="true">⌄</span>';
  const panel=document.createElement('div');panel.className='market-mega-menu';panel.hidden=true;
