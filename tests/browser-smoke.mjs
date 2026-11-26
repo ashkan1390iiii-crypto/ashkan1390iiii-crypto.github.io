@@ -15,7 +15,7 @@ async function openPage(viewport, path) {
     route.fulfill({
       status: 200,
       contentType: 'application/javascript',
-      body: `window.supabase={createClient:()=>({auth:{getUser:async()=>({data:{user:null},error:null})}})};`
+      body: `window.supabase={createClient:()=>({auth:{getUser:async()=>({data:{user:null},error:null}),getSession:async()=>({data:{session:null},error:null}),signUp:async()=>({data:{user:{id:'test-user'},session:null},error:null}),signInWithPassword:async()=>window.__mockAuthFail?({data:{},error:{message:'Failed to fetch'}}):({data:{user:{id:'test-user'},session:{access_token:'test'}} ,error:null})}})};`
     })
   );
   await page.route('https://fonts.googleapis.com/**', route => route.abort());
