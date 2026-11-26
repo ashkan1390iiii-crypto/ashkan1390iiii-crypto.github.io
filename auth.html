@@ -77,10 +77,17 @@ function showAuthError(error){
 
 function setAuthBusy(busy,activeButton){
  authBusy=busy;
- [signupButton,loginButton].forEach(button=>{
-  button.disabled=busy;
-  if(button===activeButton)button.textContent=busy?'لطفاً صبر کن...':(button===signupButton?'ثبت‌نام':'ورود به حساب');
+ signupButton.disabled=busy;
+ loginButton.disabled=busy;
+ signupButton.textContent=busy&&activeButton===signupButton?'لطفاً صبر کن...':'ثبت‌نام';
+ loginButton.textContent=busy&&activeButton===loginButton?'لطفاً صبر کن...':'ورود به حساب';
+}
+function withAuthTimeout(request,ms=15000){
+ let timer;
+ const timeout=new Promise((_,reject)=>{
+  timer=setTimeout(()=>reject(new Error('پاسخی از سرویس دریافت نشد. اتصال اینترنت را بررسی کن و دوباره تلاش کن.')),ms);
  });
+ return Promise.race([request,timeout]).finally(()=>clearTimeout(timer));
 }
 
 function safeNextPath(raw){
@@ -92,7 +99,7 @@ function safeNextPath(raw){
 }
 const nextDestination=safeNextPath(new URLSearchParams(location.search).get('next'));
 
-db.auth.getSession().then(({data,error})=>{
+withAuthTimeout(db.auth.getSession()).then(({data,error})=>{
  if(error)throw error;
  if(data?.session && new URLSearchParams(location.search).has('next')){
   location.replace(nextDestination);
@@ -109,10 +116,10 @@ async function signup(){
  }
  setAuthBusy(true,signupButton);message.textContent='در حال ایجاد حساب...';
  try{
-  const {data,error}=await db.auth.signUp({
+  const {data,error}=await withAuthTimeout(db.auth.signUp({
    email,password,
    options:{emailRedirectTo:location.origin+'/auth.html?next='+encodeURIComponent(nextDestination)}
-  });
+  }));
   if(error)throw error;
   if(data?.session){message.textContent='حساب ساخته شد؛ در حال انتقال به پنل...';location.replace(nextDestination);return;}
   message.textContent='درخواست ثبت‌نام ارسال شد. ایمیلت را برای تأیید حساب بررسی کن.';
@@ -130,7 +137,7 @@ async function login(){
  }
  setAuthBusy(true,loginButton);message.textContent='در حال ورود...';
  try{
-  const {error}=await db.auth.signInWithPassword({email,password});
+  const {error}=await withAuthTimeout(db.auth.signInWithPassword({email,password}));
   if(error)throw error;
   location.replace(nextDestination);
  }catch(error){showAuthError(error)}
