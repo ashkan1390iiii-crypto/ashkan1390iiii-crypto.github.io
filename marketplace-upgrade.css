@@ -152,3 +152,33 @@
  .market-account-menu>summary{min-width:46px;min-height:46px;padding:2px}
  .market-account-avatar{width:38px;height:38px;flex-basis:38px;font-size:17px}
 }
+
+
+/* Unify the upper header controls inside the hamburger menu. */
+.market-mega-menu .market-account-in-mega{
+ grid-column:1/-1;position:relative;min-width:0;
+ margin-top:10px;padding-top:9px;border-top:1px solid var(--line);
+}
+.market-mega-menu .market-account-in-mega>summary{
+ display:flex;align-items:center;justify-content:flex-start;gap:10px;
+ width:100%;min-height:48px;padding:5px 10px;border:1px solid var(--line);
+ border-radius:10px;background:var(--surface2);box-sizing:border-box;
+}
+.market-mega-menu .market-account-in-mega .market-account-menu-label{
+ color:var(--text);font-size:13px;font-weight:800;
+}
+.market-mega-menu .market-account-in-mega .market-account-panel{
+ position:static;inset:auto;width:100%;max-width:none;max-height:none;
+ margin-top:7px;box-shadow:none;border-radius:10px;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+}
+.market-mega-menu .market-account-in-mega:not([open]) .market-account-panel{display:none}
+.market-mega-menu .market-account-in-mega[open] .market-account-panel{display:grid}
+@media(max-width:680px){
+ .market-mega-menu .market-account-in-mega{margin-top:7px;padding-top:7px}
+ .market-mega-menu .market-account-in-mega>summary{min-height:46px}
+ .market-mega-menu .market-account-in-mega .market-account-menu-label{font-size:12px}
+ .market-mega-menu .market-account-in-mega .market-account-panel{
+  grid-template-columns:1fr;max-height:none;overflow:visible;
+ }
+}
