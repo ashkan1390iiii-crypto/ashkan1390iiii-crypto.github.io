@@ -19,7 +19,7 @@
 <body>
 <div class="wrap">
 <header class="top"><a href="index.html">← بازگشت به وب‌ساز مرادی</a><span class="brand">MW · سایت‌ساز آنلاین</span></header>
-<section class="intro"><h1>ایده‌ات را به پیش‌نمایش سایت تبدیل کن</h1><p>قالب را انتخاب کن، متن و رنگ‌ها را تغییر بده و پیش‌نمایش اولیه را ببین. این ابزار نسخه آغازین سایت‌ساز است؛ انتشار روی دامنه و ذخیره ابری هنوز به حساب کاربری و زیرساخت انتشار متصل نشده است.</p></section>
+<section class="intro"><h1>ایده‌ات را به پیش‌نمایش سایت تبدیل کن</h1><p>قالب را انتخاب کن، متن و رنگ‌ها را تغییر بده و پیش‌نمایش اولیه را ببین. این ابزار نسخه آغازین سایت‌ساز است؛ پیش‌نویس را محلی یا پس از ورود به حساب کاربری در فضای ابری ذخیره کن. انتشار روی دامنه در مرحله بعد اضافه می‌شود.</p></section>
 <div class="layout">
 <section class="panel" aria-label="تنظیمات سایت">
 <h2>۱. مشخصات سایت</h2>
@@ -69,7 +69,7 @@ function applyProject(v){
  $('description').value=String(v.description||'').slice(0,400);
  $('buttonText').value=String(v.button||'').slice(0,35);
  template=['business','store','personal'].includes(v.template)?v.template:'business';
- const radio=document.querySelector('input[name="accent"][value="'+v.accent+'"]');
+ const radio=Array.from(document.querySelectorAll('input[name="accent"]')).find(el=>el.value===v.accent);
  if(radio)radio.checked=true;
  document.querySelectorAll('[data-template]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.template===template)));
  render();
