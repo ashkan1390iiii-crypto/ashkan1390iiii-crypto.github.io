@@ -141,3 +141,14 @@
  #installAppButton{right:10px!important;left:auto!important}
  #chatPanel{left:10px;bottom:66px;width:calc(100vw - 20px);max-height:65dvh}
 }
+
+
+/* Profile avatar refinement: keep the customer initial centered and legible. */
+.market-account-menu>summary{min-width:48px;min-height:48px;padding:3px}
+.market-account-avatar{width:40px;height:40px;flex:0 0 40px;font-family:"Vazirmatn",Tahoma,sans-serif;font-size:18px;line-height:1;font-weight:900;letter-spacing:0;text-align:center;background:color-mix(in srgb,var(--accent) 12%,var(--surface2))}
+.market-account-initial{display:flex;align-items:center;justify-content:center;width:100%;height:100%;line-height:1;transform:none;padding:0 0 2px}
+.market-account-photo{display:block;width:100%;height:100%;object-fit:cover}
+@media(max-width:680px){
+ .market-account-menu>summary{min-width:46px;min-height:46px;padding:2px}
+ .market-account-avatar{width:38px;height:38px;flex-basis:38px;font-size:17px}
+}
