@@ -60,9 +60,9 @@ input[type=file]{padding:9px}textarea{min-height:85px;resize:vertical}
    <a class="ghost" href="index.html">صفحه اصلی</a>
    <a class="ghost" href="tickets.html">صفحه تیکت‌ها</a>
    <details class="profile-menu">
-    <summary aria-label="باز کردن منوی پروفایل" title="منوی پروفایل"><span class="profile-menu-icon" aria-hidden="true"><i></i><i></i><i></i></span></summary>
+    <summary aria-label="باز کردن پروفایل مشتری" title="پروفایل مشتری"><span class="profile-menu-avatar"><img id="profileMenuAvatar" alt="" hidden><span id="profileMenuInitial">ح</span></span></summary>
     <div class="profile-menu-list">
-     <a href="#profileSettings">اطلاعات شخصی</a><a href="#securitySettings">امنیت حساب</a><a href="#emailSettings">تغییر ایمیل</a><a href="#ordersList">سفارش‌های من</a><a href="compare.html">مقایسه پلن‌ها</a><a href="#ticketsList">تیکت‌ها</a><a href="#notificationsList">اعلان‌ها</a><a href="#logoutBtn">خروج از حساب</a>
+     <a href="#profileDiscount">ثبت سفارش و کد تخفیف</a><a href="#profileSettings">اطلاعات شخصی</a><a href="#securitySettings">امنیت حساب</a><a href="#emailSettings">تغییر ایمیل</a><a href="#ordersList">سفارش‌های من</a><a href="#ticketsList">تیکت‌ها</a><a href="#notificationsList">اعلان‌ها</a><a href="#myBookings">رزروهای مشاوره</a><a href="#accountActions">خروج از حساب</a>
     </div>
    </details>
   </div>
@@ -72,9 +72,21 @@ input[type=file]{padding:9px}textarea{min-height:85px;resize:vertical}
   <img id="avatarPreview" class="avatar" alt="عکس پروفایل" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%2317314d'/%3E%3Ctext x='50' y='62' text-anchor='middle' font-size='42' fill='%235ee7f5'%3E؟%3C/text%3E%3C/svg%3E">
   <div><h1 id="welcome">پروفایل شما</h1><div class="muted" id="email">در حال بررسی حساب...</div><div class="muted" id="loginStatus">لطفاً صبر کنید.</div></div>
  </section>
- <nav class="account-nav" aria-label="دسترسی سریع تنظیمات">
-  <a href="#profileForm">اطلاعات شخصی</a><a href="#securitySettings">امنیت حساب</a><a href="#ordersList">سفارش‌ها</a><a href="#ticketsList">پشتیبانی</a><a href="#notificationsList">اعلان‌ها</a><a href="#accountActions">مدیریت حساب</a>
+ <nav class="account-nav" aria-label="بخش‌های پروفایل مشتری">
+  <a href="#profileDiscount">سفارش و کد تخفیف</a><a href="#profileSettings">اطلاعات شخصی</a><a href="#securitySettings">امنیت</a><a href="#emailSettings">ایمیل</a><a href="#ordersList">سفارش‌ها</a><a href="#ticketsList">پشتیبانی</a><a href="#notificationsList">اعلان‌ها</a><a href="#accountActions">مدیریت حساب</a>
  </nav>
+
+ <section class="card profile-actions-card" id="profileDiscount">
+  <div class="section-kicker">سفارش و مزایای مشتری</div>
+  <h2>ثبت سفارش و کد تخفیف</h2>
+  <p class="muted">از این بخش سفارش جدیدت را شروع کن یا کد تخفیف را بررسی کن. کد معتبر برای سفارش بعدی‌ات نگه داشته می‌شود.</p>
+  <div class="actions"><a class="btn" href="order.html#order">ثبت سفارش جدید ←</a></div>
+  <form id="profileCouponForm" class="profile-coupon-form">
+   <label for="profileCouponInput">کد تخفیف</label>
+   <div class="profile-coupon-row"><input id="profileCouponInput" maxlength="30" autocomplete="off" placeholder="مثلاً MORADI10" required><button class="btn ghost" id="profileCouponSubmit" type="submit">بررسی کد</button></div>
+  </form>
+  <div id="profileCouponMessage" class="status" role="status" aria-live="polite"></div>
+ </section>
 
  <section class="card" id="profileSettings">
   <div class="section-kicker">حساب کاربری</div>
@@ -166,7 +178,7 @@ function msg(id,text,error=false){$(id).textContent=text;$(id).className='status
 function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n}
 function date(value){return value?new Date(value).toLocaleString('fa-IR'):'—'}
 function statusLabel(value){return labels[value]||value||'نامشخص'}
-function showAvatar(url){avatarUrl=url||'';$('avatarPreview').src=avatarUrl||defaultAvatar}
+function showAvatar(url){avatarUrl=url||'';const meta=user?.user_metadata||{};const name=String(meta.display_name||meta.full_name||user?.email||'ح').trim();const initial=Array.from(name)[0]||'ح';const svg='<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" rx="50" fill="#17314d"/><text x="50" y="63" text-anchor="middle" font-size="48" fill="#5ee7f5">'+initial+'</text></svg>';const fallback='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);$('avatarPreview').src=avatarUrl||fallback;const menuImage=$('profileMenuAvatar'),menuInitial=$('profileMenuInitial');if(menuInitial)menuInitial.textContent=initial;if(menuImage){menuImage.hidden=!avatarUrl;if(avatarUrl)menuImage.src=avatarUrl;}}
 async function loadProfile(){
  const meta=user.user_metadata||{};
  const name=meta.display_name||meta.full_name||'';
@@ -184,6 +196,24 @@ async function loadProfile(){
   showAvatar(!error&&data?.signedUrl?data.signedUrl:'');
  }else showAvatar('');
 }
+$('profileCouponForm').addEventListener('submit',async event=>{
+ event.preventDefault();
+ const code=$('profileCouponInput').value.trim().toUpperCase();
+ const button=$('profileCouponSubmit');button.disabled=true;
+ msg('profileCouponMessage','در حال بررسی کد تخفیف...');
+ try{
+  const {data,error}=await db.rpc('check_discount_code',{p_code:code});
+  if(error)throw error;
+  if(!data?.valid){
+   try{sessionStorage.removeItem('mwb-selected-discount-code')}catch(_){}
+   msg('profileCouponMessage',data?.message||'این کد معتبر نیست، منقضی شده یا ظرفیت استفاده آن تمام شده است.',true);
+   return;
+  }
+  try{sessionStorage.setItem('mwb-selected-discount-code',code)}catch(_){throw new Error('ذخیره کد در این مرورگر ممکن نیست.')}
+  msg('profileCouponMessage','کد معتبر است: '+data.discount_percent+'٪ تخفیف. هنگام ثبت سفارش، اعتبار آن دوباره در سرور بررسی می‌شود.');
+ }catch(error){msg('profileCouponMessage','بررسی کد انجام نشد: '+(error.message||'خطای نامشخص'),true)}
+ finally{button.disabled=false}
+});
 $('avatarFile').addEventListener('change',()=>{
  const file=$('avatarFile').files[0];if(!file)return;
  if(!/^image\/(png|jpeg|webp)$/.test(file.type)){msg('profileMessage','فقط تصویر PNG، JPG یا WEBP مجاز است.',true);return}
@@ -320,6 +350,7 @@ async function init(){
  if(!user){location.href='auth.html?next=account.html';return}
  $('loginStatus').textContent='حساب شما با موفقیت وارد شده است.';
  await loadProfile();
+ try{const savedCode=sessionStorage.getItem("mwb-selected-discount-code");if(savedCode){$("profileCouponInput").value=savedCode;msg("profileCouponMessage","کد "+savedCode+" برای سفارش بعدی ذخیره شده است.");}}catch(_){}
  await Promise.all([loadOrders(),loadTickets(),loadNotifications(),loadLoyalty(),loadMyBookings()]);
 }
 init();
