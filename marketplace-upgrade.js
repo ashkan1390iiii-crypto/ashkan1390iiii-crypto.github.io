@@ -11,11 +11,11 @@ function addSearch(){
 }
 
 function addCategoryBar(){
- const header=$('header');if(!header||$('.market-category-bar'))return;
+ const header=$('header');if($('.market-category-bar'))return;
  const bar=document.createElement('nav');bar.className='market-category-bar';bar.setAttribute('aria-label','دسترسی سریع');
  const items=[['⌂ خانه','index.html'],['خدمات طراحی سایت','services.html'],['نمونه‌کارها','portfolio.html'],['تعرفه‌ها','pricing.html'],['محاسبه قیمت','calculator.html'],['ثبت سفارش','order.html'],['پیگیری سفارش','tracking.html'],['مقایسه پلن‌ها','compare.html'],['مشاوره','consultation.html'],['ابزارها','tools.html'],['مقالات','articles.html'],['وبلاگ','blog.html'],['سؤالات متداول','faq.html'],['تماس با ما','contact.html'],['پشتیبانی و تیکت','tickets.html'],['حساب کاربری','account.html']];
  items.forEach(([label,href])=>{const a=document.createElement('a');a.textContent=label;a.href=href;if(location.pathname.endsWith('/'+href)||location.pathname===href)a.setAttribute('aria-current','page');bar.append(a)});
- header.after(bar);
+ if(header)header.after(bar);else document.body.insertBefore(bar,document.body.firstChild);
 }
 
 function enhancePortfolio(){
