@@ -568,6 +568,34 @@ a,button{-webkit-tap-highlight-color:transparent}
 #botTicketStatus{font-size:10px;color:var(--muted)}
 #chatPanel{height:min(650px,88vh);max-height:88vh}
 
+
+/* چیدمان مرتب‌تر صفحه اصلی و منوی جمع‌وجور */
+.links{align-items:center;gap:clamp(9px,1.15vw,16px);font-size:12px;white-space:nowrap}
+.nav-more{position:relative;color:var(--muted);font-size:12px}
+.nav-more summary{list-style:none;cursor:pointer;padding:8px 4px;font-weight:700}
+.nav-more summary::-webkit-details-marker{display:none}
+.nav-more summary:hover,.nav-more[open] summary{color:var(--accent)}
+.nav-more-menu{
+ position:absolute;top:calc(100% + 12px);left:0;z-index:50;
+ display:grid;gap:3px;min-width:190px;padding:8px;
+ border:1px solid var(--line);border-radius:14px;background:var(--surface);
+ box-shadow:var(--shadow)
+}
+.nav-more-menu a{padding:8px 10px;border-radius:8px}
+.nav-more-menu a:hover{background:var(--surface2)}
+@media(max-width:1000px){.links{gap:8px;font-size:11px}}
+@media(max-width:680px){
+ .links{gap:2px;white-space:normal}
+ .nav-more{padding:4px 8px}
+ .nav-more-menu{position:static;min-width:0;margin:4px 8px 8px;box-shadow:none}
+ .nav-more-menu a{padding:7px 10px}
+ .section{padding-block:52px}
+ .section-head{margin-bottom:24px}
+ .hero{padding-block:42px 22px;gap:12px}
+ .hero-art{min-height:285px}
+ .stats{padding-bottom:8px}
+}
+
 </style>
 <script src="seo.js" defer></script>
 </head>
@@ -586,15 +614,20 @@ a,button{-webkit-tap-highlight-color:transparent}
    <a href="#services">خدمات</a>
    <a href="#portfolio">نمونه‌کارها</a>
    <a href="#pricing">تعرفه‌ها</a>
-   <a href="#preview">پیش‌نمایش</a>
-    <a href="#calculator">محاسبه قیمت</a>
-    <a href="#extras">امکانات جدید</a>
-   <a href="#blog">وبلاگ</a>
-   <a href="tools.html">مرکز ابزارها</a>
-   <a href="#consultation">رزرو مشاوره</a>
    <a href="#order">ثبت سفارش</a>
-   <a href="#tracking">پیگیری</a>
-   <a href="tickets.html">تیکت‌های پشتیبانی</a>
+   <details class="nav-more">
+    <summary>بیشتر <span aria-hidden="true">⌄</span></summary>
+    <div class="nav-more-menu">
+     <a href="#preview">پیش‌نمایش سایت</a>
+     <a href="#calculator">محاسبه قیمت</a>
+     <a href="#extras">امکانات بیشتر</a>
+     <a href="#blog">وبلاگ</a>
+     <a href="#consultation">رزرو مشاوره</a>
+     <a href="#tracking">پیگیری سفارش</a>
+     <a href="tools.html">مرکز ابزارها</a>
+     <a href="tickets.html">پشتیبانی و تیکت</a>
+    </div>
+   </details>
   </nav>
   <div class="actions">
    <a class="btn small ghost" href="auth.html" id="authLink">ورود / ثبت‌نام</a>
