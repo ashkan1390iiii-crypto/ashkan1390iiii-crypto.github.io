@@ -71,7 +71,7 @@
 .inner-page-note{margin:22px 0 0;padding:13px 15px;border-radius:10px;background:var(--surface2);color:var(--muted);font-size:12px;line-height:1.9}
 @media(max-width:900px){.market-search{max-width:280px}}
 @media(max-width:680px){
- .market-search{display:flex;flex:1 0 100%;max-width:none;min-width:0}
+ .market-search{display:none}
  .market-search input{min-width:0}
  .market-category-bar{gap:12px;min-height:46px;overflow-x:auto;overflow-y:visible;padding-inline:12px;scrollbar-width:none}
  .market-category-bar::-webkit-scrollbar{display:none}
@@ -85,6 +85,7 @@
  .market-mega-content h3{font-size:14px}
  .market-mega-links{grid-template-columns:1fr;gap:7px}
  .market-mega-links a{font-size:12px;overflow-wrap:anywhere}
+ .market-orders-shortcut{display:none}
  .market-account-menu>summary{min-height:38px;padding:5px 8px;gap:5px;font-size:11px}
  .market-account-avatar{width:23px;height:23px}
  .market-account-panel{position:absolute;top:calc(100% + 8px);right:0;left:auto;width:min(270px,calc(100vw - 24px));max-height:min(70vh,520px);overflow:auto;z-index:1200}
