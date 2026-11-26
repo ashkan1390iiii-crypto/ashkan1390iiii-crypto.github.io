@@ -1364,7 +1364,8 @@ $("orderForm").addEventListener("submit",async event=>{
  const {data:userData,error:userError}=await db.auth.getUser();
 
  if(userError || !userData.user){
-  location.href="auth.html?next="+encodeURIComponent("index.html#order");
+  const returnPath=location.pathname+location.search+(location.hash||"#order");
+  location.href="auth.html?next="+encodeURIComponent(returnPath);
   return;
  }
 
@@ -1511,7 +1512,7 @@ function startChatRefresh(){
   if($("chatPanel").classList.contains("open") && currentUser){
    loadChatMessages();refreshSupportPresence();
   }
- },5000);
+ },15000);
 }
 
 
