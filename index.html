@@ -1872,7 +1872,7 @@ const publicGet=id=>document.getElementById(id);
 
 /* PWA install and offline shell */
 let installPromptEvent=null;
-window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPromptEvent=event;let btn=document.getElementById('installAppButton');if(!btn){btn=document.createElement('button');btn.id='installAppButton';btn.className='btn';btn.textContent='نصب اپلیکیشن';btn.style.cssText='position:fixed;bottom:18px;left:18px;z-index:90;box-shadow:0 8px 25px #0005';document.body.append(btn);}btn.hidden=false;btn.onclick=async()=>{if(!installPromptEvent)return;installPromptEvent.prompt();await installPromptEvent.userChoice;installPromptEvent=null;btn.remove();};});
+window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPromptEvent=event;let btn=document.getElementById('installAppButton');if(!btn){btn=document.createElement('button');btn.id='installAppButton';btn.className='btn';btn.textContent='نصب اپلیکیشن';btn.style.cssText='position:fixed;bottom:18px;right:18px;left:auto;z-index:40;box-shadow:0 8px 25px #0005;max-width:calc(50vw - 28px);white-space:nowrap';document.body.append(btn);}btn.hidden=false;btn.onclick=async()=>{if(!installPromptEvent)return;installPromptEvent.prompt();await installPromptEvent.userChoice;installPromptEvent=null;btn.remove();};});
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(err=>console.warn('PWA registration failed',err)));
 </script>
 </body>
