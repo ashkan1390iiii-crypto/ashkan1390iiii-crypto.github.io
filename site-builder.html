@@ -38,7 +38,7 @@
 <section class="panel" aria-label="پروژه‌های ذخیره‌شده در حساب کاربری" style="margin-top:18px">
 <h2>۴. پروژه‌های ذخیره‌شده در حساب کاربری</h2>
 <p class="muted">پروژه‌ها به‌صورت خصوصی در حساب شما ذخیره می‌شوند و فقط صاحب حساب می‌تواند آن‌ها را ببیند، باز کند یا حذف کند.</p>
-<div class="cloud-actions"><input id="projectName" maxlength="80" placeholder="نام پروژه، مثلاً فروشگاه پوشاک"><button class="btn primary" id="saveCloud" type="button">ذخیره در حساب</button><button class="btn" id="refreshCloud" type="button">به‌روزرسانی فهرست</button></div>
+<div class="cloud-actions"><input id="projectName" maxlength="80" placeholder="نام پروژه، مثلاً فروشگاه پوشاک"><button class="btn primary" id="saveCloud" type="button">ذخیره در حساب</button><button class="btn" id="newProject" type="button">پروژه جدید</button><button class="btn" id="refreshCloud" type="button">به‌روزرسانی فهرست</button></div>
 <p class="cloud-status" id="cloudStatus" role="status">در حال بررسی اتصال حساب...</p><div class="cloud-list" id="cloudProjects"><p class="muted">در حال بارگذاری پروژه‌ها...</p></div>
 </section>
 </div>
@@ -60,6 +60,7 @@ render();
 const SUPABASE_URL='https://oczpjbwwogsydzkouxtj.supabase.co';
 const SUPABASE_KEY='sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
 const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
+let editingProjectId=null;
 const cloudStatus=$('cloudStatus'),cloudProjects=$('cloudProjects');
 function cloudMessage(message,error=false){cloudStatus.textContent=message;cloudStatus.className='cloud-status'+(error?' error':'')}
 function applyProject(v){
@@ -106,8 +107,17 @@ async function saveCloudProject(){
   const {data:{user},error:authError}=await db.auth.getUser();
   if(authError)throw authError;
   if(!user){location.href='auth.html?next='+encodeURIComponent('site-builder.html');return}
-  const {error}=await db.from('builder_projects').insert({user_id:user.id,name,project_data:values(),updated_at:new Date().toISOString()});
-  if(error)throw error;
+  const payload={name,project_data:values(),updated_at:new Date().toISOString()};
+  if(editingProjectId){
+   const {data,error}=await db.from('builder_projects').update(payload).eq('id',editingProjectId).select('id').maybeSingle();
+   if(error)throw error;
+   if(!data)throw new Error('پروژه پیدا نشد یا اجازه ویرایش آن را نداری.');
+  }else{
+   const {data,error}=await db.from('builder_projects').insert({...payload,user_id:user.id}).select('id').single();
+   if(error)throw error;
+   editingProjectId=data.id;
+  }
+  $('saveCloud').textContent='ذخیره تغییرات';
   cloudMessage('پروژه با موفقیت در حساب کاربری ذخیره شد.');
   await refreshCloud();
  }catch(error){cloudMessage('ذخیره پروژه انجام نشد: '+(error.message||'خطای نامشخص'),true)}
@@ -115,11 +125,14 @@ async function saveCloudProject(){
 }
 async function loadCloudProject(id){
  try{
-  const {data,error}=await db.from('builder_projects').select('project_data').eq('id',id).single();
+  const {data,error}=await db.from('builder_projects').select('name,project_data').eq('id',id).single();
   if(error)throw error;
   if(!data?.project_data||typeof data.project_data!=='object')throw new Error('اطلاعات پروژه معتبر نیست.');
   applyProject(data.project_data);
-  cloudMessage('پروژه در ویرایشگر بارگذاری شد.');
+  editingProjectId=id;
+  $('projectName').value=data.name||'';
+  $('saveCloud').textContent='ذخیره تغییرات';
+  cloudMessage('پروژه بارگذاری شد؛ تغییرات بعدی روی همین پروژه ذخیره می‌شود.');
   window.scrollTo({top:0,behavior:'smooth'});
  }catch(error){cloudMessage('باز کردن پروژه ناموفق بود: '+(error.message||'خطای نامشخص'),true)}
 }
@@ -128,11 +141,13 @@ async function deleteCloudProject(id,name){
  try{
   const {error}=await db.from('builder_projects').delete().eq('id',id);
   if(error)throw error;
+  if(editingProjectId===id){editingProjectId=null;$('projectName').value='';$('saveCloud').textContent='ذخیره در حساب';}
   cloudMessage('پروژه حذف شد.');
   await refreshCloud();
  }catch(error){cloudMessage('حذف پروژه انجام نشد: '+(error.message||'خطای نامشخص'),true)}
 }
 $('saveCloud').addEventListener('click',saveCloudProject);
+$('newProject').addEventListener('click',()=>{editingProjectId=null;$('projectName').value='';$('saveCloud').textContent='ذخیره در حساب';cloudMessage('حالت پروژه جدید فعال شد.');});
 $('refreshCloud').addEventListener('click',refreshCloud);
 refreshCloud();
 })();
