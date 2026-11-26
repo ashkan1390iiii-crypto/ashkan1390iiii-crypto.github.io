@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#07111f">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
 <meta name="description" content="وب‌ساز مرادی؛ طراحی سایت فروشگاهی، شرکتی و شخصی با طراحی مدرن، واکنش‌گرا، ساختار مناسب سئو و پشتیبانی آنلاین.">
 <meta name="robots" content="index, follow">
 <meta name="author" content="وب‌ساز مرادی">
@@ -112,12 +113,7 @@ header{
 }
 .nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:900;white-space:nowrap}
-.brand-mark{
- width:43px;height:43px;display:grid;place-items:center;
- border-radius:14px;color:#07111f;
- background:linear-gradient(135deg,var(--accent),var(--accent2));
- box-shadow:0 8px 24px color-mix(in srgb,var(--accent2) 22%,transparent);
-}
+.brand-mark{width:46px;height:46px;display:block;object-fit:contain;border-radius:12px;flex:0 0 auto;}
 .brand small{display:block;color:var(--muted);font-size:10px;direction:ltr;letter-spacing:1.2px}
 .links{display:flex;gap:17px;color:var(--muted);font-size:12px}
 .links a{transition:color .2s}
@@ -612,7 +608,7 @@ main>section#tracking{display:block!important}
 <header>
  <div class="container nav">
   <a class="brand" href="index.html">
-   <span class="brand-mark">MW</span>
+   <img class="brand-mark" src="logo.svg" alt="لوگوی وب‌ساز مرادی">
    <span>وب‌ساز مرادی<small>MORADI WEB BUILDER</small></span>
   </a>
   <nav class="links" id="navLinks" aria-label="منوی اصلی">
