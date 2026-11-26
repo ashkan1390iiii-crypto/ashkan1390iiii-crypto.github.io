@@ -66,3 +66,19 @@ jobs:
                       subprocess.run(["node", "--check", handle.name], check=True)
               print(f"Checked inline scripts: {filename}")
           PY
+      - name: Install Playwright
+        run: |
+          npm install --no-save --package-lock=false playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Run mobile and desktop browser smoke tests
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/site-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:4173/site-builder.html > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          BASE_URL=http://127.0.0.1:4173 node tests/browser-smoke.mjs
