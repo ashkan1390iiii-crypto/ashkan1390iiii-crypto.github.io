@@ -109,11 +109,12 @@ async function signup(){
  }
  setAuthBusy(true,signupButton);message.textContent='در حال ایجاد حساب...';
  try{
-  const {error}=await db.auth.signUp({
+  const {data,error}=await db.auth.signUp({
    email,password,
    options:{emailRedirectTo:location.origin+'/auth.html?next='+encodeURIComponent(nextDestination)}
   });
   if(error)throw error;
+  if(data?.session){message.textContent='حساب ساخته شد؛ در حال انتقال به پنل...';location.replace(nextDestination);return;}
   message.textContent='درخواست ثبت‌نام ارسال شد. ایمیلت را برای تأیید حساب بررسی کن.';
  }catch(error){showAuthError(error)}
  finally{setAuthBusy(false,null)}
@@ -136,6 +137,6 @@ async function login(){
  finally{setAuthBusy(false,null)}
 }
 </script>
-<script src="marketplace-upgrade.js?v=20261126e"></script>
+<script src="marketplace-upgrade.js?v=20261126h"></script>
 </body>
   </html>
