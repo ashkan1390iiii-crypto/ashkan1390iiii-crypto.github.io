@@ -133,15 +133,12 @@ async function loadProfile(){
  $('email').textContent=user.email||'';
  $('accountEmail').textContent=user.email||'—';
  const path=typeof meta.avatar_path==='string'?meta.avatar_path:'';
- const safePath=new RegExp('^'+user.id.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\async function loadProfile(){
- const meta=user.user_metadata||{};
- const name=meta.display_name||meta.full_name||'';
- $('displayName').value=name;
- $('welcome').textContent=name?'سلام، '+name:'پروفایل شما';
- $('email').textContent=user.email||'';
- $('accountEmail').textContent=user.email||'—';
- showAvatar(meta.avatar_url||'');
-}')+'/avatar\\.(png|jpg|webp)
+ const safePath=path===user.id+'/avatar.png'||path===user.id+'/avatar.jpg'||path===user.id+'/avatar.webp';
+ if(safePath){
+  const {data,error}=await db.storage.from('avatars').createSignedUrl(path,3600);
+  showAvatar(!error&&data?.signedUrl?data.signedUrl:'');
+ }else showAvatar('');
+}
 $('avatarFile').addEventListener('change',()=>{
  const file=$('avatarFile').files[0];if(!file)return;
  if(!/^image\/(png|jpeg|webp)$/.test(file.type)){msg('profileMessage','فقط تصویر PNG، JPG یا WEBP مجاز است.',true);return}
