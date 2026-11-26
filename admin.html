@@ -75,6 +75,12 @@
     .table-tools{display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap}
     .table-tools input{max-width:340px}
     .table-tools .muted{margin-right:auto}
+    .admin-nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;margin-top:16px}
+    .admin-nav button{min-height:44px;transition:transform .15s,background .15s}
+    .admin-nav button:hover{transform:translateY(-1px)}
+    .admin-nav button.active{background:#2457d6;color:#fff}
+    .embedded-admin{display:block;width:100%;height:1250px;border:1px solid #e5eaf2;border-radius:12px;background:#fff}
+    @media(max-width:700px){.embedded-admin{height:1500px}}
     @media(max-width:850px){.dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-bottom{grid-template-columns:1fr}}
     @media(max-width:420px){.dashboard-grid{gap:9px}.stat-card{padding:12px}.stat-card .stat-value{font-size:23px}.status-row{grid-template-columns:80px 1fr 25px}}
 
@@ -127,7 +133,7 @@
 
   <section class="panel hidden" id="dashboardPanel">
     <div class="actions" style="justify-content:space-between;flex-wrap:wrap">
-      <div class="actions">
+      <div class="admin-nav">
         <button class="secondary section-nav" data-target="financePanel" type="button">گزارش مالی</button>
         <button class="secondary section-nav" data-target="customersPanel" type="button">مشتریان</button>
         <button class="secondary section-nav" data-target="portfolioPanel" type="button">نمونه‌کارها</button>
@@ -137,8 +143,8 @@
         <button class="secondary section-nav" data-target="auditPanel" type="button">تاریخچه مدیر</button>
         <button class="secondary section-nav" data-target="paymentPanel" type="button">پرداخت آنلاین</button>
         <button class="secondary section-nav" data-target="discountPanel" type="button">کدهای تخفیف</button>
-        <a class="secondary" href="admin-tools.html" style="display:inline-block;padding:11px 14px;border-radius:9px;text-decoration:none">موجودی، سئو و نقش‌ها</a>
-        <a class="secondary" href="admin-suite.html" style="display:inline-block;padding:11px 14px;border-radius:9px;text-decoration:none">مرکز حرفه‌ای مدیریت</a>
+        <button class="secondary section-nav" data-target="toolsPanel" type="button">موجودی، سئو و نقش‌ها</button>
+        <button class="secondary section-nav" data-target="suitePanel" type="button">امکانات پیشرفته</button>
       </div>
       <div>
         <h2 style="margin:0 0 5px">نمای کلی مدیریت</h2>
@@ -241,6 +247,17 @@
     <p class="muted" style="line-height:2">این سایت روی GitHub Pages میزبانی می‌شود و کلید محرمانه درگاه نباید داخل HTML قرار بگیرد. برای دریافت وجه واقعی، باید یک ارائه‌دهنده پرداخت سازگار با کشور و حساب پذیرنده انتخاب شود و درخواست پرداخت از سمت سرور امن انجام شود.</p>
     <div class="stat-card"><strong>وضعیت فعلی: آماده‌سازی، بدون دریافت وجه واقعی</strong><p class="muted">مدیریت دستی مبلغ و وضعیت پرداخت سفارش‌ها همچنان فعال است. پس از انتخاب درگاه، اتصال امن سمت سرور اضافه می‌شود.</p></div>
     <p style="margin-top:14px">هیچ پرداخت آزمایشی به‌عنوان پرداخت واقعی ثبت نمی‌شود.</p>
+  </section>
+
+  <section class="panel hidden" id="toolsPanel">
+    <h2 style="margin:0 0 5px">ابزارهای مدیریتی</h2>
+    <p class="muted">مدیریت موجودی کالا، تنظیمات سئو و برچسب‌های نقش سازمانی.</p>
+    <iframe class="embedded-admin" src="admin-tools.html" title="ابزارهای مدیریتی" loading="lazy"></iframe>
+  </section>
+  <section class="panel hidden" id="suitePanel">
+    <h2 style="margin:0 0 5px">امکانات پیشرفته</h2>
+    <p class="muted">گزارش مالی تکمیلی، رهگیری سفارش، اعلان مشتری، صفحه‌ساز، امتیاز وفاداری و تاریخچه امنیت.</p>
+    <iframe class="embedded-admin" src="admin-suite.html" title="امکانات پیشرفته مدیریت" loading="lazy"></iframe>
   </section>
 
   <section class="panel hidden" id="discountPanel">
@@ -1252,7 +1269,9 @@
 
   let editingPortfolioId = null;
   function showAdminSection(id) {
-    for (const section of ['financePanel','customersPanel','portfolioPanel','bookingsPanel','blogPanel','analyticsPanel','auditPanel','paymentPanel','discountPanel']) $(section).classList.toggle('hidden', section !== id);
+    const sections = ['financePanel','customersPanel','portfolioPanel','bookingsPanel','blogPanel','analyticsPanel','auditPanel','paymentPanel','discountPanel','toolsPanel','suitePanel'];
+    for (const section of sections) $(section).classList.toggle('hidden', section !== id);
+    document.querySelectorAll('.section-nav').forEach(btn=>btn.classList.toggle('active', btn.dataset.target === id));
     $(id).scrollIntoView({behavior:'smooth',block:'start'});
     if(id==='customersPanel') renderCustomers();
     if(id==='portfolioPanel') loadPortfolio();
