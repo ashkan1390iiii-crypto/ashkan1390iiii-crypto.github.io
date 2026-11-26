@@ -91,6 +91,19 @@ function addCategoryBar(){
  document.addEventListener('click',e=>{if(!nav.contains(e.target)){panel.hidden=true;trigger.setAttribute('aria-expanded','false')}});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){panel.hidden=true;trigger.setAttribute('aria-expanded','false')}});
  nav.append(trigger,panel);
+ const accountMenu=$('.market-account-menu');
+ if(accountMenu){
+  accountMenu.classList.add('market-account-in-mega');
+  const accountSummary=$('summary',accountMenu);
+  if(accountSummary&&!$('.market-account-menu-label',accountSummary)){
+   const label=document.createElement('span');label.className='market-account-menu-label';label.textContent='پروفایل و تنظیمات حساب';
+   accountSummary.append(label);
+   accountSummary.setAttribute('aria-label','باز کردن پروفایل و تنظیمات حساب');
+  }
+  panel.append(accountMenu);
+ }
+ const oldGridMenu=$('#menuToggle');
+ if(oldGridMenu){oldGridMenu.hidden=true;oldGridMenu.setAttribute('aria-hidden','true');oldGridMenu.tabIndex=-1;}
  quick.forEach(([label,href])=>{const a=document.createElement('a');a.href=href;a.textContent=label;if(location.pathname.endsWith('/'+href)||location.pathname===href)a.setAttribute('aria-current','page');nav.append(a)});
  header.after(nav);
 }
