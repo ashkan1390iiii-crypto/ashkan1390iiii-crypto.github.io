@@ -1,0 +1,1918 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="description" content="وب‌ساز مرادی؛ طراحی سایت فروشگاهی، شرکتی و شخصی با طراحی مدرن، واکنش‌گرا، ساختار مناسب سئو و پشتیبانی آنلاین.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="وب‌ساز مرادی">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fa_IR">
+<meta property="og:site_name" content="وب‌ساز مرادی">
+<meta property="og:title" content="وب‌ساز مرادی | طراحی سایت حرفه‌ای">
+<meta property="og:description" content="طراحی سایت فروشگاهی، شرکتی و شخصی با ظاهر مدرن و واکنش‌گرا.">
+<meta property="og:url" content="https://ashkan1390iiii-crypto.github.io/">
+<link rel="canonical" href="https://ashkan1390iiii-crypto.github.io/">
+<title>ثبت سفارش | وب‌ساز مرادی</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"ProfessionalService",
+  "name":"وب‌ساز مرادی",
+  "url":"https://ashkan1390iiii-crypto.github.io/",
+  "description":"طراحی سایت فروشگاهی، شرکتی و شخصی با طراحی مدرن و واکنش‌گرا.",
+  "areaServed":"ایران",
+  "serviceType":["طراحی سایت فروشگاهی","طراحی سایت شرکتی","طراحی سایت شخصی"]
+}
+</script>
+
+<style>
+:root{
+ --bg:#07111f;
+ --surface:#10233a;
+ --surface2:#17314d;
+ --text:#f4f8ff;
+ --muted:#a7b8cc;
+ --accent:#5ee7f5;
+ --accent2:#38a8ff;
+ --line:rgba(148,190,225,.17);
+ --good:#63e6a6;
+ --bad:#ff8795;
+ --warning:#ffd166;
+ --shadow:0 24px 70px rgba(0,0,0,.28);
+ --radius:22px;
+ --container:1160px;
+}
+[data-theme="gold"]{
+ --bg:#100e0a;
+ --surface:#211b12;
+ --surface2:#332719;
+ --text:#fff8e9;
+ --muted:#c9bda7;
+ --accent:#f2c66d;
+ --accent2:#d99b36;
+ --line:rgba(242,198,109,.2);
+}
+[data-theme="light"]{
+ --bg:#f2f7fc;
+ --surface:#fff;
+ --surface2:#e8f1fb;
+ --text:#12243a;
+ --muted:#53677e;
+ --accent:#167cc4;
+ --accent2:#42a5f5;
+ --line:rgba(35,74,112,.16);
+ --shadow:0 20px 55px rgba(29,65,100,.12);
+}
+[data-theme="purple"]{
+ --bg:#100b1d;
+ --surface:#211632;
+ --surface2:#302047;
+ --text:#faf5ff;
+ --muted:#c1b2d6;
+ --accent:#c3a0ff;
+ --accent2:#8b68df;
+ --line:rgba(195,160,255,.2);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{
+ min-height:100vh;
+ overflow-x:hidden;
+ color:var(--text);
+ background:
+ radial-gradient(circle at 85% 4%,color-mix(in srgb,var(--accent2) 18%,transparent),transparent 28rem),
+ radial-gradient(circle at 0% 45%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 24rem),
+ var(--bg);
+ font-family:"Vazirmatn",Tahoma,sans-serif;
+ line-height:1.9;
+ transition:background .25s,color .25s;
+}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+img{max-width:100%;display:block}
+.container{width:min(var(--container),92%);margin-inline:auto}
+.section{padding-block:78px}
+.top-line{height:3px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent)}
+header{
+ position:sticky;
+ top:0;
+ z-index:30;
+ border-bottom:1px solid var(--line);
+ background:color-mix(in srgb,var(--bg) 88%,transparent);
+ backdrop-filter:blur(18px);
+}
+.nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;white-space:nowrap}
+.brand-mark{
+ width:43px;height:43px;display:grid;place-items:center;
+ border-radius:14px;color:#07111f;
+ background:linear-gradient(135deg,var(--accent),var(--accent2));
+ box-shadow:0 8px 24px color-mix(in srgb,var(--accent2) 22%,transparent);
+}
+.brand small{display:block;color:var(--muted);font-size:10px;direction:ltr;letter-spacing:1.2px}
+.links{display:flex;gap:17px;color:var(--muted);font-size:12px}
+.links a{transition:color .2s}
+.links a:hover,.links a.active{color:var(--accent)}
+.actions{display:flex;align-items:center;gap:8px}
+.btn{
+ display:inline-flex;align-items:center;justify-content:center;gap:8px;
+ min-height:46px;padding:10px 18px;border:1px solid transparent;
+ border-radius:13px;color:#061522;
+ background:linear-gradient(110deg,var(--accent),var(--accent2));
+ font-weight:900;font-size:13px;transition:transform .2s,filter .2s,box-shadow .2s;
+}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.06);box-shadow:0 12px 28px color-mix(in srgb,var(--accent2) 20%,transparent)}
+.btn.ghost{border-color:var(--line);color:var(--text);background:var(--surface);box-shadow:none}
+.btn.small{min-height:39px;padding:7px 12px;font-size:11px}
+.icon-btn{
+ width:42px;height:42px;border:1px solid var(--line);
+ border-radius:12px;color:var(--text);background:var(--surface);
+ transition:.2s;
+}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+#menuToggle{display:none}
+.hero{
+ display:grid;grid-template-columns:1.08fr .92fr;align-items:center;
+ gap:45px;padding-block:76px 58px;min-height:610px;
+}
+.eyebrow{
+ display:inline-flex;align-items:center;gap:8px;padding:5px 12px;
+ border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);
+ border-radius:30px;color:var(--accent);
+ background:color-mix(in srgb,var(--accent) 8%,transparent);
+ font-size:12px;font-weight:800;
+}
+h1{margin:18px 0;font-size:clamp(2.2rem,5.2vw,4.4rem);line-height:1.45;font-weight:900;letter-spacing:-1px}
+h2{font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.5}
+h3{font-size:1.08rem}
+.gradient{
+ color:transparent;background:linear-gradient(100deg,var(--accent),var(--accent2));
+ background-clip:text;-webkit-background-clip:text;
+}
+.lead,.desc{color:var(--muted)}
+.lead{max-width:610px;font-size:15px}
+.hero-buttons{display:flex;flex-wrap:wrap;gap:12px;margin-top:25px}
+.trust{display:flex;flex-wrap:wrap;gap:18px;margin-top:28px;color:var(--muted);font-size:12px}
+.trust b{color:var(--good)}
+.hero-art{min-height:390px;display:grid;place-items:center;position:relative}
+.orb{
+ position:absolute;width:300px;height:300px;border-radius:50%;
+ background:color-mix(in srgb,var(--accent2) 18%,transparent);filter:blur(35px);
+}
+.browser{
+ position:relative;width:min(100%,455px);padding:15px;border:1px solid var(--line);
+ border-radius:23px;background:var(--surface);box-shadow:var(--shadow);
+ transform:rotate(-2deg);animation:float 6s ease-in-out infinite;
+}
+.browser-top{display:flex;gap:6px;padding:4px 3px 13px;border-bottom:1px solid var(--line)}
+.browser-top i{width:8px;height:8px;border-radius:50%;background:#ff7185}
+.browser-top i:nth-child(2){background:#ffd166}
+.browser-top i:nth-child(3){background:#63e6a6}
+.browser-body{padding:24px}
+.browser-label{color:var(--accent);font-size:10px}
+.browser-title{max-width:300px;margin-top:12px;font-size:25px;font-weight:900;line-height:1.5}
+.browser-copy{margin-top:7px;color:var(--muted);font-size:11px}
+.browser-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:22px}
+.browser-tiles span{
+ height:65px;border-radius:10px;
+ background:linear-gradient(145deg,var(--surface2),color-mix(in srgb,var(--accent) 14%,var(--surface)));
+}
+.float-tag{
+ position:absolute;padding:10px 14px;border:1px solid var(--line);
+ border-radius:13px;background:var(--surface);box-shadow:var(--shadow);
+ font-size:11px;font-weight:800;
+}
+.tag-a{top:38px;right:-5px}
+.tag-b{bottom:35px;left:-5px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;padding-bottom:20px}
+.stat,.card,.panel,.step,.faq{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.stat{padding:17px;text-align:center;transition:.25s}
+.stat:hover{transform:translateY(-4px);border-color:var(--accent)}
+.stat strong{display:block;color:var(--accent);font-size:24px}
+.stat span{color:var(--muted);font-size:11px}
+.section-head{max-width:690px;margin-bottom:30px}
+.section-head p{margin-top:8px;color:var(--muted);font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{padding:23px;transition:transform .25s,border-color .25s,box-shadow .25s}
+.card:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:var(--shadow)}
+.service-icon{
+ width:50px;height:50px;display:grid;place-items:center;margin-bottom:15px;
+ border-radius:15px;color:var(--accent);
+ background:color-mix(in srgb,var(--accent) 12%,transparent);font-size:23px;
+}
+.card p{margin-top:8px;color:var(--muted);font-size:12px}
+.card-link{display:inline-block;margin-top:14px;color:var(--accent);font-size:12px;font-weight:800}
+.split{display:grid;grid-template-columns:.9fr 1.1fr;gap:30px;align-items:center}
+.panel{padding:28px;box-shadow:var(--shadow)}
+.panel p{margin-top:8px;color:var(--muted);font-size:13px}
+.features{display:grid;gap:18px}
+.feature{display:flex;gap:13px}
+.number{
+ width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;
+ border-radius:11px;color:var(--accent);
+ background:color-mix(in srgb,var(--accent) 12%,transparent);font-weight:900;
+}
+.feature p{color:var(--muted);font-size:12px}
+.portfolio{padding:0;overflow:hidden}
+.preview-art{
+ min-height:190px;display:grid;place-items:center;
+ background:linear-gradient(135deg,var(--surface2),color-mix(in srgb,var(--accent2) 25%,var(--surface)));
+}
+.mini-store{
+ width:78%;padding:14px;border:1px solid var(--line);border-radius:13px;
+ background:var(--bg);transform:rotate(-3deg);
+}
+.mini-store strong{color:var(--accent);font-size:11px}
+.mini-banner{
+ display:grid;min-height:75px;place-items:center;margin-top:10px;
+ border-radius:8px;background:var(--surface2);font-weight:900;
+}
+.mini-products{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}
+.mini-products i{height:30px;border-radius:6px;background:var(--surface2)}
+.portfolio-info{padding:20px}
+.portfolio-info p{margin-top:7px;color:var(--muted);font-size:12px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.step{padding:20px;transition:.25s}
+.step:hover{transform:translateY(-4px);border-color:var(--accent)}
+.step strong{color:var(--accent);font-size:25px}
+.step p{margin-top:6px;color:var(--muted);font-size:12px}
+.cta{
+ display:flex;align-items:center;justify-content:space-between;gap:20px;padding:30px;
+ border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);
+ border-radius:25px;
+ background:linear-gradient(110deg,var(--surface),color-mix(in srgb,var(--accent2) 14%,var(--surface)));
+}
+.cta p{margin-top:5px;color:var(--muted);font-size:12px}
+.order-layout{display:grid;grid-template-columns:.7fr 1.3fr;gap:18px;align-items:start}
+.form-card{padding:25px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.field{display:grid;gap:6px;margin-bottom:13px}
+.field label{font-size:12px;font-weight:800}
+.field input,.field select,.field textarea{
+ width:100%;min-height:47px;padding:10px 13px;border:1px solid var(--line);
+ border-radius:11px;outline:none;color:var(--text);background:var(--bg);
+}
+.field textarea{min-height:110px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{
+ border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 13%,transparent);
+}
+.field option{background:var(--bg)}
+.notice{
+ display:none;margin-top:12px;padding:12px;border:1px solid var(--line);
+ border-radius:11px;color:var(--good);overflow-wrap:anywhere;font-size:12px;
+}
+.notice.show{display:block}
+.notice.error{color:var(--bad)}
+.faq-list{display:grid;max-width:850px;gap:10px}
+.faq{overflow:hidden}
+.faq-q{
+ width:100%;display:flex;justify-content:space-between;gap:12px;
+ padding:16px;border:0;color:var(--text);background:transparent;
+ text-align:right;font-weight:800;
+}
+.faq-a{display:none;padding:0 16px 16px;color:var(--muted);font-size:12px}
+.faq.active .faq-a{display:block}
+footer{margin-top:40px;padding:40px 0 18px;border-top:1px solid var(--line)}
+.footer-grid{display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:25px}
+.footer-grid p,.footer-links{color:var(--muted);font-size:12px}
+.footer-links{display:grid;gap:7px}
+.copy{margin-top:25px;padding-top:15px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;text-align:center}
+.preview-box{display:grid;grid-template-columns:1fr 1fr;gap:15px;align-items:center}
+.preview-controls{display:grid;gap:10px}
+.preview-controls select{
+ padding:11px;border:1px solid var(--line);border-radius:10px;
+ color:var(--text);background:var(--bg);
+}
+.live-preview{
+ min-height:230px;padding:20px;border:1px solid var(--line);
+ border-radius:17px;background:var(--surface2);overflow:hidden;
+}
+.live-preview h3{margin:20px 0 8px;font-size:22px}
+.live-preview p{color:var(--muted);font-size:12px}
+.live-preview .sample-btn{
+ display:inline-block;margin-top:15px;padding:8px 13px;border-radius:9px;
+ color:#07111f;background:var(--accent);font-size:11px;font-weight:900;
+}
+
+/* بخش تعرفه‌ها */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.price-card{position:relative;display:flex;flex-direction:column;gap:12px}
+.price-card.featured{
+ border-color:var(--accent);
+ box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 20%,transparent),var(--shadow);
+}
+.price-badge{
+ position:absolute;top:14px;left:14px;padding:4px 9px;
+ border-radius:20px;color:#07111f;background:var(--accent);
+ font-size:10px;font-weight:900;
+}
+.price-type{color:var(--accent);font-size:12px;font-weight:800}
+.price-value{font-size:23px;font-weight:900}
+.price-value small{display:block;color:var(--muted);font-size:11px;font-weight:500}
+.price-card ul{padding-right:19px;color:var(--muted);font-size:12px}
+.price-card li{margin:5px 0}
+.price-card .btn{margin-top:auto}
+.price-note{
+ margin-top:15px;padding:12px 15px;border:1px dashed var(--line);
+ border-radius:12px;color:var(--muted);font-size:11px;
+}
+
+/* اعتمادسازی */
+.trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.trust-item{
+ padding:19px;text-align:center;border:1px solid var(--line);
+ border-radius:17px;background:var(--surface);transition:.2s;
+}
+.trust-item:hover{transform:translateY(-4px);border-color:var(--accent)}
+.trust-item strong{display:block;color:var(--accent);font-size:15px}
+.trust-item span{color:var(--muted);font-size:11px}
+
+/* پشتیبانی آنلاین */
+#chatLauncher{
+ position:fixed;left:18px;bottom:18px;z-index:40;border:0;
+ border-radius:50px;padding:13px 17px;color:#07111f;
+ background:var(--accent);font-weight:900;box-shadow:var(--shadow);
+}
+#chatPanel{
+ position:fixed;left:18px;bottom:78px;z-index:40;
+ width:min(360px,calc(100vw - 36px));height:450px;max-height:75vh;
+ padding:17px;border:1px solid var(--line);border-radius:17px;
+ background:var(--surface);box-shadow:var(--shadow);
+ display:none;flex-direction:column;
+}
+#chatPanel.open{display:flex}
+#chatPanel p{margin-top:7px;color:var(--muted);font-size:12px}
+.chat-messages{
+ flex:1;min-height:100px;overflow-y:auto;display:flex;
+ flex-direction:column;gap:10px;margin:12px 0;padding:8px 2px;
+}
+.chat-message{
+ max-width:90%;padding:9px 12px;border-radius:12px;
+ font-size:12px;line-height:1.8;overflow-wrap:anywhere;
+}
+.chat-message.mine{align-self:flex-end;background:var(--surface2)}
+.chat-message.admin{align-self:flex-start;background:color-mix(in srgb,var(--accent) 15%,var(--surface))}
+.chat-message small{display:block;color:var(--muted);font-size:10px;margin-top:5px}
+.chat-form{display:flex;gap:7px}
+.chat-form input{
+ min-width:0;flex:1;padding:10px;border:1px solid var(--line);
+ border-radius:10px;background:var(--bg);color:var(--text);
+}
+.chat-form button{
+ border:0;border-radius:10px;padding:9px 12px;
+ background:var(--accent);color:#07111f;font-weight:800;
+}
+.chat-form button:disabled{opacity:.5}
+.chat-status{font-size:11px;color:var(--muted);margin-top:6px}
+.chat-login-link{color:var(--accent);text-decoration:underline}
+
+/* افکت‌های ورود */
+.reveal{opacity:0;transform:translateY(17px);transition:opacity .55s,transform .55s}
+.reveal.visible{opacity:1;transform:none}
+@keyframes float{50%{transform:translateY(-12px) rotate(-2deg)}}
+@keyframes pulseGlow{
+ 0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 0%,transparent)}
+ 50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--accent) 10%,transparent)}
+}
+.eyebrow{animation:pulseGlow 4s infinite}
+button:disabled{opacity:.6;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+@media(max-width:1000px){
+ .links{gap:10px;font-size:11px}
+ .hero{gap:20px}
+ .pricing-grid{gap:12px}
+}
+@media(max-width:850px){
+ .cards{grid-template-columns:repeat(2,1fr)}
+ .split{gap:18px}
+ .pricing-grid{grid-template-columns:repeat(2,1fr)}
+ .pricing-grid .price-card:last-child{grid-column:1/-1}
+}
+@media(max-width:680px){
+ .nav{min-height:68px}
+ .links{
+  display:none;position:absolute;top:68px;right:4%;left:4%;
+  padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--surface);
+ }
+ .links.open{display:grid}
+ .links a{padding:8px}
+ .actions .btn{display:none}
+ #menuToggle{display:block}
+ .hero{grid-template-columns:1fr;padding-block:55px 25px;text-align:center}
+ .lead{margin:auto}
+ .hero-buttons,.trust{justify-content:center}
+ .hero-art{min-height:320px}
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .split,.order-layout,.preview-box{grid-template-columns:1fr}
+ .steps{grid-template-columns:repeat(2,1fr)}
+ .cta{align-items:flex-start;flex-direction:column}
+ .footer-grid{grid-template-columns:1fr 1fr}
+ .footer-grid>div:first-child{grid-column:1/-1}
+ .trust-grid{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+ .pricing-grid{grid-template-columns:1fr}
+ .pricing-grid .price-card:last-child{grid-column:auto}
+}
+@media(max-width:460px){
+ .cards,.form-grid,.steps,.footer-grid{grid-template-columns:1fr}
+ .footer-grid>div:first-child{grid-column:auto}
+ .hero-buttons .btn{width:100%}
+ .browser-body{padding:16px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+ .reveal{opacity:1;transform:none}
+}
+
+/* امکانات تکمیلی */
+.extra-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.extra-card{padding:20px;border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+.extra-card p,.muted-small{color:var(--muted);font-size:12px}
+.metric{font-size:25px;color:var(--accent);font-weight:900}
+.inline-form{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.inline-form input,.inline-form select,.inline-form textarea{
+ flex:1;min-width:130px;padding:10px 12px;border:1px solid var(--line);
+ border-radius:10px;background:var(--bg);color:var(--text)
+}
+.inline-form textarea{flex-basis:100%;min-height:85px}
+.result-box{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:11px;color:var(--good);font-size:12px;overflow-wrap:anywhere}
+.review-list,.ticket-list,.notice-list{display:grid;gap:10px;margin-top:14px}
+.review-item,.ticket-item,.notice-item{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.stars{color:var(--warning);letter-spacing:2px}
+.admin-note{padding:12px;border:1px dashed var(--warning);border-radius:12px;color:var(--muted);font-size:12px;margin-top:12px}
+@media(max-width:760px){.extra-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.extra-grid{grid-template-columns:1fr}}
+
+
+/* ===== Premium visual refresh — November 2026 ===== */
+:root{
+ --radius:24px;
+ --shadow:0 26px 75px rgba(0,0,0,.30);
+}
+html{scroll-behavior:smooth}
+body{
+ background:
+  radial-gradient(ellipse at 78% 0%,color-mix(in srgb,var(--accent2) 19%,transparent),transparent 34rem),
+  radial-gradient(ellipse at 4% 38%,color-mix(in srgb,var(--accent) 9%,transparent),transparent 30rem),
+  var(--bg);
+}
+body::before{
+ content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.16;
+ background-image:linear-gradient(color-mix(in srgb,var(--line) 65%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--line) 65%,transparent) 1px,transparent 1px);
+ background-size:46px 46px;
+ mask-image:linear-gradient(to bottom,black,transparent 78%);
+}
+header{
+ background:color-mix(in srgb,var(--bg) 82%,transparent);
+ box-shadow:0 10px 35px rgba(0,0,0,.08);
+}
+.nav{min-height:82px}
+.brand-mark{border-radius:15px;box-shadow:0 9px 28px color-mix(in srgb,var(--accent2) 28%,transparent)}
+.links a{position:relative;padding-block:8px}
+.links a::after{
+ content:"";position:absolute;right:0;bottom:1px;width:0;height:2px;border-radius:9px;
+ background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .22s ease;
+}
+.links a:hover::after,.links a.active::after{width:100%}
+.btn{box-shadow:0 8px 24px color-mix(in srgb,var(--accent2) 14%,transparent)}
+.btn.ghost{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 70%,transparent)}
+.hero{padding-block:88px 70px;min-height:650px}
+.hero h1{max-width:700px;letter-spacing:-1.5px}
+.hero-art{isolation:isolate}
+.orb{z-index:-1;opacity:.85}
+.browser{
+ border-color:color-mix(in srgb,var(--accent) 24%,var(--line));
+ box-shadow:0 35px 90px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.06);
+}
+.float-tag{backdrop-filter:blur(12px);border-color:color-mix(in srgb,var(--accent) 24%,var(--line))}
+.stat,.card,.panel,.step,.faq,.price-card,.extra-card,.trust-item{
+ box-shadow:0 12px 35px rgba(0,0,0,.075);
+}
+.stat,.card,.panel,.step,.faq,.price-card,.extra-card{
+ transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease,background .28s ease;
+}
+.stat:hover,.card:hover,.step:hover,.price-card:hover,.extra-card:hover{
+ transform:translateY(-6px);
+ box-shadow:0 22px 48px rgba(0,0,0,.16);
+}
+.card,.price-card,.extra-card{position:relative;overflow:hidden}
+.card::before,.price-card::before,.extra-card::before{
+ content:"";position:absolute;inset:0 0 auto;height:2px;opacity:0;
+ background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);
+ transition:opacity .25s ease;
+}
+.card:hover::before,.price-card:hover::before,.extra-card:hover::before{opacity:1}
+.service-icon{border:1px solid color-mix(in srgb,var(--accent) 13%,transparent)}
+.section{padding-block:88px}
+.section-head{margin-bottom:36px}
+.section-head h2{letter-spacing:-.5px}
+.portfolio-info,.portfolio-info p{line-height:1.9}
+.form-card,.preview-box,.panel{border-color:color-mix(in srgb,var(--line) 85%,var(--accent) 5%)}
+.field input,.field select,.field textarea,
+.inline-form input,.inline-form select,.inline-form textarea{
+ border-radius:13px;transition:border-color .2s,box-shadow .2s,background .2s;
+}
+.field input:focus,.field select:focus,.field textarea:focus,
+.inline-form input:focus,.inline-form select:focus,.inline-form textarea:focus{
+ box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent);
+}
+#chatLauncher{box-shadow:0 12px 32px color-mix(in srgb,var(--accent2) 30%,transparent)}
+#chatPanel{box-shadow:0 28px 85px rgba(0,0,0,.32);border-color:color-mix(in srgb,var(--accent) 22%,var(--line))}
+footer{border-top:1px solid var(--line)}
+a,button{-webkit-tap-highlight-color:transparent}
+:focus-visible{outline-offset:4px}
+@media(max-width:850px){
+ .hero{min-height:auto;padding-block:62px 45px}
+ .section{padding-block:68px}
+}
+@media(max-width:680px){
+ .nav{min-height:70px}
+ .hero{padding-top:48px}
+ .hero-art{min-height:330px}
+ .browser{width:min(94%,420px)}
+ .float-tag{font-size:10px;padding:8px 11px}
+ .section{padding-block:58px}
+ .card,.panel,.price-card,.extra-card{border-radius:19px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+
+/* راهنمای خودکار و ثبت تیکت */
+.support-bot-tools{border-top:1px solid var(--line);padding-top:9px;margin-top:8px}
+.support-bot-heading{font-size:11px;font-weight:800;margin-bottom:7px}
+.support-bot-quick{display:flex;flex-wrap:wrap;gap:5px}
+.support-bot-quick button,.support-ticket-actions button{border:1px solid var(--line);border-radius:20px;padding:6px 9px;background:var(--surface2);color:var(--text);font:inherit;font-size:10px;cursor:pointer}
+.support-bot-quick button:hover{border-color:var(--accent)}
+.support-bot-reply{font-size:11px;line-height:1.8;margin-top:8px;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--accent) 10%,var(--surface));color:var(--text)}
+.support-ticket-mini{display:grid;gap:7px;margin-top:9px;padding:10px;border:1px solid var(--line);border-radius:11px;background:var(--surface2)}
+.support-ticket-mini[hidden]{display:none}
+.support-ticket-mini strong{font-size:12px}
+.support-ticket-mini input,.support-ticket-mini textarea{width:100%;min-width:0;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:11px}
+.support-ticket-mini textarea{min-height:65px;resize:vertical}
+.support-ticket-actions{display:flex;gap:7px}
+.support-ticket-actions button:first-child{background:var(--accent);color:#07111f;border-color:var(--accent);font-weight:800}
+#botTicketStatus{font-size:10px;color:var(--muted)}
+#chatPanel{height:min(650px,88vh);max-height:88vh}
+
+
+/* چیدمان مرتب‌تر صفحه اصلی و منوی جمع‌وجور */
+.links{align-items:center;gap:clamp(9px,1.15vw,16px);font-size:12px;white-space:nowrap}
+.nav-more{position:relative;color:var(--muted);font-size:12px}
+.nav-more summary{list-style:none;cursor:pointer;padding:8px 4px;font-weight:700}
+.nav-more summary::-webkit-details-marker{display:none}
+.nav-more summary:hover,.nav-more[open] summary{color:var(--accent)}
+.nav-more-menu{
+ position:absolute;top:calc(100% + 12px);left:0;z-index:50;
+ display:grid;gap:3px;min-width:190px;padding:8px;
+ border:1px solid var(--line);border-radius:14px;background:var(--surface);
+ box-shadow:var(--shadow)
+}
+.nav-more-menu a{padding:8px 10px;border-radius:8px}
+.nav-more-menu a:hover{background:var(--surface2)}
+@media(max-width:1000px){.links{gap:8px;font-size:11px}}
+@media(max-width:680px){
+ .links{gap:2px;white-space:normal}
+ .nav-more{padding:4px 8px}
+ .nav-more-menu{position:static;min-width:0;margin:4px 8px 8px;box-shadow:none}
+ .nav-more-menu a{padding:7px 10px}
+ .section{padding-block:52px}
+ .section-head{margin-bottom:24px}
+ .hero{padding-block:42px 22px;gap:12px}
+ .hero-art{min-height:285px}
+ .stats{padding-bottom:8px}
+}
+
+
+/* نمایش فقط محتوای صفحه جاری */
+main>section{display:none!important}
+main>section#order{display:block!important}
+.page-route-note{display:none!important}
+@media(max-width:680px){.nav-more-menu{position:static}}
+</style>
+<script src="seo.js" defer></script>
+</head>
+
+<body>
+<div class="top-line"></div>
+
+<header>
+ <div class="container nav">
+  <a class="brand" href="index.html">
+   <span class="brand-mark">MW</span>
+   <span>وب‌ساز مرادی<small>MORADI WEB BUILDER</small></span>
+  </a>
+  <nav class="links" id="navLinks" aria-label="منوی اصلی">
+   <a href="index.html">خانه</a>
+   <a href="services.html">خدمات</a>
+   <a href="portfolio.html">نمونه‌کارها</a>
+   <a href="pricing.html">تعرفه‌ها</a>
+   <a href="order.html">ثبت سفارش</a>
+   <details class="nav-more">
+    <summary>بیشتر <span aria-hidden="true">⌄</span></summary>
+    <div class="nav-more-menu">
+     <a href="preview.html">پیش‌نمایش سایت</a>
+     <a href="calculator.html">محاسبه قیمت</a>
+     <a href="extras.html">امکانات بیشتر</a>
+     <a href="blog.html">وبلاگ</a>
+     <a href="consultation.html">رزرو مشاوره</a>
+     <a href="tracking.html">پیگیری سفارش</a>
+     <a href="tools.html">مرکز ابزارها</a>
+     <a href="tickets.html">پشتیبانی و تیکت</a>
+    </div>
+   </details>
+  </nav>
+  <div class="actions">
+   <a class="btn small ghost" href="auth.html" id="authLink">ورود / ثبت‌نام</a>
+   <a class="btn small" href="account.html" id="accountLink">پنل مشتری</a>
+   <button class="icon-btn" id="themeButton" type="button" title="تغییر تم" aria-label="تغییر تم">◐</button>
+   <button class="icon-btn" id="menuToggle" type="button" aria-label="باز کردن منو" aria-expanded="false">☰</button>
+  </div>
+ </div>
+</header>
+
+<main>
+<section class="container hero" id="home">
+ <div class="reveal">
+  <span class="eyebrow">✦ طراحی وب با نگاه حرفه‌ای</span>
+  <h1>کسب‌وکارت رو با یک <span class="gradient">سایت خاص</span> به دنیا معرفی کن</h1>
+  <p class="lead">از ایده تا اجرا؛ طراحی مدرن، تجربه کاربری روان و نمایش درست در موبایل و کامپیوتر برای حضور بهتر در دنیای آنلاین.</p>
+  <div class="hero-buttons">
+   <a class="btn" href="order.html">ثبت درخواست طراحی ←</a>
+   <a class="btn ghost" href="portfolio.html">دیدن نمونه‌کارها</a>
+  </div>
+  <div class="trust">
+   <span><b>✓</b> طراحی واکنش‌گرا</span>
+   <span><b>✓</b> ظاهر اختصاصی</span>
+   <span><b>✓</b> پیگیری سفارش</span>
+  </div>
+ </div>
+ <div class="hero-art reveal" aria-label="پیش‌نمایش گرافیکی وب‌سایت">
+  <div class="orb"></div>
+  <div class="browser">
+   <div class="browser-top"><i></i><i></i><i></i></div>
+   <div class="browser-body">
+    <span class="browser-label">YOUR DIGITAL PRESENCE</span>
+    <div class="browser-title">یک شروع تازه برای برند شما</div>
+    <p class="browser-copy">طراحی زیبا، سرعت مناسب و تجربه‌ای ساده برای کاربران شما.</p>
+    <div class="browser-tiles"><span></span><span></span><span></span></div>
+   </div>
+  </div>
+  <div class="float-tag tag-a">✦ طراحی مدرن</div>
+  <div class="float-tag tag-b">▣ سازگار با موبایل</div>
+ </div>
+</section>
+
+<section class="container stats" aria-label="ویژگی‌های وب‌سایت">
+ <div class="stat reveal"><strong>۱۰۰٪</strong><span>واکنش‌گرا</span></div>
+ <div class="stat reveal"><strong>۲۴/۷</strong><span>قابل مشاهده</span></div>
+ <div class="stat reveal"><strong>UI</strong><span>توجه به تجربه کاربری</span></div>
+ <div class="stat reveal"><strong>SEO</strong><span>ساختار مناسب جست‌وجو</span></div>
+</section>
+
+<section class="section" id="services">
+ <div class="container">
+  <div class="section-head reveal">
+   <span class="eyebrow">خدمات وب‌ساز مرادی</span>
+   <h2>هر چیزی که برای شروع آنلاین نیاز داری</h2>
+   <p>متناسب با نوع کسب‌وکار، هدف و نیاز مخاطبانت، ساختار مناسبی برای سایت طراحی می‌کنیم.</p>
+  </div>
+  <div class="cards">
+   <article class="card reveal">
+    <div class="service-icon">🛍️</div>
+    <h3>فروشگاه اینترنتی</h3>
+    <p>معرفی محصول، دسته‌بندی و مسیر ساده برای ثبت درخواست خرید.</p>
+    <a class="card-link" href="order.html">درخواست این خدمت ←</a>
+   </article>
+   <article class="card reveal">
+    <div class="service-icon">🏢</div>
+    <h3>سایت شرکتی</h3>
+    <p>معرفی برند، خدمات، نمونه‌کارها و راه‌های ارتباطی.</p>
+    <a class="card-link" href="order.html">درخواست این خدمت ←</a>
+   </article>
+   <article class="card reveal">
+    <div class="service-icon">👤</div>
+    <h3>سایت شخصی</h3>
+    <p>صفحه اختصاصی برای معرفی مهارت‌ها، رزومه و پروژه‌ها.</p>
+    <a class="card-link" href="order.html">درخواست این خدمت ←</a>
+   </article>
+   <article class="card reveal">
+    <div class="service-icon">📱</div>
+    <h3>طراحی واکنش‌گرا</h3>
+    <p>چیدمان سازگار با موبایل، تبلت و دسکتاپ.</p>
+    <a class="card-link" href="order.html">درخواست این خدمت ←</a>
+   </article>
+   <article class="card reveal">
+    <div class="service-icon">⚡</div>
+    <h3>بهینه‌سازی تجربه</h3>
+    <p>ساختار مرتب و مسیرهای واضح برای دسترسی آسان‌تر.</p>
+    <a class="card-link" href="order.html">درخواست این خدمت ←</a>
+   </article>
+   <article class="card reveal">
+    <div class="service-icon">🎨</div>
+    <h3>طراحی رابط کاربری</h3>
+    <p>انتخاب رنگ، فونت و اجزای بصری هماهنگ با برند.</p>
+    <a class="card-link" href="order.html">درخواست این خدمت ←</a>
+   </article>
+  </div>
+ </div>
+</section>
+
+<section class="section">
+ <div class="container split">
+  <div class="panel reveal">
+   <div class="service-icon">MWB</div>
+   <span class="eyebrow">MORADI WEB BUILDER</span>
+   <h2>یک سایت خوب فقط زیبا نیست</h2>
+   <p>سایت باید پیام برند را روشن منتقل کند، استفاده از آن ساده باشد و مخاطب را به اقدام درست هدایت کند.</p>
+  </div>
+  <div class="features">
+   <div class="feature reveal">
+    <span class="number">۰۱</span>
+    <div><h3>طراحی متناسب با هدف</h3><p>ساختار سایت بر اساس نوع فعالیت و مخاطبان شکل می‌گیرد.</p></div>
+   </div>
+   <div class="feature reveal">
+    <span class="number">۰۲</span>
+    <div><h3>نمایش درست در موبایل</h3><p>بخش‌ها و دکمه‌ها در اندازه‌های مختلف صفحه درست چیده می‌شوند.</p></div>
+   </div>
+   <div class="feature reveal">
+    <span class="number">۰۳</span>
+    <div><h3>مسیر ساده برای کاربر</h3><p>منوها، لینک‌ها و فرم‌ها برای استفاده راحت‌تر طراحی می‌شوند.</p></div>
+   </div>
+   <div class="feature reveal">
+    <span class="number">۰۴</span>
+    <div><h3>قابلیت توسعه</h3><p>امکانات تازه در مراحل بعدی قابل اضافه‌شدن هستند.</p></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="portfolio">
+ <div class="container">
+  <div class="section-head reveal">
+   <span class="eyebrow">نمونه‌کارها</span>
+   <h2>ایده‌هایی برای شروع</h2>
+   <p>برای دیدن نمونه طراحی فروشگاهی، پروژه آوید را باز کن.</p>
+  </div>
+  <div class="cards">
+   <article class="card portfolio reveal">
+    <div class="preview-art">
+     <div class="mini-store">
+      <strong>AVID STORE</strong>
+      <div class="mini-banner">استایل خودت رو پیدا کن</div>
+      <div class="mini-products"><i></i><i></i><i></i></div>
+     </div>
+    </div>
+    <div class="portfolio-info">
+     <h3>فروشگاه پوشاک آوید</h3>
+     <p>نمونه طراحی فروشگاه اینترنتی پوشاک با تمرکز بر نمایش محصولات.</p>
+     <a class="card-link" href="avid.html">مشاهده نمونه‌کار آوید ←</a>
+    </div>
+   </article>
+   <article class="card portfolio reveal">
+    <div class="preview-art">
+     <div class="mini-store">
+      <strong>BUSINESS</strong>
+      <div class="mini-banner">کسب‌وکار حرفه‌ای</div>
+      <div class="mini-products"><i></i><i></i><i></i></div>
+     </div>
+    </div>
+    <div class="portfolio-info">
+     <h3>قالب شرکتی</h3>
+     <p>چیدمان پیشنهادی برای معرفی خدمات و اطلاعات مجموعه.</p>
+     <a class="card-link" href="order.html">سفارش طرح مشابه ←</a>
+    </div>
+   </article>
+   <article class="card portfolio reveal">
+    <div class="preview-art">
+     <div class="mini-store">
+      <strong>PERSONAL</strong>
+      <div class="mini-banner">داستان و مهارت‌های من</div>
+      <div class="mini-products"><i></i><i></i><i></i></div>
+     </div>
+    </div>
+    <div class="portfolio-info">
+     <h3>صفحه شخصی</h3>
+     <p>طرحی ساده برای معرفی توانایی‌ها، سوابق و راه‌های ارتباطی.</p>
+     <a class="card-link" href="order.html">سفارش طرح مشابه ←</a>
+    </div>
+   </article>
+  </div>
+ </div>
+<div id="managedPortfolio" class="cards" style="margin-top:18px"></div>
+</section>
+
+<section class="section" id="blog">
+ <div class="container">
+  <div class="section-head"><span class="eyebrow">آموزش و راهنما</span><h2>وبلاگ وب‌ساز مرادی</h2><p>مقاله‌های تازه درباره طراحی و مدیریت سایت.</p></div>
+  <div id="publicBlogPosts" class="cards"><div class="notice-item">در حال دریافت مقاله‌ها...</div></div>
+ </div>
+</section>
+<section class="section" id="consultation">
+ <div class="container">
+  <div class="section-head"><span class="eyebrow">مشاوره</span><h2>رزرو جلسه مشاوره</h2><p>برای ثبت درخواست، ابتدا وارد حساب کاربری شو.</p></div>
+  <div class="form-card" style="max-width:760px;margin:auto">
+   <form id="consultationForm" class="form-grid">
+    <div class="field"><label for="consultName">نام</label><input id="consultName" required maxlength="100"></div>
+    <div class="field"><label for="consultContact">شماره تماس یا راه ارتباطی</label><input id="consultContact" required maxlength="40"></div>
+    <div class="field"><label for="consultDate">زمان پیشنهادی</label><input id="consultDate" type="datetime-local" required></div>
+    <div class="field"><label for="consultTopic">موضوع مشاوره</label><input id="consultTopic" maxlength="500" placeholder="مثلاً طراحی فروشگاه اینترنتی"></div>
+    <div class="field full"><button class="btn" type="submit" id="consultSubmit">ثبت درخواست مشاوره</button></div>
+   </form><div id="consultMessage" class="notice" role="status"></div>
+  </div>
+ </div>
+</section>
+<section class="section" id="pricing">
+ <div class="container">
+  <div class="section-head reveal">
+   <span class="eyebrow">تعرفه خدمات</span>
+   <h2>پلن مناسب پروژه‌ات رو انتخاب کن</h2>
+   <p>هزینه نهایی بعد از بررسی امکانات و جزئیات موردنیاز مشخص می‌شود؛ قیمت غیرواقعی یا ثابت نمایش نمی‌دهیم.</p>
+  </div>
+  <div class="pricing-grid">
+   <article class="card price-card reveal">
+    <span class="price-type">شروع ساده</span>
+    <h3>سایت شخصی</h3>
+    <div class="price-value">توافقی<small>پس از بررسی درخواست</small></div>
+    <p>مناسب معرفی فرد، مهارت‌ها و نمونه‌کارها.</p>
+    <ul>
+     <li>صفحه معرفی</li>
+     <li>بخش مهارت‌ها و نمونه‌کار</li>
+     <li>راه ارتباطی</li>
+     <li>نمایش واکنش‌گرا</li>
+    </ul>
+    <a class="btn ghost" href="order.html">درخواست مشاوره</a>
+   </article>
+   <article class="card price-card featured reveal">
+    <span class="price-badge">پیشنهاد محبوب</span>
+    <span class="price-type">معرفی کسب‌وکار</span>
+    <h3>سایت شرکتی</h3>
+    <div class="price-value">توافقی<small>پس از بررسی درخواست</small></div>
+    <p>مناسب معرفی خدمات، برند و اطلاعات مجموعه.</p>
+    <ul>
+     <li>صفحات معرفی و خدمات</li>
+     <li>بخش نمونه‌کار</li>
+     <li>فرم ثبت درخواست</li>
+     <li>ساختار پایه سئو</li>
+    </ul>
+    <a class="btn" href="order.html">درخواست مشاوره</a>
+   </article>
+   <article class="card price-card reveal">
+    <span class="price-type">فروش آنلاین</span>
+    <h3>فروشگاه اینترنتی</h3>
+    <div class="price-value">توافقی<small>پس از بررسی درخواست</small></div>
+    <p>مناسب معرفی محصولات و توسعه فروش آنلاین.</p>
+    <ul>
+     <li>دسته‌بندی محصولات</li>
+     <li>صفحه معرفی محصول</li>
+     <li>طراحی هماهنگ با برند</li>
+     <li>امکان توسعه امکانات فروش</li>
+    </ul>
+    <a class="btn ghost" href="order.html">درخواست مشاوره</a>
+   </article>
+  </div>
+  <div class="price-note reveal">توجه: دامنه، هاست، درگاه پرداخت، امکانات اختصاصی و خدمات جانبی در صورت نیاز جداگانه بررسی و اعلام می‌شوند.</div>
+ </div>
+</section>
+
+<section class="section">
+ <div class="container">
+  <div class="section-head reveal">
+   <span class="eyebrow">اعتماد و تجربه بهتر</span>
+   <h2>یک حضور آنلاین قابل اتکا</h2>
+   <p>اطلاعات روشن، طراحی منظم و مسیر ارتباطی مشخص به بازدیدکننده کمک می‌کند راحت‌تر تصمیم بگیرد.</p>
+  </div>
+  <div class="trust-grid">
+   <div class="trust-item reveal"><strong>اطلاعات شفاف</strong><span>نمایش روشن خدمات و امکانات</span></div>
+   <div class="trust-item reveal"><strong>پیگیری سفارش</strong><span>دریافت کد پیگیری درخواست</span></div>
+   <div class="trust-item reveal"><strong>پشتیبانی آنلاین</strong><span>گفتگو از داخل حساب کاربری</span></div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="preview">
+ <div class="container">
+  <div class="section-head reveal">
+   <span class="eyebrow">ابزار تعاملی</span>
+   <h2>پیش‌نمایش ایده سایت</h2>
+   <p>نوع سایت و رنگ را انتخاب کن تا یک پیش‌نمایش اولیه ببینی. این ابزار نمونه ظاهری است و هنوز فایل سایت نهایی تولید نمی‌کند.</p>
+  </div>
+  <div class="form-card preview-box reveal">
+   <div class="preview-controls">
+    <div class="field">
+     <label for="previewType">نوع سایت</label>
+     <select id="previewType">
+      <option value="فروشگاه آنلاین">فروشگاه آنلاین</option>
+      <option value="سایت شرکتی">سایت شرکتی</option>
+      <option value="سایت شخصی">سایت شخصی</option>
+     </select>
+    </div>
+    <div class="field">
+     <label for="previewColor">رنگ پیش‌نمایش</label>
+     <select id="previewColor">
+      <option value="cyan">فیروزه‌ای</option>
+      <option value="gold">طلایی</option>
+      <option value="purple">بنفش</option>
+      <option value="blue">آبی</option>
+     </select>
+    </div>
+    <a class="btn" href="order.html">ثبت سفارش این ایده ←</a>
+   </div>
+   <div class="live-preview" id="livePreview">
+    <span class="eyebrow">پیش‌نمایش سایت</span>
+    <h3>فروشگاه آنلاین شما</h3>
+    <p>یک طرح اولیه برای معرفی محصولات و برند شما.</p>
+    <span class="sample-btn">مشاهده محصولات</span>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="section">
+ <div class="container">
+  <div class="section-head reveal">
+   <span class="eyebrow">مراحل همکاری</span>
+   <h2>از درخواست تا تحویل سایت</h2>
+  </div>
+  <div class="steps">
+   <div class="step reveal"><strong>۰۱</strong><h3>ثبت درخواست</h3><p>نوع سایت و توضیحات اولیه را وارد می‌کنی.</p></div>
+   <div class="step reveal"><strong>۰۲</strong><h3>بررسی نیازها</h3><p>جزئیات و امکانات موردنیاز بررسی می‌شود.</p></div>
+   <div class="step reveal"><strong>۰۳</strong><h3>طراحی و اجرا</h3><p>سایت بر اساس توافق آماده می‌شود.</p></div>
+   <div class="step reveal"><strong>۰۴</strong><h3>تحویل پروژه</h3><p>نسخه نهایی بررسی و تحویل می‌شود.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="container">
+ <div class="cta reveal">
+  <div>
+   <span class="eyebrow">آماده شروع هستی؟</span>
+   <h2>ایده‌ات رو به یک سایت تبدیل کن</h2>
+   <p>برای ثبت درخواست، ابتدا وارد حساب کاربری‌ات شو.</p>
+  </div>
+  <a class="btn" href="order.html">ثبت سفارش جدید ←</a>
+ </div>
+</section>
+
+<section class="section" id="order">
+ <div class="container">
+  <div class="section-head reveal">
+   <span class="eyebrow">شروع یک پروژه تازه</span>
+   <h2>فرم ثبت سفارش طراحی سایت</h2>
+   <p>ثبت سفارش فقط برای کاربران واردشده امکان‌پذیر است.</p>
+  </div>
+  <div class="order-layout">
+   <aside class="panel reveal">
+    <div class="service-icon">✉</div>
+    <h3>درخواستت رو ثبت کن</h3>
+    <p>پس از ورود، درخواستت به حساب کاربری خودت متصل می‌شود.</p>
+    <p style="margin-top:15px;color:var(--accent)">
+     ✓ ثبت درخواست<br>
+     ✓ کد پیگیری اختصاصی<br>
+     ✓ مشاهده سوابق از پنل مشتری
+    </p>
+    <a class="btn ghost" style="margin-top:18px" href="account.html">رفتن به پنل مشتری</a>
+   </aside>
+   <div class="form-card reveal">
+    <div id="loginRequired" class="notice show">
+     برای ثبت سفارش ابتدا وارد حساب کاربری شو.
+     <a href="auth.html" style="text-decoration:underline;font-weight:900">ورود یا ثبت‌نام</a>
+    </div>
+    <form id="orderForm" hidden>
+     <div class="form-grid">
+      <div class="field">
+       <label for="customer">نام و نام خانوادگی</label>
+       <input id="customer" maxlength="100" required autocomplete="name" placeholder="نام شما">
+      </div>
+      <div class="field">
+       <label for="phone">شماره تماس</label>
+       <input id="phone" maxlength="30" required inputmode="tel" autocomplete="tel" placeholder="شماره تماس">
+      </div>
+     </div>
+     <div class="field">
+      <label for="type">نوع سایت موردنظر</label>
+      <select id="type" required>
+       <option value="">یک گزینه انتخاب کن</option>
+       <option value="فروشگاهی">فروشگاهی</option>
+       <option value="شرکتی">شرکتی</option>
+       <option value="شخصی">شخصی</option>
+       <option value="سایر">سایر</option>
+      </select>
+     </div>
+     <div class="field">
+      <label for="description">توضیحات پروژه</label>
+      <textarea id="description" maxlength="2000" placeholder="چه امکاناتی برای سایتت می‌خواهی؟"></textarea>
+     </div>
+     <button class="btn" id="submitBtn" type="submit">ثبت سفارش ←</button>
+     <div class="notice" id="orderMessage" role="status" aria-live="polite"></div>
+    </form>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="tracking">
+ <div class="container">
+  <div class="section-head reveal">
+   <span class="eyebrow">پیگیری آنلاین</span>
+   <h2>وضعیت سفارشت رو بررسی کن</h2>
+   <p>کد پیگیری را وارد کن. برای جزئیات کامل سفارش از پنل مشتری استفاده کن.</p>
+  </div>
+  <div class="form-card reveal" style="max-width:720px">
+   <form id="trackForm">
+    <div class="field">
+     <label for="trackingCode">کد پیگیری سفارش</label>
+     <input id="trackingCode" required maxlength="64" autocomplete="off" placeholder="کد پیگیری را وارد کن">
+    </div>
+    <button class="btn" id="trackBtn" type="submit">بررسی وضعیت سفارش ←</button>
+    <div class="notice" id="trackMessage" role="status" aria-live="polite"></div>
+<div id="trackTimeline" style="display:none;margin-top:14px;padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--surface)"></div>
+   </form>
+  </div>
+ </div>
+</section>
+
+
+<section class="section" id="calculator">
+ <div class="container">
+  <div class="section-head reveal">
+   <span class="eyebrow">محاسبه‌گر هوشمند</span>
+   <h2>برآورد اولیه هزینه پروژه</h2>
+   <p>نوع سایت و امکانات را انتخاب کن تا برآورد اولیه دریافت کنی. مبلغ نهایی پس از بررسی اعلام می‌شود.</p>
+  </div>
+  <div class="extra-card reveal">
+   <div class="form-grid">
+    <div class="field"><label for="calcType">نوع سایت</label><select id="calcType"><option value="personal">شخصی</option><option value="company">شرکتی</option><option value="shop">فروشگاهی</option></select></div>
+    <div class="field"><label for="calcPages">تعداد صفحات</label><select id="calcPages"><option value="1">۱ تا ۳ صفحه</option><option value="2">۴ تا ۷ صفحه</option><option value="3">۸ صفحه یا بیشتر</option></select></div>
+   </div>
+   <div class="field"><label><input type="checkbox" class="calc-extra" value="1"> پنل مدیریت اختصاصی</label><label><input type="checkbox" class="calc-extra" value="1"> امکانات پیشرفته و فرم‌ها</label><label><input type="checkbox" class="calc-extra" value="1"> طراحی اختصاصی رابط کاربری</label></div>
+   <button class="btn" id="calculatePrice" type="button">محاسبه برآورد</button>
+   <div id="priceEstimate" class="result-box" aria-live="polite">برای دیدن برآورد، گزینه‌ها را انتخاب کن.</div>
+   <p class="muted-small">این محاسبه‌گر فعلاً امتیاز پیچیدگی پروژه را نشان می‌دهد، نه قیمت قطعی یا نرخ بازار.</p>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="extras">
+ <div class="container">
+  <div class="section-head reveal"><span class="eyebrow">امکانات توسعه‌یافته</span><h2>ابزارهای بیشتر وب‌ساز مرادی</h2><p>بخش‌های زیر به امکانات سایت و دیتابیس متصل شده‌اند؛ برای امکانات وابسته به حساب کاربری ابتدا وارد شو.</p></div>
+  <div class="extra-grid">
+   <article class="extra-card reveal"><div class="service-icon">📊</div><h3>آمار پنل مدیریت</h3><div class="metric" id="orderMetric">—</div><p>آمار سفارش‌ها فقط پس از اتصال امن پنل مدیریت و مجوزهای دیتابیس نمایش داده می‌شود.</p><div class="admin-note">برای جلوگیری از افشای اطلاعات مشتریان، آمار خصوصی در صفحه عمومی خوانده نمی‌شود.</div></article>
+   <article class="extra-card reveal"><div class="service-icon">🏷️</div><h3>کد تخفیف مشتریان</h3><p>کد معتبر را بررسی کن تا هنگام ثبت سفارش اعمال و ثبت شود.</p><form id="couponForm" class="inline-form"><input id="couponInput" maxlength="30" placeholder="مثلاً MORADI10" required><button class="btn small" type="submit">بررسی کد</button></form><div id="couponResult" class="result-box">کدهای واقعی باید از پنل مدیریت ساخته شوند.</div></article>
+   <article class="extra-card reveal"><div class="service-icon">🔔</div><h3>مرکز اعلان‌ها</h3><p>اعلان‌های محلی این مرورگر.</p><div id="notificationList" class="notice-list"><div class="notice-item">به وب‌ساز مرادی خوش آمدی.</div></div><button class="btn ghost small" id="clearNotifications" type="button">پاک‌کردن اعلان‌ها</button></article>
+   <article class="extra-card reveal"><div class="service-icon">⭐</div><h3>ثبت نظر مشتری</h3><p>نظر شما در دیتابیس ثبت می‌شود و پس از تأیید مدیر نمایش داده خواهد شد.</p><form id="reviewForm" class="inline-form"><input id="reviewName" maxlength="50" placeholder="نام نمایشی" required><select id="reviewRating"><option value="5">۵ ستاره</option><option value="4">۴ ستاره</option><option value="3">۳ ستاره</option><option value="2">۲ ستاره</option><option value="1">۱ ستاره</option></select><textarea id="reviewText" maxlength="500" placeholder="نظر شما..." required></textarea><button class="btn small" id="reviewSubmit" type="submit">ارسال نظر برای بررسی</button></form><div id="reviewList" class="review-list"></div></article>
+   <article class="extra-card reveal"><div class="service-icon">🎫</div><h3>تیکت‌های پشتیبانی</h3><p>برای ثبت درخواست، مشاهده وضعیت تیکت‌ها و گفت‌وگو با پشتیبانی وارد صفحه اختصاصی تیکت‌ها شو.</p><a class="btn small" href="tickets.html">ورود به صفحه تیکت‌ها</a></article>
+   <article class="extra-card reveal"><div class="service-icon">🖼️</div><h3>دسته‌بندی نمونه‌کارها</h3><p>برای دیدن نمونه‌کارها از بخش نمونه‌کارهای بالاتر استفاده کن؛ پروژه‌ها در این مرحله نمایشی هستند.</p><a class="btn ghost small" href="portfolio.html">رفتن به نمونه‌کارها</a></article>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="faq">
+ <div class="container">
+  <div class="section-head reveal">
+   <span class="eyebrow">سؤالات متداول</span>
+   <h2>پاسخ چند سؤال مهم</h2>
+  </div>
+  <div class="faq-list">
+   <div class="faq reveal">
+    <button class="faq-q" type="button">چه نوع سایت‌هایی طراحی می‌شود؟ <span>＋</span></button>
+    <div class="faq-a">برای سایت فروشگاهی، شرکتی، شخصی یا ایده‌های دیگر می‌توانی درخواست ثبت کنی.</div>
+   </div>
+   <div class="faq reveal">
+    <button class="faq-q" type="button">هزینه طراحی سایت چطور مشخص می‌شود؟ <span>＋</span></button>
+    <div class="faq-a">هزینه به نوع سایت، تعداد صفحات و امکانات موردنیاز بستگی دارد و پس از بررسی درخواست اعلام می‌شود.</div>
+   </div>
+   <div class="faq reveal">
+    <button class="faq-q" type="button">چرا باید وارد حساب شوم؟ <span>＋</span></button>
+    <div class="faq-a">برای اینکه سفارش به حساب خودت متصل شود و سوابق آن را در پنل مشتری ببینی.</div>
+   </div>
+   <div class="faq reveal">
+    <button class="faq-q" type="button">چطور سفارشم را پیگیری کنم؟ <span>＋</span></button>
+    <div class="faq-a">از پنل مشتری یا با کد پیگیری‌ای که هنگام ثبت سفارش دریافت می‌کنی.</div>
+   </div>
+   <div class="faq reveal">
+    <button class="faq-q" type="button">آیا سایت در موبایل هم نمایش داده می‌شود؟ <span>＋</span></button>
+    <div class="faq-a">بله، طراحی صفحه برای موبایل، تبلت و دسکتاپ واکنش‌گراست.</div>
+   </div>
+  </div>
+ </div>
+</section>
+</main>
+
+<footer>
+ <div class="container">
+  <div class="footer-grid">
+   <div>
+    <a class="brand" href="index.html">
+     <span class="brand-mark">MW</span>
+     <span>وب‌ساز مرادی<small>MORADI WEB BUILDER</small></span>
+    </a>
+    <p style="margin-top:12px">طراحی سایت مدرن و واکنش‌گرا برای معرفی بهتر ایده‌ها و کسب‌وکارها.</p>
+   </div>
+   <div>
+    <h3>دسترسی سریع</h3>
+    <div class="footer-links">
+     <a href="services.html">خدمات</a>
+     <a href="portfolio.html">نمونه‌کارها</a>
+     <a href="pricing.html">تعرفه‌ها</a>
+     <a href="order.html">ثبت سفارش</a>
+    </div>
+   </div>
+   <div>
+    <h3>بخش مشتریان</h3>
+    <div class="footer-links">
+     <a href="auth.html">ورود / ثبت‌نام</a>
+     <a href="account.html">پنل مشتری</a>
+     <a href="tracking.html">پیگیری سفارش</a>
+     <a href="contact.html">تماس با ما</a>
+     <a href="terms.html">قوانین و مقررات</a>
+     <a href="privacy.html">حریم خصوصی</a>
+     <a href="admin.html">پنل مدیریت</a>
+    </div>
+   </div>
+  </div>
+  <div class="copy">© <span id="year"></span> وب‌ساز مرادی — تمامی حقوق محفوظ است.</div>
+ </div>
+</footer>
+
+<!-- چت واقعی مشتری -->
+<div id="chatPanel" aria-label="پشتیبانی آنلاین">
+ <strong>پشتیبانی وب‌ساز مرادی <small id="chatSupportStatus" style="font-weight:400;color:var(--muted)">بررسی وضعیت...</small></strong>
+ <div id="chatLoginNotice" class="chat-status">
+  برای گفتگو ابتدا وارد حساب کاربری شو.
+  <a class="chat-login-link" href="auth.html">ورود به حساب</a>
+ </div>
+ <div id="chatMessages" class="chat-messages" aria-live="polite">
+  <div class="chat-status">در حال آماده‌سازی گفتگو...</div>
+ </div>
+ <form id="chatForm" class="chat-form">
+  <input id="chatInput" maxlength="2000" placeholder="پیامت رو بنویس..." disabled>
+  <input id="chatAttachment" type="file" accept="image/png,image/jpeg,image/webp,application/pdf" aria-label="پیوست فایل" style="max-width:115px;font-size:10px" disabled>
+  <button id="chatSend" type="submit" disabled>ارسال</button>
+ </form>
+ <div id="chatStatus" class="chat-status"></div>
+ <section class="support-bot-tools" aria-label="راهنمای خودکار پشتیبانی">
+  <div class="support-bot-heading">🤖 راهنمای خودکار</div>
+  <div class="support-bot-quick">
+   <button type="button" data-bot-topic="price">قیمت و تعرفه</button>
+   <button type="button" data-bot-topic="time">زمان انجام</button>
+   <button type="button" data-bot-topic="order">پیگیری سفارش</button>
+   <button type="button" data-bot-topic="payment">پرداخت</button>
+   <button type="button" data-bot-topic="account">ورود به حساب</button>
+   <button type="button" data-bot-topic="ticket">ثبت تیکت</button>
+  </div>
+  <div id="supportBotReply" class="support-bot-reply" aria-live="polite">سلام! من راهنمای خودکار وب‌ساز مرادی هستم. یکی از موضوع‌ها را انتخاب کن یا سؤالت را بنویس.</div>
+ </section>
+ <form id="quickTicketForm" class="support-ticket-mini" hidden>
+  <strong>ثبت تیکت پشتیبانی</strong>
+  <input id="botTicketName" maxlength="100" placeholder="نام و نام خانوادگی" required>
+  <input id="botTicketPhone" maxlength="30" inputmode="tel" placeholder="شماره تماس" required>
+  <input id="botTicketSubject" maxlength="80" placeholder="موضوع تیکت" required>
+  <textarea id="botTicketMessage" maxlength="1000" placeholder="شرح درخواستت را بنویس..." required></textarea>
+  <div class="support-ticket-actions"><button type="submit" id="botTicketSubmit">ثبت تیکت</button><button type="button" id="botTicketCancel">انصراف</button></div>
+  <small id="botTicketStatus" aria-live="polite"></small>
+ </form>
+</div>
+<button id="chatLauncher" type="button" aria-expanded="false">گفت‌وگو با پشتیبانی</button>
+
+<script>
+(() => {
+"use strict";
+
+const SUPABASE_URL = "https://oczpjbwwogsydzkouxtj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+
+const show = (el,text,error=false) => {
+ el.textContent=text;
+ el.className="notice show"+(error?" error":"");
+};
+
+const clear = el => {
+ el.textContent="";
+ el.className="notice";
+};
+
+/* Theme */
+const themes=["default","gold","light","purple"];
+let themeIndex=0;
+
+try {
+ const saved=localStorage.getItem("mwb-theme");
+ if(themes.includes(saved)) themeIndex=themes.indexOf(saved);
+} catch (_) {}
+
+function applyTheme(){
+ const theme=themes[themeIndex];
+
+ if(theme==="default"){
+  document.documentElement.removeAttribute("data-theme");
+ }else{
+  document.documentElement.setAttribute("data-theme",theme);
+ }
+
+ try {
+  localStorage.setItem("mwb-theme",theme);
+ } catch (_) {}
+}
+
+applyTheme();
+
+$("themeButton").addEventListener("click",()=>{
+ themeIndex=(themeIndex+1)%themes.length;
+ applyTheme();
+
+ const names={
+  default:"سرمه‌ای و فیروزه‌ای",
+  gold:"مشکی و طلایی",
+  light:"سفید و آبی",
+  purple:"بنفش و مشکی"
+ };
+
+ $("themeButton").title="تم فعلی: "+names[themes[themeIndex]];
+});
+
+/* Mobile navigation */
+$("menuToggle").addEventListener("click",()=>{
+ const open=$("navLinks").classList.toggle("open");
+ $("menuToggle").setAttribute("aria-expanded",String(open));
+});
+
+document.querySelectorAll("#navLinks a").forEach(a=>{
+ a.addEventListener("click",()=>{
+  $("navLinks").classList.remove("open");
+  $("menuToggle").setAttribute("aria-expanded","false");
+ });
+});
+
+/* FAQ */
+document.querySelectorAll(".faq-q").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  const item=btn.closest(".faq");
+  item.classList.toggle("active");
+  const symbol=btn.querySelector("span");
+  if(symbol) symbol.textContent=item.classList.contains("active")?"−":"＋";
+ });
+});
+
+/* Reveal animations */
+if("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+ const observer=new IntersectionObserver((entries,obs)=>{
+  entries.forEach(entry=>{
+   if(entry.isIntersecting){
+    entry.target.classList.add("visible");
+    obs.unobserve(entry.target);
+   }
+  });
+ },{threshold:.12});
+
+ document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
+}else{
+ document.querySelectorAll(".reveal").forEach(el=>el.classList.add("visible"));
+}
+
+/* Preview sandbox */
+function updatePreview(){
+ const type=$("previewType").value;
+ const color=$("previewColor").value;
+
+ const palettes={
+  cyan:["#5ee7f5","#17314d"],
+  gold:["#f2c66d","#3b2c18"],
+  purple:["#c3a0ff","#302047"],
+  blue:["#75baff","#173653"]
+ };
+
+ const [accent,bg]=palettes[color];
+
+ const title=type==="فروشگاه آنلاین"
+  ?"فروشگاه آنلاین شما"
+  :type==="سایت شرکتی"
+   ?"معرفی حرفه‌ای شرکت شما"
+   :"رزومه و سایت شخصی شما";
+
+ const preview=$("livePreview");
+ preview.style.setProperty("--accent",accent);
+ preview.style.background=bg;
+
+ preview.replaceChildren();
+
+ const label=document.createElement("span");
+ label.textContent="پیش‌نمایش "+type;
+ label.style.color=accent;
+ label.style.fontSize="11px";
+
+ const heading=document.createElement("h3");
+ heading.textContent=title;
+
+ const paragraph=document.createElement("p");
+ paragraph.textContent="یک طرح اولیه برای معرفی بهتر برند، خدمات و محتوای شما.";
+
+ const sample=document.createElement("span");
+ sample.className="sample-btn";
+ sample.textContent="مشاهده بیشتر";
+
+ preview.append(label,heading,paragraph,sample);
+}
+
+$("previewType").addEventListener("change",updatePreview);
+$("previewColor").addEventListener("change",updatePreview);
+updatePreview();
+
+$("year").textContent=new Date().getFullYear();
+
+/* Auth state */
+let currentUser=null;
+let selectedDiscountCode=null;
+
+async function refreshAuth(){
+ const {data,error}=await db.auth.getUser();
+
+ currentUser=(!error && data && data.user)?data.user:null;
+
+ $("orderForm").hidden=!currentUser;
+ $("loginRequired").style.display=currentUser?"none":"block";
+
+ $("authLink").textContent=currentUser?"حساب کاربری":"ورود / ثبت‌نام";
+ $("authLink").href=currentUser?"account.html":"auth.html";
+
+ updateChatAccess();
+}
+
+db.auth.onAuthStateChange(()=>{
+ setTimeout(refreshAuth,0);
+});
+
+/* Order submission */
+$("orderForm").addEventListener("submit",async event=>{
+ event.preventDefault();
+
+ const message=$("orderMessage");
+ const button=$("submitBtn");
+
+ clear(message);
+
+ const {data:userData,error:userError}=await db.auth.getUser();
+
+ if(userError || !userData.user){
+  location.href="auth.html?next="+encodeURIComponent("index.html#order");
+  return;
+ }
+
+ button.disabled=true;
+ button.textContent="در حال ثبت سفارش...";
+
+ const order={
+  p_customer_name:$("customer").value.trim(),
+  p_phone:$("phone").value.trim(),
+  p_site_type:$("type").value,
+  p_description:$("description").value.trim() || "",
+  p_discount_code:selectedDiscountCode
+ };
+
+ try{
+  const {data,error}=await db.rpc("submit_order",order);
+
+  if(error) throw error;
+
+  const code=typeof data==="string"?data:data?.tracking_code;
+
+  if(!code){
+   throw new Error("کد پیگیری از سرور دریافت نشد.");
+  }
+
+  show(message,"سفارش ثبت شد. کد پیگیری شما: "+code+" — این کد را نگه دار.");
+  addLocalNotice("سفارش جدید شما ثبت شد.");
+  selectedDiscountCode=null;
+  $("couponInput").value="";
+  $("couponResult").textContent="کد تخفیف سفارش قبلی ثبت شد. برای سفارش بعدی کد تازه بررسی کن.";
+  $("orderForm").reset();
+
+ }catch(error){
+  console.error("Order submission error:",error);
+  show(message,"ثبت سفارش انجام نشد: "+(error.message||"خطای نامشخص"),true);
+
+ }finally{
+  button.disabled=false;
+  button.textContent="ثبت سفارش ←";
+ }
+});
+
+/* Tracking */
+$("trackForm").addEventListener("submit",async event=>{
+ event.preventDefault();
+
+ const message=$("trackMessage");
+ const button=$("trackBtn");
+
+ clear(message);
+ $("trackTimeline").replaceChildren();
+ $("trackTimeline").style.display="none";
+
+ button.disabled=true;
+ button.textContent="در حال بررسی...";
+
+ const code=$("trackingCode").value.trim().toUpperCase();
+
+ try{
+  const {data,error}=await db.rpc("track_order",{p_tracking_code:code});
+
+  if(error) throw error;
+
+  if(!data){
+   show(message,"سفارشی با این کد پیدا نشد.",true);
+   return;
+  }
+
+  const labels={
+   new:"ثبت شده",
+   reviewing:"در حال بررسی",
+   in_progress:"در حال انجام",
+   completed:"تکمیل شده"
+  };
+
+  const currentStatus=data.status;
+  show(message,"وضعیت سفارش: "+(labels[currentStatus]||currentStatus));
+  const timeline=$("trackTimeline"); timeline.replaceChildren(); timeline.style.display="block";
+  const stages=[["new","ثبت سفارش"],["reviewing","بررسی سفارش"],["in_progress","انجام پروژه"],["completed","تکمیل پروژه"]];
+  const current=stages.findIndex(s=>s[0]===currentStatus);
+  const percent=current<0?0:(current+1)*25;
+  const heading=document.createElement("strong"); heading.textContent="مراحل سفارش · "+percent+"٪ پیشرفت"; timeline.append(heading);
+  const track=document.createElement("div"); track.style.cssText="height:9px;background:var(--surface2);border-radius:20px;overflow:hidden;margin:12px 0";
+  const fill=document.createElement("div"); fill.style.cssText="height:100%;width:"+percent+"%;background:var(--good);border-radius:20px;transition:width .3s"; track.append(fill); timeline.append(track);
+  const list=document.createElement("div"); list.style.cssText="display:grid;gap:9px;margin-top:12px";
+  stages.forEach((stage,index)=>{const row=document.createElement("div");row.style.cssText="display:flex;align-items:center;gap:10px;color:"+(index<=current?"var(--good)":"var(--muted)");const dot=document.createElement("span");dot.textContent=index<current?"✓":index===current?"●":"○";dot.style.fontSize="18px";const label=document.createElement("span");label.textContent=stage[1]+(index===current?" — مرحله فعلی":"");row.append(dot,label);list.append(row);});
+  timeline.append(list);
+  const updated=document.createElement("p"); updated.className="muted-small"; updated.style.marginTop="12px";
+  updated.textContent="آخرین بروزرسانی ثبت‌شده: "+(data.updated_at?new Date(data.updated_at).toLocaleString("fa-IR"):"نامشخص"); timeline.append(updated);
+
+ }catch(error){
+  console.error("Tracking error:",error);
+  show(message,"پیگیری انجام نشد: "+(error.message||"خطای نامشخص"),true);
+
+ }finally{
+  button.disabled=false;
+  button.textContent="بررسی وضعیت سفارش ←";
+ }
+});
+
+/* --------------------------------
+   REAL CUSTOMER SUPPORT CHAT
+---------------------------------- */
+
+let chatTimer=null;
+let chatLoading=false;
+let lastChatSignature="";
+
+function chatStatus(message){
+ $("chatStatus").textContent=message;
+}
+
+function updateChatAccess(){
+ const signedIn=!!currentUser;
+
+ $("chatLoginNotice").style.display=signedIn?"none":"block";
+ $("chatInput").disabled=!signedIn;
+ $("chatAttachment").disabled=!signedIn;
+ $("chatSend").disabled=!signedIn;
+
+ if(!signedIn){
+  $("chatMessages").replaceChildren();
+
+  const info=document.createElement("div");
+  info.className="chat-status";
+  info.textContent="برای مشاهده و ارسال پیام باید وارد حساب کاربری شوی.";
+
+  $("chatMessages").appendChild(info);
+  chatStatus("ابتدا وارد حساب کاربری شو.");
+ }
+}
+
+function stopChatRefresh(){
+ if(chatTimer){
+  clearInterval(chatTimer);
+  chatTimer=null;
+ }
+}
+
+function startChatRefresh(){
+ stopChatRefresh();
+
+ chatTimer=setInterval(()=>{
+  if($("chatPanel").classList.contains("open") && currentUser){
+   loadChatMessages();refreshSupportPresence();
+  }
+ },5000);
+}
+
+
+async function refreshSupportPresence(){
+ if(!currentUser)return;
+ await db.from('support_presence').upsert({user_id:currentUser.id,role:'customer',is_online:true,last_seen:new Date().toISOString()});
+ const {data}=await db.from('support_presence').select('is_online,last_seen').eq('role','admin').order('last_seen',{ascending:false}).limit(1).maybeSingle();
+ const online=!!data?.is_online && Date.now()-new Date(data.last_seen).getTime()<90000;
+ const el=$('chatSupportStatus');if(el)el.textContent=online?'· آنلاین':'· آفلاین';
+}
+
+async function loadChatMessages(){
+ if(chatLoading) return;
+
+ if(!currentUser){
+  updateChatAccess();
+  return;
+ }
+
+ chatLoading=true;
+
+ try{
+  const {data:userData,error:userError}=await db.auth.getUser();
+
+  if(userError || !userData.user){
+   currentUser=null;
+   updateChatAccess();
+   return;
+  }
+
+  const userId=userData.user.id;
+
+  const {data,error}=await db.from("chat_messages")
+   .select("id,message,is_admin,created_at")
+   .eq("user_id",userId)
+   .order("created_at",{ascending:true});
+
+  if(error){
+   chatStatus("دریافت پیام‌ها ناموفق بود: "+error.message);
+   return;
+  }
+
+  const signature=data.map(m=>m.id+":"+m.message).join("|");
+
+  if(signature===lastChatSignature){
+   chatStatus("گفتگو به‌روز است.");
+   return;
+  }
+
+  lastChatSignature=signature;
+
+  const box=$("chatMessages");
+  const wasNearBottom=box.scrollHeight-box.scrollTop-box.clientHeight<70;
+
+  box.replaceChildren();
+
+  if(!data.length){
+   const empty=document.createElement("div");
+   empty.className="chat-status";
+   empty.textContent="هنوز پیامی ارسال نکرده‌ای. اولین پیام رو بفرست!";
+   box.appendChild(empty);
+  }
+
+  for(const msg of data){
+   const item=document.createElement("div");
+   item.className="chat-message "+(msg.is_admin?"admin":"mine");
+
+   const sender=document.createElement("strong");
+   sender.textContent=msg.is_admin?"پشتیبانی":"شما";
+
+   const content=document.createElement("div");
+   if(msg.message.startsWith("ATTACHMENT:")){
+    const [attachmentPath,caption]=msg.message.slice(11).split("::");
+    const {data:signed}=await db.storage.from('support-attachments').createSignedUrl(attachmentPath,3600);
+    if(signed?.signedUrl){const link=document.createElement("a");link.href=signed.signedUrl;link.target="_blank";link.rel="noopener noreferrer";link.textContent="مشاهده پیوست";content.append(link);}
+    if(caption){const note=document.createElement("p");note.textContent=caption;content.append(note);}
+   }else content.textContent=msg.message;
+
+   const time=document.createElement("small");
+   time.textContent=new Date(msg.created_at).toLocaleString("fa-IR");
+
+   item.append(sender,content,time);
+   box.appendChild(item);
+  }
+
+  if(wasNearBottom || data.length){
+   box.scrollTop=box.scrollHeight;
+  }
+
+  chatStatus("پیام‌ها به‌روز هستند.");
+
+ }catch(error){
+  chatStatus("خطا در دریافت پیام‌ها: "+error.message);
+
+ }finally{
+  chatLoading=false;
+ }
+}
+
+/* Open and close chat */
+$("chatLauncher").addEventListener("click",async()=>{
+ const panel=$("chatPanel");
+ const isOpen=panel.classList.toggle("open");
+
+ $("chatLauncher").setAttribute("aria-expanded",String(isOpen));
+
+ if(isOpen){
+  if(currentUser){
+   await refreshSupportPresence();
+   await loadChatMessages();
+  }else{
+   updateChatAccess();
+  }
+
+  startChatRefresh();
+
+ }else{
+  stopChatRefresh();
+ }
+});
+
+function getSupportBotAnswer(message){
+ const q=String(message||'').toLocaleLowerCase('fa');
+ if(/(قیمت|هزینه|تعرفه|چقدر|مبلغ)/.test(q))return 'هزینه طراحی به نوع سایت، تعداد صفحات و امکانات موردنیاز بستگی دارد. از بخش «تعرفه‌ها» و «محاسبه قیمت» در صفحه اصلی یک برآورد اولیه بگیر؛ برای قیمت قطعی، درخواستت را برای پشتیبانی بفرست.';
+ if(/(زمان|چقدر طول|چند روز|تحویل|مدت)/.test(q))return 'زمان تحویل به امکانات و حجم پروژه بستگی دارد. بعد از بررسی توضیحات سفارش، زمان تقریبی مشخص می‌شود. اگر سفارش ثبت کرده‌ای، کد رهگیری‌ات را در بخش «پیگیری سفارش» وارد کن.';
+ if(/(پیگیری|رهگیری|کد سفارش|وضعیت سفارش)/.test(q))return 'برای پیگیری، از بخش «پیگیری سفارش» در صفحه اصلی استفاده کن و کد رهگیری‌ای را که هنگام ثبت سفارش دریافت کردی وارد کن.';
+ if(/(پرداخت|درگاه|کارت به کارت|واریز)/.test(q))return 'وضعیت پرداخت سفارش در پنل و جزئیات سفارش قابل پیگیری است. در حال حاضر اتصال درگاه واقعی ممکن است هنوز فعال نباشد؛ برای هماهنگی دقیق، یک تیکت ثبت کن.';
+ if(/(ورود|ثبت.?نام|رمز|حساب کاربری)/.test(q))return 'از دکمه «ورود / ثبت‌نام» بالای سایت وارد شو. اگر رمزت را فراموش کرده‌ای، گزینه بازیابی رمز را در صفحه ورود بررسی کن.';
+ if(/(سلام|درود|وقت بخیر|خسته نباشید)/.test(q))return 'سلام! خوش آمدی 🌟 من می‌توانم درباره تعرفه، زمان انجام، پیگیری سفارش و پرداخت راهنمایی‌ات کنم. اگر مسئله‌ات خاص است، تیکت ثبت کن یا پیام را برای پشتیبانی بفرست.';
+ return null;
+}
+function showSupportBotReply(message){
+ const answer=getSupportBotAnswer(message);
+ if(answer){$('supportBotReply').textContent=answer;return true;}
+ $('supportBotReply').textContent='برای این سؤال پاسخ آماده‌ای ندارم. می‌توانی پیام را با دکمه ارسال برای پشتیبانی بفرستی یا از «ثبت تیکت» استفاده کنی.';
+ return false;
+}
+document.querySelectorAll('[data-bot-topic]').forEach(button=>button.addEventListener('click',()=>{
+ const topic=button.dataset.botTopic;
+ if(topic==='ticket'){
+  if(!currentUser){$('supportBotReply').textContent='برای ثبت تیکت ابتدا وارد حساب کاربری شو.';location.href='auth.html?next='+encodeURIComponent('tickets.html');return;}
+  $('quickTicketForm').hidden=false;$('botTicketSubject').focus();return;
+ }
+ const prompts={price:'قیمت و تعرفه',time:'زمان انجام پروژه',order:'پیگیری سفارش',payment:'روش پرداخت',account:'ورود به حساب'};
+ showSupportBotReply(prompts[topic]||'');
+}));
+$('botTicketCancel').addEventListener('click',()=>{$('quickTicketForm').hidden=true;$('quickTicketForm').reset();$('botTicketStatus').textContent='';});
+$('quickTicketForm').addEventListener('submit',async event=>{
+ event.preventDefault();
+ const {data:{user},error:authError}=await db.auth.getUser();
+ if(authError||!user){$('botTicketStatus').textContent='برای ثبت تیکت ابتدا وارد حساب کاربری شو.';return;}
+ const button=$('botTicketSubmit');button.disabled=true;$('botTicketStatus').textContent='در حال ثبت تیکت...';
+ const payload={user_id:user.id,customer_name:$('botTicketName').value.trim(),phone:$('botTicketPhone').value.trim(),subject:$('botTicketSubject').value.trim(),message:$('botTicketMessage').value.trim()};
+ try{
+  const {data,error}=await db.from('support_tickets').insert(payload).select('id').single();
+  if(error)throw error;
+  $('botTicketStatus').textContent='تیکت ثبت شد. از صفحه تیکت‌ها پاسخ را دنبال کن.';
+  $('supportBotReply').textContent='درخواستت با موفقیت ثبت شد. شماره تیکت: '+data.id+' — پاسخ پشتیبانی در صفحه تیکت‌ها نمایش داده می‌شود.';
+  $('quickTicketForm').reset();$('quickTicketForm').hidden=true;
+  setTimeout(()=>{location.href='tickets.html';},1400);
+ }catch(error){$('botTicketStatus').textContent='ثبت تیکت ناموفق بود: '+error.message;}
+ finally{button.disabled=false;}
+});
+
+/* Send customer message */
+$("chatForm").addEventListener("submit",async event=>{
+ event.preventDefault();
+
+ const message=$("chatInput").value.trim();
+ const file=$("chatAttachment").files[0];
+ if(message&&!file&&showSupportBotReply(message)){
+  $('chatInput').value='';
+  chatStatus('پاسخ خودکار نمایش داده شد. برای صحبت با پشتیبانی، پیام دیگری ارسال کن.');
+  return;
+ }
+ if(!message&&!file) return;
+ if(file && (!['image/png','image/jpeg','image/webp','application/pdf'].includes(file.type)||file.size>5*1024*1024)){chatStatus("فقط PNG، JPG، WEBP یا PDF تا ۵ مگابایت مجاز است.");return;}
+
+ const {data:userData,error:userError}=await db.auth.getUser();
+
+ if(userError || !userData.user){
+  chatStatus("ابتدا وارد حساب کاربری شو.");
+  updateChatAccess();
+  return;
+ }
+
+ $("chatSend").disabled=true;
+ $("chatInput").disabled=true;
+ chatStatus("در حال ارسال پیام...");
+
+ try{
+  let storedMessage=message;
+  if(file){
+   const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_').slice(-90);
+   const path=userData.user.id+'/'+Date.now()+'-'+safeName;
+   const upload=await db.storage.from('support-attachments').upload(path,file,{upsert:false,contentType:file.type});
+   if(upload.error)throw upload.error;
+   storedMessage='ATTACHMENT:'+path+'::'+message;
+  }
+  const {error}=await db.from("chat_messages").insert({user_id:userData.user.id,message:storedMessage,is_admin:false});
+  if(error)throw error;
+  $("chatInput").value="";
+  $("chatAttachment").value="";
+  lastChatSignature="";
+  chatStatus("پیام ارسال شد.");
+
+  await loadChatMessages();
+
+ }catch(error){
+  console.error("Chat send error:",error);
+  chatStatus("ارسال پیام ناموفق بود: "+error.message);
+
+ }finally{
+  $("chatSend").disabled=!currentUser;
+  $("chatInput").disabled=!currentUser;
+  $("chatAttachment").disabled=!currentUser;
+ }
+});
+
+
+/* ابزارهای تکمیلی - ذخیره محلی تا زمان اتصال دیتابیس */
+function readLocal(key){
+ try{return JSON.parse(localStorage.getItem(key)||"[]")}catch(_){return []}
+}
+function writeLocal(key,value){
+ try{localStorage.setItem(key,JSON.stringify(value));return true}catch(_){return false}
+}
+function addLocalNotice(message){
+ const list=readLocal("mwb-notifications");
+ list.unshift({message,at:new Date().toLocaleString("fa-IR")});
+ writeLocal("mwb-notifications",list.slice(0,15));
+ renderNotices();
+}
+function renderNotices(){
+ const box=$("notificationList"); if(!box)return;
+ box.replaceChildren();
+ const list=readLocal("mwb-notifications");
+ if(!list.length){const e=document.createElement("div");e.className="notice-item";e.textContent="اعلان جدیدی وجود ندارد.";box.append(e);return;}
+ list.forEach(n=>{const e=document.createElement("div");e.className="notice-item";e.textContent=n.message+" — "+n.at;box.append(e);});
+}
+$("calculatePrice").addEventListener("click",()=>{
+ const type=$("calcType").value, pages=Number($("calcPages").value);
+ const extras=[...document.querySelectorAll(".calc-extra:checked")].length;
+ const score=(type==="personal"?1:type==="company"?2:3)+pages+extras;
+ $("priceEstimate").textContent="امتیاز پیچیدگی پروژه: "+score+" از ۹. این فقط برآورد سطح کار است و قیمت نهایی پس از بررسی اعلام می‌شود.";
+});
+$("couponForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const code=$("couponInput").value.trim().toUpperCase();
+ selectedDiscountCode=null;
+ $("couponResult").textContent="در حال بررسی کد...";
+ try{
+  const {data,error}=await db.from("discount_codes").select("code,discount_percent,max_uses,used_count,expires_at").eq("code",code).eq("is_active",true).maybeSingle();
+  if(error)throw error;
+  if(!data||data.used_count>=data.max_uses||(data.expires_at&&new Date(data.expires_at)<=new Date())){
+   $("couponResult").textContent="این کد معتبر نیست، منقضی شده یا ظرفیت استفاده آن تمام شده است.";return;
+  }
+  selectedDiscountCode=data.code;
+  $("couponResult").textContent="کد معتبر است: "+data.discount_percent+"٪ تخفیف. هنگام ثبت سفارش به‌صورت امن ثبت و یک بار مصرف می‌شود؛ مبلغ نهایی را مدیر با توجه به تخفیف تأیید می‌کند.";
+ }catch(error){$("couponResult").textContent="بررسی کد انجام نشد: "+error.message;}
+});
+async function loadReviews(){
+ const box=$("reviewList");
+ if(!box)return;
+ box.replaceChildren();
+ const loading=document.createElement("div");
+ loading.className="notice-item";
+ loading.textContent="در حال دریافت نظرات تأییدشده...";
+ box.append(loading);
+ try{
+  const {data,error}=await db.from("reviews")
+   .select("id,customer_name,rating,comment,created_at")
+   .eq("is_approved",true)
+   .order("created_at",{ascending:false})
+   .limit(20);
+  if(error) throw error;
+  box.replaceChildren();
+  if(!data.length){
+   const empty=document.createElement("div");
+   empty.className="notice-item";
+   empty.textContent="هنوز نظری تأیید و منتشر نشده است.";
+   box.append(empty);
+   return;
+  }
+  data.forEach(r=>{
+   const item=document.createElement("div");item.className="review-item";
+   const title=document.createElement("strong");title.textContent=r.customer_name+" ";
+   const stars=document.createElement("span");stars.className="stars";
+   stars.textContent="★".repeat(r.rating)+"☆".repeat(5-r.rating);
+   const body=document.createElement("p");body.textContent=r.comment;
+   item.append(title,stars,body);box.append(item);
+  });
+ }catch(error){
+  console.error("Review load error:",error);
+  box.replaceChildren();
+  const msg=document.createElement("div");msg.className="notice-item";
+  msg.textContent="دریافت نظرات انجام نشد. لطفاً بعداً دوباره تلاش کن.";
+  box.append(msg);
+ }
+}
+
+$("reviewForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const button=$("reviewSubmit");
+ const name=$("reviewName").value.trim();
+ const rating=Number($("reviewRating").value);
+ const comment=$("reviewText").value.trim();
+ if(!name||!comment||rating<1||rating>5)return;
+ button.disabled=true;
+ button.textContent="در حال ارسال...";
+ try{
+  const {error}=await db.from("reviews").insert({
+   customer_name:name,
+   rating:rating,
+   comment:comment,
+   is_approved:false
+  });
+  if(error)throw error;
+  $("reviewForm").reset();
+  alert("نظرت با موفقیت ثبت شد و پس از تأیید مدیر نمایش داده می‌شود.");
+ }catch(error){
+  console.error("Review submit error:",error);
+  alert("ثبت نظر انجام نشد: "+(error.message||"خطای نامشخص"));
+ }finally{
+  button.disabled=false;
+  button.textContent="ارسال نظر برای بررسی";
+ }
+});
+
+$("clearNotifications").addEventListener("click",()=>{writeLocal("mwb-notifications",[]);renderNotices();});
+renderNotices();loadReviews();
+
+
+/* Initial authentication and chat state */
+async function initializePage(){
+ await refreshAuth();
+
+ if(currentUser && $("chatPanel").classList.contains("open")){
+  await loadChatMessages();
+ }
+}
+
+initializePage();
+
+})();
+async function loadManagedPortfolio(){
+ const publicDb=window.supabase.createClient("https://oczpjbwwogsydzkouxtj.supabase.co","sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0");
+ const box=document.getElementById("managedPortfolio"); if(!box)return;
+ const {data,error}=await publicDb.from("portfolio_projects").select("id,title,description,category,image_url,project_url").eq("is_published",true).order("sort_order").order("created_at",{ascending:false});
+ if(error){console.warn("Portfolio load:",error.message);return;}
+ box.replaceChildren();
+ (data||[]).forEach(project=>{
+  const card=document.createElement("article");card.className="card portfolio reveal";
+  if(project.image_url){const image=document.createElement("img");image.src=project.image_url;image.alt=project.title;image.loading="lazy";image.style.cssText="width:100%;height:180px;object-fit:cover;border-radius:14px 14px 0 0";card.append(image);}
+  else{const art=document.createElement("div");art.className="preview-art";const label=document.createElement("strong");label.textContent=project.category||"نمونه‌کار";art.append(label);card.append(art);}
+  const info=document.createElement("div");info.className="portfolio-info";const title=document.createElement("h3");title.textContent=project.title;const desc=document.createElement("p");desc.textContent=project.description||"";info.append(title,desc);
+  if(project.project_url&&project.project_url.startsWith("https://")){const link=document.createElement("a");link.className="card-link";link.href=project.project_url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="مشاهده پروژه ←";info.append(link);}
+  card.append(info);box.append(card);
+ });
+}
+loadManagedPortfolio();
+
+/* Public blog, consultation, privacy-conscious page counts */
+const publicDb=window.supabase.createClient("https://oczpjbwwogsydzkouxtj.supabase.co","sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0");
+const publicGet=id=>document.getElementById(id);
+(async()=>{
+ const path=location.pathname||'/';
+ try{await publicDb.from('page_views').insert({page_path:path.slice(0,200)});}catch(e){console.debug('View counter unavailable');}
+ const blogBox=publicGet('publicBlogPosts');
+ if(blogBox){
+  const {data,error}=await publicDb.from('blog_posts').select('id,title,slug,excerpt,cover_url,published_at').eq('is_published',true).order('published_at',{ascending:false}).limit(9);
+  blogBox.replaceChildren();
+  if(error||!data?.length){const p=document.createElement('p');p.className='muted';p.textContent='هنوز مقاله‌ای منتشر نشده است.';blogBox.append(p);}
+  else data.forEach(post=>{const card=document.createElement('article');card.className='card';if(post.cover_url){const img=document.createElement('img');img.src=post.cover_url;img.alt=post.title;img.loading='lazy';img.style.cssText='width:100%;height:170px;object-fit:cover;border-radius:14px';card.append(img);}const h=document.createElement('h3');h.textContent=post.title;const p=document.createElement('p');p.textContent=post.excerpt||'';const a=document.createElement('a');a.className='card-link';a.href='blog.html?slug='+encodeURIComponent(post.slug);a.textContent='ادامه مقاله ←';card.append(h,p,a);blogBox.append(card);});
+ }
+ const form=publicGet('consultationForm');
+ if(form){
+  const {data}=await publicDb.auth.getUser();const user=data?.user;
+  if(user){publicGet('consultMessage').textContent='حساب شما متصل است.';const meta=user.user_metadata||{};publicGet('consultName').value=meta.display_name||meta.full_name||'';}
+  form.addEventListener('submit',async e=>{
+   e.preventDefault();if(!user){publicGet('consultMessage').textContent='برای رزرو مشاوره ابتدا وارد حساب شو.';return;}
+   const requestedAt=new Date(publicGet('consultDate').value);
+   if(Number.isNaN(requestedAt.getTime())||requestedAt<=new Date()){publicGet('consultMessage').textContent='زمان پیشنهادی باید در آینده باشد.';return;}
+   const btn=publicGet('consultSubmit');btn.disabled=true;
+   const {error}=await publicDb.from('consultation_bookings').insert({user_id:user.id,customer_name:publicGet('consultName').value.trim(),contact:publicGet('consultContact').value.trim(),requested_at:requestedAt.toISOString(),topic:publicGet('consultTopic').value.trim()});
+   btn.disabled=false;publicGet('consultMessage').textContent=error?'ثبت رزرو انجام نشد: '+error.message:'درخواست مشاوره ثبت شد؛ زمان نهایی پس از تأیید مدیر مشخص می‌شود.';
+   if(!error)form.reset();
+  });
+ }
+})();
+
+
+/* PWA install and offline shell */
+let installPromptEvent=null;
+window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPromptEvent=event;let btn=document.getElementById('installAppButton');if(!btn){btn=document.createElement('button');btn.id='installAppButton';btn.className='btn';btn.textContent='نصب اپلیکیشن';btn.style.cssText='position:fixed!important;bottom:82px!important;right:18px!important;left:auto!important;top:auto!important;z-index:39!important;display:inline-flex;width:auto;max-width:calc(100vw - 36px);white-space:nowrap;box-shadow:0 8px 25px #0005';document.body.append(btn);}btn.hidden=false;btn.onclick=async()=>{if(!installPromptEvent)return;installPromptEvent.prompt();await installPromptEvent.userChoice;installPromptEvent=null;btn.remove();};});
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(err=>console.warn('PWA registration failed',err)));
+</script>
+</body>
+</html>
