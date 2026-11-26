@@ -615,7 +615,7 @@ main>section#home,main>section.stats,main>section.home-extra,main>section#faq{di
 @media(max-width:760px){.pro-workflow{grid-template-columns:1fr}.pro-dashboard{transform:none}.pro-feature-grid{grid-template-columns:1fr 1fr}.pro-cta{align-items:flex-start;flex-direction:column}.pro-cta .hero-buttons{width:100%}}
 @media(max-width:460px){.pro-feature-grid{grid-template-columns:1fr}.pro-dash-grid{flex-direction:column;align-items:stretch}}
 </style>
-<script src="seo.js" defer></script>
+<link rel="stylesheet" href="profile-menu.css">\n<script src="profile-menu.js" defer></script>\n<script src="seo.js" defer></script>
 </head>
 
 <body>
@@ -1803,13 +1803,13 @@ $("couponForm").addEventListener("submit",async e=>{
  selectedDiscountCode=null;
  $("couponResult").textContent="در حال بررسی کد...";
  try{
-  const {data,error}=await db.from("discount_codes").select("code,discount_percent,max_uses,used_count,expires_at").eq("code",code).eq("is_active",true).maybeSingle();
+  const {data,error}=await db.rpc("check_discount_code",{p_code:code});
   if(error)throw error;
-  if(!data||data.used_count>=data.max_uses||(data.expires_at&&new Date(data.expires_at)<=new Date())){
-   $("couponResult").textContent="این کد معتبر نیست، منقضی شده یا ظرفیت استفاده آن تمام شده است.";return;
+  if(!data?.valid){
+   $("couponResult").textContent=data?.message||"این کد معتبر نیست، منقضی شده یا ظرفیت استفاده آن تمام شده است.";return;
   }
-  selectedDiscountCode=data.code;
-  $("couponResult").textContent="کد معتبر است: "+data.discount_percent+"٪ تخفیف. هنگام ثبت سفارش به‌صورت امن ثبت و یک بار مصرف می‌شود؛ مبلغ نهایی را مدیر با توجه به تخفیف تأیید می‌کند.";
+  selectedDiscountCode=code;
+  $("couponResult").textContent="کد معتبر است: "+data.discount_percent+"٪ تخفیف. هنگام ثبت سفارش دوباره در سرور بررسی و ثبت می‌شود.";
  }catch(error){$("couponResult").textContent="بررسی کد انجام نشد: "+error.message;}
 });
 async function loadReviews(){
