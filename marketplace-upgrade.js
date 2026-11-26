@@ -64,35 +64,40 @@ function addHeaderAccountMenu(){
 }
 function addCategoryBar(){
  if($('.market-category-bar'))return;
- const header=$('header');if(!header||!$('.nav',header))return;
+ const header=$('header'),navLinks=$('#navLinks'),menuButton=$('#menuToggle');
+ if(!header||!menuButton)return;
  const groups=[
   {title:'طراحی وب‌سایت',icon:'▣',links:[['سایت‌ساز آنلاین','site-builder.html'],['دستیار هوشمند انتخاب خدمات','ai-assistant.html'],['طراحی سایت فروشگاهی','services.html'],['طراحی سایت شرکتی','services.html'],['طراحی سایت شخصی','services.html'],['نمونه‌کارهای طراحی','portfolio.html'],['خدمات طراحی سایت','services.html']]},
   {title:'پلن‌ها و تعرفه‌ها',icon:'◈',links:[['مقایسه پلن‌ها','compare.html'],['تعرفه خدمات','pricing.html'],['محاسبه قیمت','calculator.html']]},
   {title:'مشاوره و ابزارها',icon:'◇',links:[['درخواست مشاوره','consultation.html'],['محاسبه قیمت','calculator.html'],['ابزارهای آنلاین','tools.html'],['مقالات آموزشی','articles.html'],['وبلاگ','blog.html']]},
   {title:'راهنما و پشتیبانی',icon:'؟',links:[['پشتیبانی و ثبت تیکت','tickets.html'],['سؤالات متداول','faq.html'],['تماس با ما','contact.html'],['قوانین و شرایط','terms.html'],['حریم خصوصی','privacy.html']]}
  ];
- const quick=[['سایت‌ساز آنلاین','site-builder.html'],['دستیار هوشمند','ai-assistant.html'],['پیشنهاد پلن‌ها','pricing.html'],['نمونه‌کارها','portfolio.html'],['پشتیبانی','tickets.html']];
- const nav=document.createElement('nav');nav.className='market-category-bar';nav.setAttribute('aria-label','منوی اصلی سایت');
- const trigger=document.createElement('button');trigger.type='button';trigger.className='market-menu-trigger';trigger.setAttribute('aria-expanded','false');trigger.innerHTML='<span aria-hidden="true">☰</span> دسته‌بندی خدمات <span aria-hidden="true">⌄</span>';
- const panel=document.createElement('div');panel.className='market-mega-menu';panel.hidden=true;
+ const quick=[['خانه','index.html'],['خدمات','services.html'],['نمونه‌کارها','portfolio.html'],['تعرفه‌ها','pricing.html'],['سایت‌ساز آنلاین','site-builder.html'],['دستیار هوشمند','ai-assistant.html'],['پیشنهاد پلن‌ها','pricing.html']];
+ const anchor=document.createElement('div');anchor.className='market-square-menu-anchor';
+ menuButton.parentNode.insertBefore(anchor,menuButton);anchor.append(menuButton);
+ menuButton.setAttribute('aria-label','باز کردن فهرست کامل سایت');menuButton.setAttribute('aria-expanded','false');
+ const panel=document.createElement('div');panel.className='market-mega-menu market-square-menu-panel';panel.hidden=true;
  const rail=document.createElement('div');rail.className='market-mega-rail';rail.setAttribute('role','tablist');rail.setAttribute('aria-label','دسته‌بندی خدمات');
  const content=document.createElement('div');content.className='market-mega-content';
+ const quickNav=document.createElement('div');quickNav.className='market-square-quick-links';quickNav.setAttribute('aria-label','دسترسی سریع');
+ quick.forEach(([label,href])=>{const a=document.createElement('a');a.href=href;a.textContent=label;if(location.pathname.endsWith('/'+href)||location.pathname===href)a.setAttribute('aria-current','page');quickNav.append(a)});
  function showGroup(index){
   rail.querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('active',i===index);b.setAttribute('aria-selected',String(i===index))});
   content.replaceChildren();
-  const group=groups[index];const heading=document.createElement('h3');heading.textContent=group.title;content.append(heading);
+  const group=groups[index],heading=document.createElement('h3');heading.textContent=group.title;content.append(heading);
   const list=document.createElement('div');list.className='market-mega-links';
   group.links.forEach(([label,href])=>{const a=document.createElement('a');a.href=href;a.textContent=label;list.append(a)});
   content.append(list);
  }
  groups.forEach((group,i)=>{const b=document.createElement('button');b.type='button';b.textContent=group.icon+'  '+group.title;b.setAttribute('role','tab');b.setAttribute('aria-selected',String(i===0));b.addEventListener('mouseenter',()=>showGroup(i));b.addEventListener('focus',()=>showGroup(i));b.addEventListener('click',()=>showGroup(i));rail.append(b)});
- panel.append(rail,content);showGroup(0);
- trigger.addEventListener('click',()=>{const open=panel.hidden;panel.hidden=!open;trigger.setAttribute('aria-expanded',String(open))});
- document.addEventListener('click',e=>{if(!nav.contains(e.target)){panel.hidden=true;trigger.setAttribute('aria-expanded','false')}});
- document.addEventListener('keydown',e=>{if(e.key==='Escape'){panel.hidden=true;trigger.setAttribute('aria-expanded','false')}});
- nav.append(trigger,panel);
- quick.forEach(([label,href])=>{const a=document.createElement('a');a.href=href;a.textContent=label;if(location.pathname.endsWith('/'+href)||location.pathname===href)a.setAttribute('aria-current','page');nav.append(a)});
- header.after(nav);
+ const body=document.createElement('div');body.className='market-square-menu-body';body.append(rail,content);
+ panel.append(quickNav,body);showGroup(0);anchor.append(panel);
+ const close=()=>{panel.hidden=true;menuButton.setAttribute('aria-expanded','false');};
+ menuButton.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();const open=panel.hidden;panel.hidden=!open;menuButton.setAttribute('aria-expanded',String(open));if(open&&navLinks)navLinks.classList.remove('open');},{capture:true});
+ document.addEventListener('click',e=>{if(!anchor.contains(e.target))close();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+ panel.addEventListener('click',e=>{if(e.target.closest('a'))close();});
+ const oldBar=document.createElement('nav');oldBar.className='market-category-bar';oldBar.setAttribute('aria-hidden','true');oldBar.hidden=true;header.after(oldBar);
 }
 function enhancePortfolio(){
  const section=[...document.querySelectorAll('section')].find(s=>s.querySelector('.portfolio')&&s.querySelector('h2'));
