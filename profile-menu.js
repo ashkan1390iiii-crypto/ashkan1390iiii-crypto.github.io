@@ -11,6 +11,7 @@ const list=document.createElement('div');list.className='profile-menu-list';
 const links=[
  ['👤 پروفایل و حساب کاربری','account.html'],
  ['📦 سفارش‌های من','account.html#ordersList'],
+ ['⚖️ مقایسه پلن‌ها','compare.html'],
  ['🎫 تیکت‌های پشتیبانی','tickets.html'],
  ['🔎 پیگیری سفارش','tracking.html'],
  ['📝 ثبت سفارش جدید','order.html']
