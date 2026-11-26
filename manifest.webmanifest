@@ -1,7 +1,7 @@
 {
   "name": "وب‌ساز مرادی | MORADI WEB BUILDER",
   "short_name": "وب‌ساز مرادی",
-  "description": "طراحی سایت حرفه‌ای، سریع و امن",
+  "description": "طراحی سایت حرفه‌ای، ثبت سفارش، پیگیری پروژه و پشتیبانی آنلاین",
   "lang": "fa",
   "dir": "rtl",
   "start_url": "/index.html",
@@ -15,6 +15,24 @@
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "business",
+    "productivity"
+  ],
+  "shortcuts": [
+    {
+      "name": "ثبت سفارش",
+      "url": "/order.html"
+    },
+    {
+      "name": "پیگیری سفارش",
+      "url": "/tracking.html"
+    },
+    {
+      "name": "پشتیبانی",
+      "url": "/tickets.html"
     }
   ]
 }
