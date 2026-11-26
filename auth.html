@@ -91,7 +91,7 @@ async function signup(){
   email,
   password,
   options:{
-   emailRedirectTo:location.origin + '/account.html'
+   emailRedirectTo:location.origin + '/auth.html?next=' + encodeURIComponent(nextDestination)
   }
  });
 
