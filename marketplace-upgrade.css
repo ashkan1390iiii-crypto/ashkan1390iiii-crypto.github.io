@@ -107,3 +107,48 @@
 /* افزوده‌های سایت‌ساز و دستیار پروژه */
 .market-category-bar>a[aria-current="page"]{color:var(--accent);font-weight:900}
 .market-category-bar .market-menu-trigger:focus-visible,.market-category-bar>a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+
+/* Mobile polish: compact navigation, remove brand mark, and align floating actions */
+.brand-mark{display:none!important}
+.brand{gap:0}
+@media(max-width:680px){
+ .market-category-bar{position:relative;z-index:60}
+ .market-mega-menu{
+  position:fixed;
+  top:calc(128px + env(safe-area-inset-top,0px));
+  right:10px;bottom:auto;left:10px;
+  width:auto;min-height:0;max-height:min(66dvh,520px);
+  overflow-y:auto;overscroll-behavior:contain;
+  grid-template-columns:minmax(96px,34%) minmax(0,1fr);
+  border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 18px 50px rgba(0,0,0,.28)
+ }
+ .market-mega-rail{padding:7px;gap:3px}
+ .market-mega-rail button{padding:9px 7px;font-size:11px;line-height:1.65}
+ .market-mega-content{padding:12px 10px}
+ .market-mega-content h3{font-size:13px;margin-bottom:10px;padding-bottom:8px}
+ .market-mega-links{grid-template-columns:1fr;gap:3px}
+ .market-mega-links a{padding:6px 0;font-size:11px;line-height:1.7}
+ #chatLauncher,#installAppButton{
+  position:fixed!important;top:auto!important;bottom:max(12px,env(safe-area-inset-bottom,0px))!important;
+  z-index:1000!important;max-width:calc(50vw - 20px);min-height:42px;
+  padding:9px 11px!important;border-radius:18px!important;
+  font-size:11px!important;line-height:1.5;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis
+ }
+ #chatLauncher{left:10px!important;right:auto!important}
+ #installAppButton{right:10px!important;left:auto!important}
+ #chatPanel{left:10px;bottom:66px;width:calc(100vw - 20px);max-height:65dvh}
+}
+
+
+/* Profile avatar refinement: keep the customer initial centered and legible. */
+.market-account-menu>summary{min-width:48px;min-height:48px;padding:3px}
+.market-account-avatar{width:40px;height:40px;flex:0 0 40px;font-family:"Vazirmatn",Tahoma,sans-serif;font-size:18px;line-height:1;font-weight:900;letter-spacing:0;text-align:center;background:color-mix(in srgb,var(--accent) 12%,var(--surface2))}
+.market-account-initial{display:flex;align-items:center;justify-content:center;width:100%;height:100%;line-height:1;transform:none;padding:0 0 2px}
+.market-account-photo{display:block;width:100%;height:100%;object-fit:cover}
+@media(max-width:680px){
+ .market-account-menu>summary{min-width:46px;min-height:46px;padding:2px}
+ .market-account-avatar{width:38px;height:38px;flex-basis:38px;font-size:17px}
+}

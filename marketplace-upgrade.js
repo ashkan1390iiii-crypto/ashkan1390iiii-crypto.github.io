@@ -44,7 +44,10 @@ function addHeaderAccountMenu(){
     const user=!error?data?.user:null,meta=user?.user_metadata||{};
     const displayName=String(meta.display_name||meta.full_name||meta.name||'').trim();
     if(authLink){authLink.href=user?'account.html':'auth.html';authLink.textContent=user?'پروفایل من':'ورود / ثبت‌نام';}
-    const initial=Array.from(displayName||user?.email||'ح')[0]||'ح';avatarInitial.textContent=initial;heading.textContent=displayName||'حساب کاربری من';
+    const identity=String(displayName||user?.email?.split('@')[0]||'حساب').trim();
+    let initial='ح';
+    try{initial=typeof Intl.Segmenter==='function'?[...new Intl.Segmenter('fa',{granularity:'grapheme'}).segment(identity)][0]?.segment||'ح':Array.from(identity)[0]||'ح';}catch(_){initial=Array.from(identity)[0]||'ح';}
+    avatarInitial.textContent=initial;heading.textContent=displayName||'حساب کاربری من';
     if(!user)return;
     const path=typeof meta.avatar_path==='string'?meta.avatar_path:'';
     if([user.id+'/avatar.png',user.id+'/avatar.jpg',user.id+'/avatar.webp'].includes(path)){
