@@ -296,3 +296,20 @@ footer .copy{border-top:1px solid #eee}
   header .nav .market-account-menu > summary { padding-inline: 7px; }
   .market-menu-trigger { padding-inline: 8px; }
 }
+
+/* Dedicated inner-page layouts */
+.inner-page-view{max-width:1160px;margin:34px auto 64px;padding:34px 28px;background:#fff;border:1px solid #e7e7e9;border-radius:18px;box-shadow:0 8px 28px rgba(0,0,0,.045)}
+.inner-page-crumb{font-size:12px;color:#777;margin:0 0 16px}
+.inner-page-title{font-size:clamp(24px,4vw,36px);line-height:1.5;margin:0 0 12px;color:#252a33}
+.inner-page-intro{max-width:780px;color:#62666d;font-size:15px;line-height:2.1;margin:0 0 28px}
+.inner-page-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.inner-page-card{min-width:0;padding:20px;border:1px solid #e6e6e8;border-radius:14px;background:#fff}
+.inner-page-card h2{font-size:16px;margin:0 0 9px;color:#282d36}
+.inner-page-card p{font-size:13px;line-height:2;color:#666;margin:0}
+.inner-page-textlink{display:inline-block;margin-top:12px;color:#d92f43;font-size:12px;font-weight:800;text-decoration:none}
+.inner-page-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:25px}
+.inner-page-button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 18px;border-radius:10px;background:#ef394e;color:#fff;text-decoration:none;font-size:13px;font-weight:800}
+.inner-page-button.secondary{background:#fff;color:#343943;border:1px solid #ddd}
+.inner-page-note{margin:22px 0 0;padding:13px 15px;border-radius:10px;background:#f7f7f8;color:#666;font-size:12px;line-height:1.9}
+@media(max-width:760px){.inner-page-view{margin:18px 12px 36px;padding:22px 16px}.inner-page-grid{grid-template-columns:1fr}.inner-page-intro{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.inner-page-view *{scroll-behavior:auto!important}}
