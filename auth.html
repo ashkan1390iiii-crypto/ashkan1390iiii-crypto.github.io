@@ -30,6 +30,7 @@ button{
 }
 button.secondary{background:#263b52;color:white}
 #message{line-height:2;font-size:13px;text-align:center}
+ #message{min-height:28px;margin-top:12px}#message.error{color:#ff9aa8}#message.success{color:#8ce7ba}button:disabled{opacity:.65;cursor:wait}
 </style>
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
@@ -44,84 +45,87 @@ button.secondary{background:#263b52;color:white}
 <input id="email" type="email" placeholder="ایمیل">
 <input id="password" type="password" placeholder="رمز عبور (حداقل ۱۰ کاراکتر برای ثبت‌نام)" autocomplete="current-password">
 
-<button onclick="signup()">ثبت‌نام</button>
-<button class="secondary" onclick="login()">ورود به حساب</button>
+<button id="signupButton" type="button">ثبت‌نام</button>
+<button id="loginButton" class="secondary" type="button">ورود به حساب</button>
 
-<div id="message"></div>
+<div id="message" role="status" aria-live="polite"></div>
 </div>
 
 <script>
-const SUPABASE_URL =
-'https://oczpjbwwogsydzkouxtj.supabase.co';
-
-const SUPABASE_KEY =
-'sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
-
-const db = window.supabase.createClient(
- SUPABASE_URL,
- SUPABASE_KEY
-);
-
-const message = document.getElementById('message');
-
+'use strict';
+const SUPABASE_URL='https://oczpjbwwogsydzkouxtj.supabase.co';
+const SUPABASE_KEY='sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
+const message=document.getElementById('message');
+const emailInput=document.getElementById('email');
+const passwordInput=document.getElementById('password');
+const signupButton=document.getElementById('signupButton');
+const loginButton=document.getElementById('loginButton');
+const db=window.supabase?.createClient?.(SUPABASE_URL,SUPABASE_KEY);
 function safeNextPath(raw){
  try{
   const target=new URL(raw||'account.html',location.origin);
-  if(target.origin!==location.origin || target.pathname.endsWith('/auth.html')) return 'account.html';
+  if(target.origin!==location.origin||target.pathname.endsWith('/auth.html'))return 'account.html';
   return target.pathname+target.search+target.hash;
  }catch(_){return 'account.html';}
 }
 const nextDestination=safeNextPath(new URLSearchParams(location.search).get('next'));
-
-db.auth.getSession().then(({data})=>{
- if(data?.session && new URLSearchParams(location.search).has('next')){
-  location.replace(nextDestination);
- }
-});
-
-async function signup(){
- const email = document.getElementById('email').value.trim();
- const password = document.getElementById('password').value;
-
- if(!email || password.length < 10){
-  message.textContent='ایمیل را وارد کن و برای ثبت‌نام رمز حداقل ۱۰ کاراکتری انتخاب کن.';
-  return;
- }
-
- const {data,error} = await db.auth.signUp({
-  email,
-  password,
-  options:{
-   emailRedirectTo:location.origin + '/auth.html?next=' + encodeURIComponent(nextDestination)
-  }
- });
-
- if(error){
-  message.textContent=error.message;
-  return;
- }
-
- message.textContent =
- 'ثبت‌نام انجام شد! ایمیلت را برای تأیید حساب بررسی کن.';
+function showMessage(text,isError=false){
+ message.textContent=text;
+ message.className=isError?'error':'success';
 }
-
-async function login(){
- const email = document.getElementById('email').value.trim();
- const password = document.getElementById('password').value;
-
- const {data,error} = await db.auth.signInWithPassword({
-  email,
-  password
- });
-
- if(error){
-  message.textContent=error.message;
-  return;
+function explainError(error){
+ const name=String(error?.name||'');
+ const detail=String(error?.message||'');
+ if(name==='TypeError'||/failed to fetch|network|load failed/i.test(detail)){
+  return 'ارتباط با سرویس ورود برقرار نشد. اینترنت یا VPN را بررسی کن و دوباره تلاش کن. اگر مشکل ادامه داشت، با یک شبکه دیگر امتحان کن.';
  }
-
- location.href=nextDestination;
+ if(/invalid login credentials/i.test(detail))return 'ایمیل یا رمز عبور درست نیست.';
+ if(/email not confirmed/i.test(detail))return 'ابتدا ایمیل خود را از طریق لینک تأیید ارسال‌شده تأیید کن.';
+ return detail||'عملیات انجام نشد. چند لحظه دیگر دوباره تلاش کن.';
+}
+async function runAuth(mode){
+ if(!db){showMessage('کتابخانه ورود بارگذاری نشد. صفحه را تازه‌سازی کن.',true);return;}
+ const email=emailInput.value.trim();
+ const password=passwordInput.value;
+ if(!email||!emailInput.checkValidity()){showMessage('یک نشانی ایمیل معتبر وارد کن.',true);emailInput.focus();return;}
+ if(!password){showMessage('رمز عبور را وارد کن.',true);passwordInput.focus();return;}
+ if(mode==='signup'&&password.length<10){showMessage('رمز ثبت‌نام باید حداقل ۱۰ کاراکتر باشد.',true);passwordInput.focus();return;}
+ const buttons=[signupButton,loginButton];
+ buttons.forEach(button=>{button.disabled=true;button.setAttribute('aria-busy','true');});
+ showMessage(mode==='signup'?'در حال ایجاد حساب…':'در حال ورود…');
+ try{
+  let result;
+  if(mode==='signup'){
+   result=await db.auth.signUp({email,password,options:{emailRedirectTo:location.origin+'/auth.html?next='+encodeURIComponent(nextDestination)}});
+  }else{
+   result=await db.auth.signInWithPassword({email,password});
+  }
+  if(result.error){showMessage(explainError(result.error),true);return;}
+  if(mode==='signup'){
+   showMessage(result.data?.session?'حساب ساخته شد؛ در حال انتقال…':'ثبت‌نام انجام شد. ایمیلت را برای تأیید حساب بررسی کن.');
+   if(result.data?.session)location.replace(nextDestination);
+  }else{
+   location.replace(nextDestination);
+  }
+ }catch(error){
+  console.error('Authentication request failed',error);
+  showMessage(explainError(error),true);
+ }finally{
+  buttons.forEach(button=>{button.disabled=false;button.removeAttribute('aria-busy');});
+ }
+}
+signupButton.addEventListener('click',()=>runAuth('signup'));
+loginButton.addEventListener('click',()=>runAuth('login'));
+passwordInput.addEventListener('keydown',event=>{if(event.key==='Enter')runAuth('login');});
+if(db){
+ db.auth.getSession().then(({data,error})=>{
+  if(error)console.warn('Could not restore auth session',error);
+  if(data?.session&&new URLSearchParams(location.search).has('next'))location.replace(nextDestination);
+ }).catch(error=>console.warn('Session restore failed',error));
+}else{
+ showMessage('کتابخانه ورود بارگذاری نشد. اتصال اینترنت را بررسی و صفحه را تازه‌سازی کن.',true);
 }
 </script>
-<script src="marketplace-upgrade.js?v=20261126e"></script>
+<script src="marketplace-upgrade.js?v=20261126h"></script>
 </body>
   </html>
