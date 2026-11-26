@@ -68,7 +68,33 @@ async function testAssistant(viewport, label) {
     await context.close();
   }
 }
+async function testAuth(viewport, label) {
+  const { context, page, pageErrors } = await openPage(viewport, 'auth.html?next=site-builder.html');
+  try {
+    check(await page.locator('html').getAttribute('dir') === 'rtl', 'Auth page must be RTL');
+    await page.locator('#email').fill('not-an-email');
+    await page.locator('#password').fill('short');
+    await page.locator('#loginButton').click();
+    check((await page.locator('#message').innerText()).includes('ایمیل معتبر'), 'Auth form validation did not run');
+    await page.locator('#email').fill('customer@example.com');
+    await page.locator('#password').fill('a-secure-test-password');
+    await page.locator('#signupButton').click();
+    check((await page.locator('#message').innerText()).includes('ایمیلت را'), 'Signup success message is missing');
+    await page.evaluate(() => { window.__mockAuthFail = true; });
+    await page.locator('#loginButton').click();
+    check((await page.locator('#message').innerText()).includes('ارتباط با سرویس ورود'), 'Network error was not translated to a helpful message');
+    await page.evaluate(() => { window.__mockAuthFail = false; });
+    await page.locator('#loginButton').click();
+    await page.waitForURL('**/site-builder.html');
+    check(pageErrors.length === 0, `Browser errors in auth at ${label}: ${pageErrors.join('; ')}`);
+    console.log(`PASS auth ${label}`);
+  } finally {
+    await context.close();
+  }
+}
 try {
+  await testAuth({ width: 1365, height: 900 }, 'desktop');
+  await testAuth({ width: 390, height: 844 }, 'mobile');
   await testBuilder({ width: 1365, height: 900 }, 'desktop');
   await testBuilder({ width: 390, height: 844 }, 'mobile');
   await testAssistant({ width: 1365, height: 900 }, 'desktop');
