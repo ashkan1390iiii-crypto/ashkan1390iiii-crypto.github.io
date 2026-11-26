@@ -100,7 +100,7 @@ async function testPolicyPages(){
  for(const path of ['privacy.html','terms.html']){
   const {context,page,pageErrors}=await openPage({width:390,height:844},path);
   try{
-   check(!(await page.locator('head').innerText()).includes('\\\\n'),'Literal escaped newline found in document head');
+   check(!await page.evaluate(()=>document.head.innerHTML.includes(String.fromCharCode(92)+'n')),'Literal escaped newline found in document head');
    check(pageErrors.length===0,`Browser errors in ${path}: ${pageErrors.join('; ')}`);
    console.log(`PASS ${path}`);
   }finally{await context.close();}
