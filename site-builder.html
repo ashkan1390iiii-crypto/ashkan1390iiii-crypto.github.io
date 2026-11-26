@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07111f"><meta name="description" content="ساخت پیش‌نمایش اولیه وب‌سایت با ابزار سایت‌ساز وب‌ساز مرادی.">
+<title>سایت‌ساز آنلاین | وب‌ساز مرادی</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="marketplace-upgrade.css?v=20261127a">
+<style>
+:root{--b:#07111f;--p:#10233a;--p2:#17314d;--l:rgba(148,190,225,.2);--t:#f4f8ff;--m:#a7b8cc;--a:#5ee7f5}
+*{box-sizing:border-box}body{margin:0;background:var(--b);color:var(--t);font-family:Vazirmatn,Tahoma,sans-serif;line-height:1.9}
+.wrap{width:min(1180px,94%);margin:26px auto 70px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-weight:900;font-size:19px}.top a,.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;border:1px solid var(--l);border-radius:12px;background:var(--p2);color:var(--t);text-decoration:none;font:inherit;font-weight:800;cursor:pointer}.btn.primary{background:var(--a);color:#07111f;border-color:transparent}.intro{margin:28px 0}.intro h1{font-size:clamp(25px,5vw,42px);margin:0 0 8px}.intro p,.muted{color:var(--m);font-size:13px}
+.layout{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(0,1.2fr);gap:18px;align-items:start}.panel{padding:20px;border:1px solid var(--l);border-radius:20px;background:var(--p);min-width:0}.panel h2{font-size:17px;margin:0 0 15px}.field{display:grid;gap:6px;margin-bottom:13px}.field label{font-size:12px;font-weight:800}.field input,.field textarea,.field select{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--l);border-radius:10px;background:var(--b);color:var(--t);font:inherit}.field textarea{min-height:90px;resize:vertical}.colors{display:flex;gap:10px;flex-wrap:wrap}.colors label{display:flex;align-items:center;gap:6px;font-size:12px}.colors input{width:18px;min-height:18px}.preview-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}.preview-frame{width:100%;height:560px;border:1px solid var(--l);border-radius:14px;background:white}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.notice{font-size:11px;color:var(--m);margin-top:12px}.templates{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.template{padding:12px;border:1px solid var(--l);border-radius:10px;background:var(--b);color:var(--t);font:inherit;font-size:12px;cursor:pointer}.template[aria-pressed=true]{border-color:var(--a);color:var(--a)}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.preview-frame{height:480px}}@media(max-width:460px){.wrap{width:92%}.panel{padding:15px}.preview-frame{height:430px}.templates{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><a href="index.html">← بازگشت به وب‌ساز مرادی</a><span class="brand">MW · سایت‌ساز آنلاین</span></header>
+<section class="intro"><h1>ایده‌ات را به پیش‌نمایش سایت تبدیل کن</h1><p>قالب را انتخاب کن، متن و رنگ‌ها را تغییر بده و پیش‌نمایش اولیه را ببین. این ابزار نسخه آغازین سایت‌ساز است؛ انتشار روی دامنه و ذخیره ابری هنوز به حساب کاربری و زیرساخت انتشار متصل نشده است.</p></section>
+<div class="layout">
+<section class="panel" aria-label="تنظیمات سایت">
+<h2>۱. مشخصات سایت</h2>
+<div class="field"><label for="siteName">نام کسب‌وکار</label><input id="siteName" maxlength="60" value="کسب‌وکار من"></div>
+<div class="field"><label for="headline">عنوان اصلی</label><input id="headline" maxlength="100" value="کسب‌وکارت را حرفه‌ای‌تر معرفی کن"></div>
+<div class="field"><label for="description">توضیحات کوتاه</label><textarea id="description" maxlength="400">خدمات و محصولات ما را ببینید و برای دریافت مشاوره با ما در ارتباط باشید.</textarea></div>
+<div class="field"><label for="buttonText">متن دکمه</label><input id="buttonText" maxlength="35" value="تماس با ما"></div>
+<h2>۲. انتخاب سبک</h2>
+<div class="templates"><button class="template" type="button" data-template="business" aria-pressed="true">شرکتی</button><button class="template" type="button" data-template="store" aria-pressed="false">فروشگاهی</button><button class="template" type="button" data-template="personal" aria-pressed="false">شخصی</button></div>
+<div class="field" style="margin-top:15px"><label>رنگ اصلی</label><div class="colors"><label><input type="radio" name="accent" value="#5ee7f5" checked> فیروزه‌ای</label><label><input type="radio" name="accent" value="#f2c66d"> طلایی</label><label><input type="radio" name="accent" value="#b69cff"> بنفش</label><label><input type="radio" name="accent" value="#72d6a0"> سبز</label></div></div>
+<div class="actions"><button class="btn primary" id="download" type="button">دریافت فایل HTML</button><button class="btn" id="saveDraft" type="button">ذخیره پیش‌نویس در همین مرورگر</button></div>
+<p class="notice" id="status" role="status">پیش‌نویس فقط روی همین دستگاه ذخیره می‌شود؛ اطلاعات محرمانه وارد نکن.</p>
+</section>
+<section class="panel"><div class="preview-head"><h2>۳. پیش‌نمایش زنده</h2><span class="muted">نمایش نمونه</span></div><iframe class="preview-frame" id="preview" title="پیش‌نمایش سایت ساخته‌شده" sandbox="allow-scripts"></iframe></section>
+</div>
+</div>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);let template='business';
+const values=()=>({name:$('siteName').value,headline:$('headline').value,description:$('description').value,button:$('buttonText').value,accent:document.querySelector('input[name="accent"]:checked').value,template});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function markup(v){const titles={business:'راهکارهایی برای رشد کسب‌وکار شما',store:'محصولات منتخب ما',personal:'سلام، خوش آمدید'};return '<!doctype html><html lang="fa" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(v.name)+'</title><style>*{box-sizing:border-box}body{margin:0;font:16px/2 Tahoma,sans-serif;background:#f4f7fb;color:#17243a}.nav{padding:18px 7%;display:flex;justify-content:space-between;background:white}.hero{max-width:900px;margin:9vh auto;padding:55px 7%;border-radius:25px;background:white;box-shadow:0 20px 60px #182b4418;text-align:center}.tag{color:'+v.accent+';font-weight:bold}h1{font-size:clamp(28px,5vw,48px);line-height:1.5}p{color:#607086;max-width:650px;margin:15px auto}.btn{display:inline-block;margin-top:18px;padding:12px 25px;background:'+v.accent+';color:#102033;border-radius:12px;text-decoration:none;font-weight:bold}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:35px}.card{padding:22px;background:#f1f5f9;border-radius:14px}@media(max-width:600px){.cards{grid-template-columns:1fr}.hero{margin:25px 15px;padding:30px 18px}}</style><header class="nav"><b>'+esc(v.name)+'</b><span>خانه　 خدمات　 تماس</span></header><main class="hero"><span class="tag">'+esc(titles[v.template])+'</span><h1>'+esc(v.headline)+'</h1><p>'+esc(v.description)+'</p><a class="btn" href="mailto:hello@example.com">'+esc(v.button)+'</a><div class="cards"><div class="card">کیفیت و اعتماد</div><div class="card">خدمات حرفه‌ای</div><div class="card">پشتیبانی پاسخ‌گو</div></div></main></html>'}
+function render(){const v=values();$('preview').srcdoc=markup(v)}
+['siteName','headline','description','buttonText'].forEach(id=>$(id).addEventListener('input',render));
+document.querySelectorAll('input[name="accent"]').forEach(el=>el.addEventListener('change',render));
+document.querySelectorAll('[data-template]').forEach(b=>b.addEventListener('click',()=>{template=b.dataset.template;document.querySelectorAll('[data-template]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));render()}));
+$('download').addEventListener('click',()=>{const blob=new Blob([markup(values())],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='website-preview.html';a.click();URL.revokeObjectURL(url);$('status').textContent='فایل HTML پیش‌نمایش ساخته شد. قبل از انتشار، لینک‌ها و اطلاعات تماس را جایگزین کن.'});
+$('saveDraft').addEventListener('click',()=>{try{localStorage.setItem('mw-site-builder-draft',JSON.stringify(values()));$('status').textContent='پیش‌نویس روی همین مرورگر ذخیره شد.'}catch(e){$('status').textContent='ذخیره‌سازی در این مرورگر در دسترس نیست.'}});
+try{const saved=JSON.parse(localStorage.getItem('mw-site-builder-draft')||'null');if(saved){$('siteName').value=saved.name||'';$('headline').value=saved.headline||'';$('description').value=saved.description||'';$('buttonText').value=saved.button||'';template=saved.template||'business';const radio=document.querySelector('input[name="accent"][value="'+saved.accent+'"]');if(radio)radio.checked=true;document.querySelectorAll('[data-template]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.template===template)));}}catch(_){}
+render();
+})();
+</script>
+</body></html>
