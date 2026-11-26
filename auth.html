@@ -63,6 +63,21 @@ const db = window.supabase.createClient(
 
 const message = document.getElementById('message');
 
+function safeNextPath(raw){
+ try{
+  const target=new URL(raw||'account.html',location.origin);
+  if(target.origin!==location.origin || target.pathname.endsWith('/auth.html')) return 'account.html';
+  return target.pathname+target.search+target.hash;
+ }catch(_){return 'account.html';}
+}
+const nextDestination=safeNextPath(new URLSearchParams(location.search).get('next'));
+
+db.auth.getSession().then(({data})=>{
+ if(data?.session && new URLSearchParams(location.search).has('next')){
+  location.replace(nextDestination);
+ }
+});
+
 async function signup(){
  const email = document.getElementById('email').value.trim();
  const password = document.getElementById('password').value;
@@ -103,7 +118,7 @@ async function login(){
   return;
  }
 
- location.href='account.html';
+ location.href=nextDestination;
 }
 </script>
 </body>
