@@ -15,7 +15,7 @@ async function openPage(viewport, path) {
     route.fulfill({
       status: 200,
       contentType: 'application/javascript',
-      body: `window.supabase={createClient:()=>({auth:{getUser:async()=>({data:{user:null},error:null}),getSession:async()=>({data:{session:null},error:null}),signUp:async()=>({data:{user:{id:'test-user'},session:null},error:null}),signInWithPassword:async()=>window.__mockAuthFail?({data:{},error:{message:'Failed to fetch'}}):({data:{user:{id:'test-user'},session:{access_token:'test'}} ,error:null})}})};`
+      body: `window.supabase={createClient:()=>({auth:{getUser:async()=>({data:{user:null},error:null}),getSession:async()=>({data:{session:null},error:null}),signUp:async()=>({data:{user:{id:'test-user'},session:null},error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe:()=>{}}}}),signInWithPassword:async()=>window.__mockAuthFail?({data:{},error:{message:'Failed to fetch'}}):({data:{user:{id:'test-user'},session:{access_token:'test'}} ,error:null})}})};`
     })
   );
   await page.route('https://fonts.googleapis.com/**', route => route.abort());
@@ -92,7 +92,30 @@ async function testAuth(viewport, label) {
     await context.close();
   }
 }
+async function testProfileNavigation(viewport, label) {
+  const { context, page, pageErrors } = await openPage(viewport, 'tickets.html');
+  try {
+    const summary = page.locator('.market-account-menu > summary');
+    await summary.waitFor();
+    check((await summary.innerText()).trim() === 'ح', 'Profile avatar fallback is missing');
+    await summary.click();
+    const panel = page.locator('.market-account-panel');
+    check(await panel.isVisible(), 'Profile menu did not open');
+    const menuText = await panel.innerText();
+    check(menuText.includes('ثبت سفارش جدید') && menuText.includes('کد تخفیف') && menuText.includes('تنظیمات امنیتی'), 'Profile actions are missing');
+    const bounds = await panel.boundingBox();
+    check(bounds && bounds.x >= 0 && bounds.x + bounds.width <= viewport.width, 'Profile menu extends beyond the viewport');
+    const dimensions = await page.evaluate(() => ({ width: document.documentElement.scrollWidth, viewport: window.innerWidth }));
+    check(dimensions.width <= dimensions.viewport, `Horizontal overflow at ${label}: ${JSON.stringify(dimensions)}`);
+    check(pageErrors.length === 0, `Browser errors in profile at ${label}: ${pageErrors.join('; ')}`);
+    console.log(`PASS profile navigation ${label}`);
+  } finally {
+    await context.close();
+  }
+}
 try {
+  await testProfileNavigation({ width: 1365, height: 900 }, 'desktop');
+  await testProfileNavigation({ width: 390, height: 844 }, 'mobile');
   await testAuth({ width: 1365, height: 900 }, 'desktop');
   await testAuth({ width: 390, height: 844 }, 'mobile');
   await testBuilder({ width: 1365, height: 900 }, 'desktop');
