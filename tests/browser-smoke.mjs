@@ -15,7 +15,7 @@ async function openPage(viewport, path) {
     route.fulfill({
       status: 200,
       contentType: 'application/javascript',
-      body: `window.supabase={createClient:()=>({auth:{getUser:async()=>({data:{user:null},error:null})}})};`
+      body: `window.supabase={createClient:()=>({auth:{getUser:async()=>({data:{user:null},error:null}),getSession:async()=>({data:{session:null},error:null}),signUp:async()=>({data:{user:{id:'test-user'},session:null},error:null}),signInWithPassword:async()=>({data:{user:{id:'test-user'},session:{user:{id:'test-user'}}},error:null})}})};`
     })
   );
   await page.route('https://fonts.googleapis.com/**', route => route.abort());
@@ -68,11 +68,55 @@ async function testAssistant(viewport, label) {
     await context.close();
   }
 }
+
+async function testAuth(viewport,label){
+ const {context,page,pageErrors}=await openPage(viewport,'auth.html');
+ try{
+  await page.locator('#email').fill('test@example.com');
+  await page.locator('#password').fill('a-strong-test-password');
+  await page.locator('#signupButton').click();
+  check((await page.locator('#message').innerText()).includes('ایمیلت را برای تأیید'),`Signup flow failed at ${label}`);
+  check(await page.locator('#signupButton').isEnabled(),'Signup button remained disabled');
+  check(pageErrors.length===0,`Browser errors in auth at ${label}: ${pageErrors.join('; ')}`);
+  console.log(`PASS auth ${label}`);
+ }finally{await context.close();}
+}
+async function testHomeHeader(viewport,label){
+ const {context,page,pageErrors}=await openPage(viewport,'index.html');
+ try{
+  const menu=page.locator('.market-account-menu');
+  await menu.locator('summary').waitFor();
+  check(await menu.isVisible(),`Profile menu missing at ${label}`);
+  check(!(await page.locator('#menuToggle').isVisible()),`Obsolete hamburger visible at ${label}`);
+  await menu.locator('summary').click();
+  check(await menu.locator('.market-account-link').count()>=10,'Profile menu links are missing');
+  const dims=await page.evaluate(()=>({width:document.documentElement.scrollWidth,viewport:innerWidth}));
+  check(dims.width<=dims.viewport,`Horizontal overflow at ${label}: ${JSON.stringify(dims)}`);
+  check(pageErrors.length===0,`Browser errors in home at ${label}: ${pageErrors.join('; ')}`);
+  console.log(`PASS home header ${label}`);
+ }finally{await context.close();}
+}
+async function testPolicyPages(){
+ for(const path of ['privacy.html','terms.html']){
+  const {context,page,pageErrors}=await openPage({width:390,height:844},path);
+  try{
+   check(!(await page.locator('head').innerText()).includes('\\\\n'),'Literal escaped newline found in document head');
+   check(pageErrors.length===0,`Browser errors in ${path}: ${pageErrors.join('; ')}`);
+   console.log(`PASS ${path}`);
+  }finally{await context.close();}
+ }
+}
+
 try {
   await testBuilder({ width: 1365, height: 900 }, 'desktop');
   await testBuilder({ width: 390, height: 844 }, 'mobile');
   await testAssistant({ width: 1365, height: 900 }, 'desktop');
   await testAssistant({ width: 390, height: 844 }, 'mobile');
+  await testAuth({ width: 1365, height: 900 }, 'desktop');
+  await testAuth({ width: 390, height: 844 }, 'mobile');
+  await testHomeHeader({ width: 1365, height: 900 }, 'desktop');
+  await testHomeHeader({ width: 390, height: 844 }, 'mobile');
+  await testPolicyPages();
   console.log('All browser smoke tests passed.');
 } catch (error) {
   failures.push(error);
