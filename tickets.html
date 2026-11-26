@@ -10,7 +10,7 @@
 </style><link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="robots" content="noindex, follow">
-<link rel="stylesheet" href="marketplace-upgrade.css">
+<link rel="stylesheet" href="marketplace-upgrade.css?v=20261126b">
 </head><body><main class="wrap">
 <div class="top"><div class="brand">🎫 وب‌ساز مرادی | پشتیبانی</div><div class="links"><a class="ghost" href="index.html">صفحه اصلی</a><a class="ghost" href="account.html">پنل مشتری</a><a id="authLink" href="auth.html?next=tickets.html" class="ghost">ورود / ثبت‌نام</a><details class="profile-menu"><summary aria-label="منوی پروفایل" title="منوی پروفایل"><span class="profile-menu-icon"><i></i><i></i><i></i></span></summary><div class="profile-menu-list"><a href="account.html">پروفایل من</a><a href="order.html">ثبت سفارش</a><a href="tracking.html">پیگیری سفارش</a><a href="index.html">صفحه اصلی</a></div></details></div></div>
 <section class="panel"><h1>تیکت‌های پشتیبانی</h1><p class="muted">درخواستت را ثبت کن و پاسخ‌های پشتیبانی را از همین صفحه دنبال کن.</p><div id="loginNotice" class="status">برای ثبت و مشاهده تیکت‌ها ابتدا وارد حساب کاربری شو.</div>
@@ -34,5 +34,5 @@ $('ticketForm').addEventListener('submit',async e=>{e.preventDefault();if(!curre
 async function init(){const {data,error}=await db.auth.getUser();currentUser=!error?data.user:null;$('ticketForm').hidden=!currentUser;$('loginNotice').textContent=currentUser?'حساب شما متصل است؛ می‌توانی تیکت ثبت کنی یا پاسخ بدهی.':'برای ثبت و مشاهده تیکت‌ها ابتدا وارد حساب کاربری شو.';$('authLink').textContent=currentUser?'حساب کاربری':'ورود / ثبت‌نام';$('authLink').href=currentUser?'account.html':'auth.html?next=tickets.html';await renderTickets()}
 db.auth.onAuthStateChange(()=>setTimeout(init,0));init();
 })();
-</script><script src="marketplace-upgrade.js"></script>
+</script><script src="marketplace-upgrade.js?v=20261126b"></script>
 </body></html>
