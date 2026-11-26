@@ -1,0 +1,84 @@
+name: Site checks
+
+on:
+  push:
+    branches:
+      - main
+      - upgrade/pro-platform-ai-2026
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check shared JavaScript
+        run: node --check marketplace-upgrade.js
+      - name: Check service worker
+        run: node --check sw.js
+      - name: Check inline JavaScript in new pages
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          import subprocess
+          import tempfile
+
+          class Scripts(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.capture = False
+                  self.current = []
+                  self.scripts = []
+
+              def handle_starttag(self, tag, attrs):
+                  if tag.lower() != "script":
+                      return
+                  attrs = dict(attrs)
+                  self.capture = not attrs.get("src") and attrs.get("type", "").lower() != "application/ld+json"
+                  self.current = []
+
+              def handle_data(self, data):
+                  if self.capture:
+                      self.current.append(data)
+
+              def handle_endtag(self, tag):
+                  if tag.lower() == "script" and self.capture:
+                      self.scripts.append("".join(self.current))
+                      self.capture = False
+                      self.current = []
+
+          for filename in ("site-builder.html", "ai-assistant.html"):
+              parser = Scripts()
+              parser.feed(Path(filename).read_text(encoding="utf-8"))
+              for index, script in enumerate(parser.scripts):
+                  with tempfile.NamedTemporaryFile("w", suffix=".js", encoding="utf-8") as handle:
+                      handle.write(script)
+                      handle.flush()
+                      subprocess.run(["node", "--check", handle.name], check=True)
+              print(f"Checked inline scripts: {filename}")
+          PY
+      - name: Install Playwright
+        run: |
+          npm install --no-save --package-lock=false playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Run mobile and desktop browser smoke tests
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/site-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:4173/site-builder.html > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          BASE_URL=http://127.0.0.1:4173 node tests/browser-smoke.mjs

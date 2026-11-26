@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07111f"><meta name="description" content="ساخت پیش‌نمایش اولیه وب‌سایت با ابزار سایت‌ساز وب‌ساز مرادی.">
+<title>سایت‌ساز آنلاین | وب‌ساز مرادی</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="marketplace-upgrade.css?v=20261127a">
+<style>
+:root{--b:#07111f;--p:#10233a;--p2:#17314d;--l:rgba(148,190,225,.2);--t:#f4f8ff;--m:#a7b8cc;--a:#5ee7f5}
+*{box-sizing:border-box}body{margin:0;background:var(--b);color:var(--t);font-family:Vazirmatn,Tahoma,sans-serif;line-height:1.9}
+.wrap{width:min(1180px,94%);margin:26px auto 70px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-weight:900;font-size:19px}.top a,.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;border:1px solid var(--l);border-radius:12px;background:var(--p2);color:var(--t);text-decoration:none;font:inherit;font-weight:800;cursor:pointer}.btn.primary{background:var(--a);color:#07111f;border-color:transparent}.intro{margin:28px 0}.intro h1{font-size:clamp(25px,5vw,42px);margin:0 0 8px}.intro p,.muted{color:var(--m);font-size:13px}
+.layout{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(0,1.2fr);gap:18px;align-items:start}.panel{padding:20px;border:1px solid var(--l);border-radius:20px;background:var(--p);min-width:0}.panel h2{font-size:17px;margin:0 0 15px}.field{display:grid;gap:6px;margin-bottom:13px}.field label{font-size:12px;font-weight:800}.field input,.field textarea,.field select{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--l);border-radius:10px;background:var(--b);color:var(--t);font:inherit}.field textarea{min-height:90px;resize:vertical}.colors{display:flex;gap:10px;flex-wrap:wrap}.colors label{display:flex;align-items:center;gap:6px;font-size:12px}.colors input{width:18px;min-height:18px}.preview-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}.preview-frame{width:100%;height:560px;border:1px solid var(--l);border-radius:14px;background:white}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.notice{font-size:11px;color:var(--m);margin-top:12px}.templates{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.template{padding:12px;border:1px solid var(--l);border-radius:10px;background:var(--b);color:var(--t);font:inherit;font-size:12px;cursor:pointer}.template[aria-pressed=true]{border-color:var(--a);color:var(--a)}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.preview-frame{height:480px}}@media(max-width:460px){.wrap{width:92%}.panel{padding:15px}.preview-frame{height:430px}.templates{grid-template-columns:1fr}}
+.cloud-actions{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.cloud-actions input{flex:1 1 220px;min-width:0;padding:10px 12px;border:1px solid var(--l);border-radius:10px;background:var(--b);color:var(--t);font:inherit}.cloud-list{display:grid;gap:9px;margin-top:12px}.cloud-item{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px;border:1px solid var(--l);border-radius:12px;background:var(--b)}.cloud-item strong{display:block;font-size:13px}.cloud-item small{color:var(--m);font-size:11px}.cloud-item-actions{display:flex;gap:7px;flex-wrap:wrap}.cloud-item-actions button{padding:7px 10px;border:1px solid var(--l);border-radius:9px;background:var(--p2);color:var(--t);font:inherit;font-size:11px;cursor:pointer}.cloud-item-actions button:hover{border-color:var(--a);color:var(--a)}.cloud-status{font-size:12px;color:var(--m);margin-top:8px}.cloud-status.error{color:#ff8795}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><a href="index.html">← بازگشت به وب‌ساز مرادی</a><span class="brand">MW · سایت‌ساز آنلاین</span></header>
+<section class="intro"><h1>ایده‌ات را به پیش‌نمایش سایت تبدیل کن</h1><p>قالب را انتخاب کن، متن و رنگ‌ها را تغییر بده و پیش‌نمایش اولیه را ببین. این ابزار نسخه آغازین سایت‌ساز است؛ پیش‌نویس را محلی یا پس از ورود به حساب کاربری در فضای ابری ذخیره کن. انتشار روی دامنه در مرحله بعد اضافه می‌شود.</p></section>
+<div class="layout">
+<section class="panel" aria-label="تنظیمات سایت">
+<h2>۱. مشخصات سایت</h2>
+<div class="field"><label for="siteName">نام کسب‌وکار</label><input id="siteName" maxlength="60" value="کسب‌وکار من"></div>
+<div class="field"><label for="headline">عنوان اصلی</label><input id="headline" maxlength="100" value="کسب‌وکارت را حرفه‌ای‌تر معرفی کن"></div>
+<div class="field"><label for="description">توضیحات کوتاه</label><textarea id="description" maxlength="400">خدمات و محصولات ما را ببینید و برای دریافت مشاوره با ما در ارتباط باشید.</textarea></div>
+<div class="field"><label for="buttonText">متن دکمه</label><input id="buttonText" maxlength="35" value="تماس با ما"></div>
+<h2>۲. انتخاب سبک</h2>
+<div class="templates"><button class="template" type="button" data-template="business" aria-pressed="true">شرکتی</button><button class="template" type="button" data-template="store" aria-pressed="false">فروشگاهی</button><button class="template" type="button" data-template="personal" aria-pressed="false">شخصی</button></div>
+<div class="field" style="margin-top:15px"><label>رنگ اصلی</label><div class="colors"><label><input type="radio" name="accent" value="#5ee7f5" checked> فیروزه‌ای</label><label><input type="radio" name="accent" value="#f2c66d"> طلایی</label><label><input type="radio" name="accent" value="#b69cff"> بنفش</label><label><input type="radio" name="accent" value="#72d6a0"> سبز</label></div></div>
+<div class="actions"><button class="btn primary" id="download" type="button">دریافت فایل HTML</button><button class="btn" id="saveDraft" type="button">ذخیره پیش‌نویس در همین مرورگر</button></div>
+<p class="notice" id="status" role="status">پیش‌نویس فقط روی همین دستگاه ذخیره می‌شود؛ اطلاعات محرمانه وارد نکن.</p>
+</section>
+<section class="panel"><div class="preview-head"><h2>۳. پیش‌نمایش زنده</h2><span class="muted">نمایش نمونه</span></div><iframe class="preview-frame" id="preview" title="پیش‌نمایش سایت ساخته‌شده" sandbox="allow-scripts"></iframe></section>
+</div>
+<section class="panel" aria-label="پروژه‌های ذخیره‌شده در حساب کاربری" style="margin-top:18px">
+<h2>۴. پروژه‌های ذخیره‌شده در حساب کاربری</h2>
+<p class="muted">پروژه‌ها به‌صورت خصوصی در حساب شما ذخیره می‌شوند و فقط صاحب حساب می‌تواند آن‌ها را ببیند، باز کند یا حذف کند.</p>
+<div class="cloud-actions"><input id="projectName" maxlength="80" placeholder="نام پروژه، مثلاً فروشگاه پوشاک"><button class="btn primary" id="saveCloud" type="button">ذخیره در حساب</button><button class="btn" id="newProject" type="button">پروژه جدید</button><button class="btn" id="refreshCloud" type="button">به‌روزرسانی فهرست</button></div>
+<p class="cloud-status" id="cloudStatus" role="status">در حال بررسی اتصال حساب...</p><div class="cloud-list" id="cloudProjects"><p class="muted">در حال بارگذاری پروژه‌ها...</p></div>
+</section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);let template='business';
+const values=()=>({name:$('siteName').value,headline:$('headline').value,description:$('description').value,button:$('buttonText').value,accent:document.querySelector('input[name="accent"]:checked').value,template});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function markup(v){const titles={business:'راهکارهایی برای رشد کسب‌وکار شما',store:'محصولات منتخب ما',personal:'سلام، خوش آمدید'};return '<!doctype html><html lang="fa" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(v.name)+'</title><style>*{box-sizing:border-box}body{margin:0;font:16px/2 Tahoma,sans-serif;background:#f4f7fb;color:#17243a}.nav{padding:18px 7%;display:flex;justify-content:space-between;background:white}.hero{max-width:900px;margin:9vh auto;padding:55px 7%;border-radius:25px;background:white;box-shadow:0 20px 60px #182b4418;text-align:center}.tag{color:'+v.accent+';font-weight:bold}h1{font-size:clamp(28px,5vw,48px);line-height:1.5}p{color:#607086;max-width:650px;margin:15px auto}.btn{display:inline-block;margin-top:18px;padding:12px 25px;background:'+v.accent+';color:#102033;border-radius:12px;text-decoration:none;font-weight:bold}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:35px}.card{padding:22px;background:#f1f5f9;border-radius:14px}@media(max-width:600px){.cards{grid-template-columns:1fr}.hero{margin:25px 15px;padding:30px 18px}}</style><header class="nav"><b>'+esc(v.name)+'</b><span>خانه　 خدمات　 تماس</span></header><main class="hero"><span class="tag">'+esc(titles[v.template])+'</span><h1>'+esc(v.headline)+'</h1><p>'+esc(v.description)+'</p><a class="btn" href="contact.html">'+esc(v.button)+'</a><div class="cards"><div class="card">کیفیت و اعتماد</div><div class="card">خدمات حرفه‌ای</div><div class="card">پشتیبانی پاسخ‌گو</div></div></main></html>'}
+function render(){const v=values();$('preview').srcdoc=markup(v)}
+['siteName','headline','description','buttonText'].forEach(id=>$(id).addEventListener('input',render));
+document.querySelectorAll('input[name="accent"]').forEach(el=>el.addEventListener('change',render));
+document.querySelectorAll('[data-template]').forEach(b=>b.addEventListener('click',()=>{template=b.dataset.template;document.querySelectorAll('[data-template]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));render()}));
+$('download').addEventListener('click',()=>{const blob=new Blob([markup(values())],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='website-preview.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('status').textContent='فایل HTML پیش‌نمایش ساخته شد. قبل از انتشار، لینک‌ها و اطلاعات تماس را جایگزین کن.'});
+$('saveDraft').addEventListener('click',()=>{try{localStorage.setItem('mw-site-builder-draft',JSON.stringify(values()));$('status').textContent='پیش‌نویس روی همین مرورگر ذخیره شد.'}catch(e){$('status').textContent='ذخیره‌سازی در این مرورگر در دسترس نیست.'}});
+try{const saved=JSON.parse(localStorage.getItem('mw-site-builder-draft')||'null');if(saved){$('siteName').value=saved.name||'';$('headline').value=saved.headline||'';$('description').value=saved.description||'';$('buttonText').value=saved.button||'';template=saved.template||'business';const radio=document.querySelector('input[name="accent"][value="'+saved.accent+'"]');if(radio)radio.checked=true;document.querySelectorAll('[data-template]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.template===template)));}}catch(_){}
+render();
+const SUPABASE_URL='https://oczpjbwwogsydzkouxtj.supabase.co';
+const SUPABASE_KEY='sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
+const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
+let editingProjectId=null;
+const cloudStatus=$('cloudStatus'),cloudProjects=$('cloudProjects');
+function cloudMessage(message,error=false){cloudStatus.textContent=message;cloudStatus.className='cloud-status'+(error?' error':'')}
+function applyProject(v){
+ $('siteName').value=String(v.name||'').slice(0,60);
+ $('headline').value=String(v.headline||'').slice(0,100);
+ $('description').value=String(v.description||'').slice(0,400);
+ $('buttonText').value=String(v.button||'').slice(0,35);
+ template=['business','store','personal'].includes(v.template)?v.template:'business';
+ const radio=Array.from(document.querySelectorAll('input[name="accent"]')).find(el=>el.value===v.accent);
+ if(radio)radio.checked=true;
+ document.querySelectorAll('[data-template]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.template===template)));
+ render();
+}
+async function refreshCloud(){
+ if(!db){cloudMessage('سرویس ذخیره‌سازی در دسترس نیست.',true);return}
+ cloudProjects.replaceChildren();
+ try{
+  const {data:{user},error:authError}=await db.auth.getUser();
+  if(authError)throw authError;
+  if(!user){
+   cloudMessage('برای ذخیره و مشاهده پروژه‌های ابری ابتدا وارد حساب کاربری شو.');
+   const a=document.createElement('a');a.href='auth.html?next='+encodeURIComponent('site-builder.html');a.textContent='ورود به حساب کاربری';a.className='btn';cloudProjects.append(a);return;
+  }
+  const {data,error}=await db.from('builder_projects').select('id,name,updated_at').order('updated_at',{ascending:false}).limit(50);
+  if(error)throw error;
+  if(!data?.length){cloudMessage('هنوز پروژه‌ای در حساب شما ذخیره نشده است.');return}
+  data.forEach(project=>{
+   const item=document.createElement('article');item.className='cloud-item';
+   const info=document.createElement('div');const name=document.createElement('strong');name.textContent=project.name;const date=document.createElement('small');date.textContent='آخرین ذخیره: '+new Date(project.updated_at).toLocaleString('fa-IR');info.append(name,date);
+   const actions=document.createElement('div');actions.className='cloud-item-actions';
+   const load=document.createElement('button');load.type='button';load.textContent='باز کردن';load.addEventListener('click',()=>loadCloudProject(project.id));
+   const remove=document.createElement('button');remove.type='button';remove.textContent='حذف';remove.addEventListener('click',()=>deleteCloudProject(project.id,project.name));
+   actions.append(load,remove);item.append(info,actions);cloudProjects.append(item);
+  });
+  cloudMessage('تعداد پروژه‌های ذخیره‌شده: '+data.length.toLocaleString('fa-IR'));
+ }catch(error){cloudMessage('دریافت پروژه‌ها ناموفق بود: '+(error.message||'خطای نامشخص'),true)}
+}
+async function saveCloudProject(){
+ if(!db){cloudMessage('سرویس ذخیره‌سازی در دسترس نیست.',true);return}
+ const name=$('projectName').value.trim();
+ if(name.length<1||name.length>80){cloudMessage('برای پروژه یک نام ۱ تا ۸۰ کاراکتری وارد کن.',true);return}
+ const button=$('saveCloud');button.disabled=true;
+ try{
+  const {data:{user},error:authError}=await db.auth.getUser();
+  if(authError)throw authError;
+  if(!user){location.href='auth.html?next='+encodeURIComponent('site-builder.html');return}
+  const payload={name,project_data:values(),updated_at:new Date().toISOString()};
+  if(editingProjectId){
+   const {data,error}=await db.from('builder_projects').update(payload).eq('id',editingProjectId).select('id').maybeSingle();
+   if(error)throw error;
+   if(!data)throw new Error('پروژه پیدا نشد یا اجازه ویرایش آن را نداری.');
+  }else{
+   const {data,error}=await db.from('builder_projects').insert({...payload,user_id:user.id}).select('id').single();
+   if(error)throw error;
+   editingProjectId=data.id;
+  }
+  $('saveCloud').textContent='ذخیره تغییرات';
+  cloudMessage('پروژه با موفقیت در حساب کاربری ذخیره شد.');
+  await refreshCloud();
+ }catch(error){cloudMessage('ذخیره پروژه انجام نشد: '+(error.message||'خطای نامشخص'),true)}
+ finally{button.disabled=false}
+}
+async function loadCloudProject(id){
+ try{
+  const {data,error}=await db.from('builder_projects').select('name,project_data').eq('id',id).single();
+  if(error)throw error;
+  if(!data?.project_data||typeof data.project_data!=='object')throw new Error('اطلاعات پروژه معتبر نیست.');
+  applyProject(data.project_data);
+  editingProjectId=id;
+  $('projectName').value=data.name||'';
+  $('saveCloud').textContent='ذخیره تغییرات';
+  cloudMessage('پروژه بارگذاری شد؛ تغییرات بعدی روی همین پروژه ذخیره می‌شود.');
+  window.scrollTo({top:0,behavior:'smooth'});
+ }catch(error){cloudMessage('باز کردن پروژه ناموفق بود: '+(error.message||'خطای نامشخص'),true)}
+}
+async function deleteCloudProject(id,name){
+ if(!window.confirm('پروژه «'+name+'» حذف شود؟ این کار قابل بازگشت نیست.'))return;
+ try{
+  const {error}=await db.from('builder_projects').delete().eq('id',id);
+  if(error)throw error;
+  if(editingProjectId===id){editingProjectId=null;$('projectName').value='';$('saveCloud').textContent='ذخیره در حساب';}
+  cloudMessage('پروژه حذف شد.');
+  await refreshCloud();
+ }catch(error){cloudMessage('حذف پروژه انجام نشد: '+(error.message||'خطای نامشخص'),true)}
+}
+$('saveCloud').addEventListener('click',saveCloudProject);
+$('newProject').addEventListener('click',()=>{editingProjectId=null;$('projectName').value='';$('saveCloud').textContent='ذخیره در حساب';cloudMessage('حالت پروژه جدید فعال شد.');});
+$('refreshCloud').addEventListener('click',refreshCloud);
+refreshCloud();
+})();
+</script>
+</body></html>
