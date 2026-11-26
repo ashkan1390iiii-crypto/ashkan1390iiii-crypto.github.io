@@ -601,7 +601,7 @@ main>section#order{display:block!important}
 </style>
 <link rel="stylesheet" href="profile-menu.css">
 <script src="profile-menu.js" defer></script>
- <link rel="stylesheet" href="marketplace-upgrade.css?v=20261126f">
+ <link rel="stylesheet" href="marketplace-upgrade.css?v=20261126g">
 </head>
 
 <body>
@@ -618,7 +618,7 @@ main>section#order{display:block!important}
    <a href="services.html">خدمات</a>
    <a href="portfolio.html">نمونه‌کارها</a>
    <a href="pricing.html">تعرفه‌ها</a>
-   <a href="order.html">ثبت سفارش</a>
+   
    <details class="nav-more">
     <summary>بیشتر <span aria-hidden="true">⌄</span></summary>
     <div class="nav-more-menu">
@@ -627,9 +627,9 @@ main>section#order{display:block!important}
      <a href="extras.html">امکانات بیشتر</a>
      <a href="articles.html">وبلاگ</a>
      <a href="consultation.html">رزرو مشاوره</a>
-     <a href="tracking.html">پیگیری سفارش</a>
+     
      <a href="tools.html">مرکز ابزارها</a>
-     <a href="tickets.html">پشتیبانی و تیکت</a>
+     
     </div>
    </details>
   </nav>
@@ -1069,7 +1069,7 @@ main>section#order{display:block!important}
   <div class="section-head reveal"><span class="eyebrow">امکانات توسعه‌یافته</span><h2>ابزارهای بیشتر وب‌ساز مرادی</h2><p>بخش‌های زیر به امکانات سایت و دیتابیس متصل شده‌اند؛ برای امکانات وابسته به حساب کاربری ابتدا وارد شو.</p></div>
   <div class="extra-grid">
    <article class="extra-card reveal"><div class="service-icon">📊</div><h3>آمار پنل مدیریت</h3><div class="metric" id="orderMetric">—</div><p>آمار سفارش‌ها فقط پس از اتصال امن پنل مدیریت و مجوزهای دیتابیس نمایش داده می‌شود.</p><div class="admin-note">برای جلوگیری از افشای اطلاعات مشتریان، آمار خصوصی در صفحه عمومی خوانده نمی‌شود.</div></article>
-   <article class="extra-card reveal"><div class="service-icon">🏷️</div><h3>کد تخفیف مشتریان</h3><p>کد معتبر را بررسی کن تا هنگام ثبت سفارش اعمال و ثبت شود.</p><form id="couponForm" class="inline-form"><input id="couponInput" maxlength="30" placeholder="مثلاً MORADI10" required><button class="btn small" type="submit">بررسی کد</button></form><div id="couponResult" class="result-box">کدهای واقعی باید از پنل مدیریت ساخته شوند.</div></article>
+   
    <article class="extra-card reveal"><div class="service-icon">🔔</div><h3>مرکز اعلان‌ها</h3><p>اعلان‌های محلی این مرورگر.</p><div id="notificationList" class="notice-list"><div class="notice-item">به وب‌ساز مرادی خوش آمدی.</div></div><button class="btn ghost small" id="clearNotifications" type="button">پاک‌کردن اعلان‌ها</button></article>
    <article class="extra-card reveal"><div class="service-icon">⭐</div><h3>ثبت نظر مشتری</h3><p>نظر شما در دیتابیس ثبت می‌شود و پس از تأیید مدیر نمایش داده خواهد شد.</p><form id="reviewForm" class="inline-form"><input id="reviewName" maxlength="50" placeholder="نام نمایشی" required><select id="reviewRating"><option value="5">۵ ستاره</option><option value="4">۴ ستاره</option><option value="3">۳ ستاره</option><option value="2">۲ ستاره</option><option value="1">۱ ستاره</option></select><textarea id="reviewText" maxlength="500" placeholder="نظر شما..." required></textarea><button class="btn small" id="reviewSubmit" type="submit">ارسال نظر برای بررسی</button></form><div id="reviewList" class="review-list"></div></article>
    <article class="extra-card reveal"><div class="service-icon">🎫</div><h3>تیکت‌های پشتیبانی</h3><p>برای ثبت درخواست، مشاهده وضعیت تیکت‌ها و گفت‌وگو با پشتیبانی وارد صفحه اختصاصی تیکت‌ها شو.</p><a class="btn small" href="tickets.html">ورود به صفحه تیکت‌ها</a></article>
@@ -1336,6 +1336,7 @@ $("year").textContent=new Date().getFullYear();
 /* Auth state */
 let currentUser=null;
 let selectedDiscountCode=null;
+try{selectedDiscountCode=sessionStorage.getItem('mwb-selected-discount-code')||null}catch(_){}
 
 async function refreshAuth(){
  const {data,error}=await db.auth.getUser();
@@ -1397,8 +1398,9 @@ $("orderForm").addEventListener("submit",async event=>{
   show(message,"سفارش ثبت شد. کد پیگیری شما: "+code+" — این کد را نگه دار.");
   addLocalNotice("سفارش جدید شما ثبت شد.");
   selectedDiscountCode=null;
-  $("couponInput").value="";
-  $("couponResult").textContent="کد تخفیف سفارش قبلی ثبت شد. برای سفارش بعدی کد تازه بررسی کن.";
+  $("couponInput")&&($("couponInput").value="");
+  if($("couponResult"))$("couponResult").textContent="کد تخفیف سفارش ثبت شد.";
+  try{sessionStorage.removeItem("mwb-selected-discount-code")}catch(_){}
   $("orderForm").reset();
 
  }catch(error){
@@ -1762,7 +1764,7 @@ $("calculatePrice").addEventListener("click",()=>{
  const score=(type==="personal"?1:type==="company"?2:3)+pages+extras;
  $("priceEstimate").textContent="امتیاز پیچیدگی پروژه: "+score+" از ۹. این فقط برآورد سطح کار است و قیمت نهایی پس از بررسی اعلام می‌شود.";
 });
-$("couponForm").addEventListener("submit",async e=>{
+if($("couponForm"))$("couponForm").addEventListener("submit",async e=>{
  e.preventDefault();
  const code=$("couponInput").value.trim().toUpperCase();
  selectedDiscountCode=null;
@@ -1914,6 +1916,6 @@ window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();ins
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(err=>console.warn('PWA registration failed',err)));
 </script>
  <script src="inner-pages.js?v=20261126d" defer></script>
- <script src="marketplace-upgrade.js?v=20261126e" defer></script>
+ <script src="marketplace-upgrade.js?v=20261126g" defer></script>
 </body>
 </html>

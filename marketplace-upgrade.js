@@ -14,90 +14,60 @@ function addHeaderAccountMenu(){
  const nav=$('.nav'),actions=nav&&$('.actions',nav);
  if(!actions||$('.market-account-menu',actions))return;
  const legacyMenu=$('.profile-menu',actions);if(legacyMenu)legacyMenu.remove();
-
- const authLink=$('#authLink',actions);
- const accountLink=$('#accountLink',actions);
- const themeButton=$('#themeButton',actions);
-
- if(accountLink){
-  accountLink.href='order.html';
-  accountLink.textContent='ثبت سفارش';
-  accountLink.setAttribute('aria-label','ثبت سفارش جدید');
- }
-
- const menu=document.createElement('details');
- menu.className='market-account-menu';
- const summary=document.createElement('summary');
- summary.innerHTML='<span class="market-account-avatar" aria-hidden="true">👤</span><span class="market-account-label">حساب کاربری</span><span class="market-account-chevron" aria-hidden="true">⌄</span>';
- const list=document.createElement('div');
- list.className='market-account-panel';
- list.setAttribute('aria-label','منوی حساب کاربری');
-
- const heading=document.createElement('strong');
- heading.className='market-account-heading';
- heading.textContent='حساب کاربری من';
- list.append(heading);
-
- if(authLink){
-  authLink.classList.remove('btn','small','ghost');
-  authLink.classList.add('market-account-login');
-  list.append(authLink);
- }else{
-  const login=document.createElement('a');
-  login.href='auth.html';login.className='market-account-login';login.textContent='ورود / ثبت‌نام';
-  list.append(login);
- }
-
+ const authLink=$('#authLink',actions),accountLink=$('#accountLink',actions),themeButton=$('#themeButton',actions);
+ if(accountLink)accountLink.remove();
+ if(themeButton)themeButton.hidden=true;
+ const menu=document.createElement('details');menu.className='market-account-menu';
+ const summary=document.createElement('summary');summary.setAttribute('aria-label','باز کردن پروفایل مشتری');
+ summary.innerHTML='<span class="market-account-avatar"><img class="market-account-photo" alt="" hidden><span class="market-account-initial">ح</span></span>';
+ const avatarImage=summary.querySelector('.market-account-photo'),avatarInitial=summary.querySelector('.market-account-initial');
+ const list=document.createElement('div');list.className='market-account-panel';list.setAttribute('aria-label','منوی پروفایل مشتری');
+ const heading=document.createElement('strong');heading.className='market-account-heading';heading.textContent='پروفایل مشتری';list.append(heading);
+ if(authLink){authLink.classList.remove('btn','small','ghost');authLink.classList.add('market-account-login');authLink.textContent='ورود / ثبت‌نام';list.append(authLink);}
+ else{const login=document.createElement('a');login.href='auth.html';login.className='market-account-login';login.textContent='ورود / ثبت‌نام';list.append(login);}
  const links=[
-  ['پروفایل من','account.html','♙'],
-  ['سفارش‌های من','account.html#ordersList','▤'],
-  ['پیگیری سفارش','tracking.html','⌕'],
-  ['تیکت‌های پشتیبانی','tickets.html','؟'],
-  ['تنظیمات حساب','account.html#profileSettings','⚙'],
-  ['امنیت حساب','account.html#securitySettings','◈'],
-  ['اعلان‌ها','account.html#notificationsList','♢']
+  ['نمای کلی پروفایل','account.html','♙'],['ثبت سفارش جدید','order.html#order','＋'],
+  ['کد تخفیف مشتریان','account.html#profileDiscount','٪'],['سفارش‌های من','account.html#ordersList','▤'],
+  ['پیگیری سفارش','tracking.html','⌕'],['تیکت‌ها و پشتیبانی','account.html#ticketsList','؟'],
+  ['اطلاعات شخصی','account.html#profileSettings','♧'],['تنظیمات امنیتی','account.html#securitySettings','◈'],
+  ['تغییر ایمیل','account.html#emailSettings','✉'],['اعلان‌ها','account.html#notificationsList','♢'],
+  ['رزروهای مشاوره','account.html#myBookings','◷'],['خروج از حساب','account.html#accountActions','↪']
  ];
  const divider=document.createElement('span');divider.className='market-account-divider';list.append(divider);
- links.forEach(([label,href,icon])=>{
-  const a=document.createElement('a');a.href=href;a.className='market-account-link';
-  const glyph=document.createElement('span');glyph.setAttribute('aria-hidden','true');glyph.textContent=icon;
-  const text=document.createElement('span');text.textContent=label;
-  a.append(glyph,text);list.append(a);
- });
-
- if(themeButton){
-  const theme=document.createElement('button');
-  theme.type='button';theme.className='market-account-link market-account-theme';
-  theme.innerHTML='<span aria-hidden="true">◐</span><span>تغییر پوسته سایت</span>';
-  theme.addEventListener('click',()=>{themeButton.click();menu.open=false;});
-  list.append(theme);
+ links.forEach(([label,href,icon])=>{const link=document.createElement('a');link.href=href;link.className='market-account-link';const glyph=document.createElement('span');glyph.setAttribute('aria-hidden','true');glyph.textContent=icon;const text=document.createElement('span');text.textContent=label;link.append(glyph,text);list.append(link);});
+ if(themeButton){const theme=document.createElement('button');theme.type='button';theme.className='market-account-link market-account-theme';theme.innerHTML='<span aria-hidden="true">◐</span><span>تنظیمات ظاهر سایت</span>';theme.addEventListener('click',()=>{themeButton.click();menu.open=false;});list.append(theme);}
+ menu.append(summary,list);actions.insertBefore(menu,actions.firstChild);
+ if(window.supabase&&typeof window.supabase.createClient==='function'){
+  try{
+   const db=window.supabase.createClient('https://oczpjbwwogsydzkouxtj.supabase.co','sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0');
+   db.auth.getUser().then(async({data,error})=>{
+    const user=!error?data?.user:null,meta=user?.user_metadata||{};
+    const displayName=String(meta.display_name||meta.full_name||meta.name||'').trim();
+    const initial=Array.from(displayName||user?.email||'ح')[0]||'ح';avatarInitial.textContent=initial;heading.textContent=displayName||'حساب کاربری من';
+    if(!user)return;
+    const path=typeof meta.avatar_path==='string'?meta.avatar_path:'';
+    if([user.id+'/avatar.png',user.id+'/avatar.jpg',user.id+'/avatar.webp'].includes(path)){
+     const{data:signed,error:signedError}=await db.storage.from('avatars').createSignedUrl(path,3600);
+     if(!signedError&&signed?.signedUrl){avatarImage.src=signed.signedUrl;avatarImage.hidden=false;avatarInitial.hidden=true;avatarImage.onerror=()=>{avatarImage.hidden=true;avatarInitial.hidden=false;};}
+    }else if(typeof meta.avatar_url==='string'&&meta.avatar_url.startsWith('https://')){
+     avatarImage.src=meta.avatar_url;avatarImage.hidden=false;avatarInitial.hidden=true;avatarImage.onerror=()=>{avatarImage.hidden=true;avatarInitial.hidden=false;};
+    }
+   }).catch(()=>{});
+  }catch(_){}
  }
-
- menu.append(summary,list);
- if(authLink)actions.insertBefore(menu,authLink);else actions.insertBefore(menu,actions.firstChild);
- if(accountLink){
-  const orders=document.createElement('a');
-  orders.href='account.html#ordersList';
-  orders.className='market-orders-shortcut';
-  orders.setAttribute('aria-label','مشاهده سفارش‌های من');
-  orders.innerHTML='<span aria-hidden="true">▤</span><span>سفارش‌ها</span>';
-  actions.insertBefore(orders,accountLink);
- }
- if(authLink)list.insertBefore(authLink,divider);
  document.addEventListener('click',event=>{if(!menu.contains(event.target))menu.open=false;});
  document.addEventListener('keydown',event=>{if(event.key==='Escape')menu.open=false;});
 }
-
 function addCategoryBar(){
  if($('.market-category-bar'))return;
  const header=$('header');if(!header||!$('.nav',header))return;
  const groups=[
   {title:'طراحی وب‌سایت',icon:'▣',links:[['سایت‌ساز آنلاین','site-builder.html'],['دستیار هوشمند انتخاب خدمات','ai-assistant.html'],['طراحی سایت فروشگاهی','services.html'],['طراحی سایت شرکتی','services.html'],['طراحی سایت شخصی','services.html'],['نمونه‌کارهای طراحی','portfolio.html'],['خدمات طراحی سایت','services.html']]},
-  {title:'سفارش و حساب کاربری',icon:'◉',links:[['ثبت سفارش جدید','order.html'],['پیگیری سفارش','tracking.html'],['پروفایل مشتری','account.html'],['مقایسه پلن‌ها','compare.html'],['تعرفه خدمات','pricing.html']]},
+  {title:'پلن‌ها و تعرفه‌ها',icon:'◈',links:[['مقایسه پلن‌ها','compare.html'],['تعرفه خدمات','pricing.html'],['محاسبه قیمت','calculator.html']]},
   {title:'مشاوره و ابزارها',icon:'◇',links:[['درخواست مشاوره','consultation.html'],['محاسبه قیمت','calculator.html'],['ابزارهای آنلاین','tools.html'],['مقالات آموزشی','articles.html'],['وبلاگ','blog.html']]},
   {title:'راهنما و پشتیبانی',icon:'؟',links:[['پشتیبانی و ثبت تیکت','tickets.html'],['سؤالات متداول','faq.html'],['تماس با ما','contact.html'],['قوانین و شرایط','terms.html'],['حریم خصوصی','privacy.html']]}
  ];
- const quick=[['سایت‌ساز آنلاین','site-builder.html'],['دستیار هوشمند','ai-assistant.html'],['پیشنهاد پلن‌ها','pricing.html'],['نمونه‌کارها','portfolio.html'],['ثبت سفارش','order.html'],['پشتیبانی','tickets.html']];
+ const quick=[['سایت‌ساز آنلاین','site-builder.html'],['دستیار هوشمند','ai-assistant.html'],['پیشنهاد پلن‌ها','pricing.html'],['نمونه‌کارها','portfolio.html'],['پشتیبانی','tickets.html']];
  const nav=document.createElement('nav');nav.className='market-category-bar';nav.setAttribute('aria-label','منوی اصلی سایت');
  const trigger=document.createElement('button');trigger.type='button';trigger.className='market-menu-trigger';trigger.setAttribute('aria-expanded','false');trigger.innerHTML='<span aria-hidden="true">☰</span> دسته‌بندی خدمات <span aria-hidden="true">⌄</span>';
  const panel=document.createElement('div');panel.className='market-mega-menu';panel.hidden=true;
