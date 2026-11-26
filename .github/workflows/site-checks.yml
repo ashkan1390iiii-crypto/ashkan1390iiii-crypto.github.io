@@ -24,7 +24,7 @@ jobs:
         run: node --check marketplace-upgrade.js
       - name: Check service worker
         run: node --check sw.js
-      - name: Check inline JavaScript in new pages
+      - name: Check inline JavaScript in every page
         run: |
           python3 - <<'PY'
           from html.parser import HTMLParser
@@ -56,7 +56,7 @@ jobs:
                       self.capture = False
                       self.current = []
 
-          for filename in ("site-builder.html", "ai-assistant.html", "account.html", "index.html", "order.html", "auth.html"):
+          for filename in sorted(Path(".").glob("*.html")):
               parser = Scripts()
               parser.feed(Path(filename).read_text(encoding="utf-8"))
               for index, script in enumerate(parser.scripts):
@@ -66,6 +66,8 @@ jobs:
                       subprocess.run(["node", "--check", handle.name], check=True)
               print(f"Checked inline scripts: {filename}")
           PY
+      - name: Check site links, anchors and duplicate IDs
+        run: python3 tests/site-integrity.py
       - name: Install Playwright
         run: |
           npm install --no-save --package-lock=false playwright@1.58.2
