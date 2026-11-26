@@ -601,7 +601,7 @@ main>section#pricing{display:block!important}
 </style>
 <link rel="stylesheet" href="profile-menu.css">
 <script src="profile-menu.js" defer></script>
- <link rel="stylesheet" href="marketplace-upgrade.css?v=20261126c">
+ <link rel="stylesheet" href="marketplace-upgrade.css?v=20261126d">
 </head>
 
 <body>
@@ -1912,6 +1912,7 @@ let installPromptEvent=null;
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPromptEvent=event;let btn=document.getElementById('installAppButton');if(!btn){btn=document.createElement('button');btn.id='installAppButton';btn.className='btn';btn.textContent='نصب اپلیکیشن';btn.style.cssText='position:fixed!important;bottom:82px!important;right:18px!important;left:auto!important;top:auto!important;z-index:39!important;display:inline-flex;width:auto;max-width:calc(100vw - 36px);white-space:nowrap;box-shadow:0 8px 25px #0005';document.body.append(btn);}btn.hidden=false;btn.onclick=async()=>{if(!installPromptEvent)return;installPromptEvent.prompt();await installPromptEvent.userChoice;installPromptEvent=null;btn.remove();};});
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(err=>console.warn('PWA registration failed',err)));
 </script>
- <script src="marketplace-upgrade.js?v=20261126b" defer></script>
+ <script src="inner-pages.js?v=20261126d" defer></script>
+ <script src="marketplace-upgrade.js?v=20261126d" defer></script>
 </body>
 </html>
