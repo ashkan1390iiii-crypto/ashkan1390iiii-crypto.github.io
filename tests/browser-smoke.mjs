@@ -83,6 +83,8 @@ async function testAuth(viewport, label) {
     await page.evaluate(() => { window.__mockAuthFail = true; });
     await page.locator('#loginButton').click();
     check((await page.locator('#message').innerText()).includes('ارتباط با سرویس ورود'), 'Network error was not translated to a helpful message');
+    check(await page.locator('#loginButton').isEnabled(), 'Login button stayed disabled after a failed request');
+    check((await page.locator('#loginButton').innerText()).trim() === 'ورود به حساب', 'Login button label did not reset after a failed request');
     await page.evaluate(() => { window.__mockAuthFail = false; });
     await page.locator('#loginButton').click();
     await page.waitForURL('**/site-builder.html');
@@ -97,6 +99,15 @@ async function testProfileNavigation(viewport, label) {
   try {
     const summary = page.locator('.market-account-menu > summary');
     await summary.waitFor();
+    check(await page.locator('.brand-mark').evaluate(el => getComputedStyle(el).display === 'none'), 'Brand image mark should be hidden');
+    const menuTrigger = page.locator('.market-menu-trigger');
+    await menuTrigger.click();
+    const megaMenu = page.locator('.market-mega-menu');
+    check(await megaMenu.isVisible(), 'Category menu did not open');
+    const megaBounds = await megaMenu.boundingBox();
+    check(megaBounds && megaBounds.x >= 0 && megaBounds.x + megaBounds.width <= viewport.width, 'Category menu extends beyond the viewport');
+    if (label === 'mobile') check(megaBounds.height <= viewport.height * 0.66, 'Mobile category menu is too tall');
+    await menuTrigger.click();
     check((await summary.innerText()).trim() === 'ح', 'Profile avatar fallback is missing');
     await summary.click();
     const panel = page.locator('.market-account-panel');
