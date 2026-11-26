@@ -34,7 +34,7 @@ button.secondary{background:#263b52;color:white}
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="robots" content="noindex, follow">
-<link rel="stylesheet" href="marketplace-upgrade.css?v=20261126f">
+<link rel="stylesheet" href="marketplace-upgrade.css?v=20261126h">
 </head>
 <body>
 <div class="card">
@@ -44,10 +44,10 @@ button.secondary{background:#263b52;color:white}
 <input id="email" type="email" placeholder="ایمیل">
 <input id="password" type="password" placeholder="رمز عبور (حداقل ۱۰ کاراکتر برای ثبت‌نام)" autocomplete="current-password">
 
-<button onclick="signup()">ثبت‌نام</button>
-<button class="secondary" onclick="login()">ورود به حساب</button>
+<button id="signupButton" type="button" onclick="signup()">ثبت‌نام</button>
+<button class="secondary" id="loginButton" type="button" onclick="login()">ورود به حساب</button>
 
-<div id="message"></div>
+<div id="message" role="status" aria-live="polite"></div>
 </div>
 
 <script>
@@ -63,6 +63,25 @@ const db = window.supabase.createClient(
 );
 
 const message = document.getElementById('message');
+const signupButton = document.getElementById('signupButton');
+const loginButton = document.getElementById('loginButton');
+let authBusy = false;
+
+function showAuthError(error){
+ const raw=String(error?.message||error||'');
+ const network=/failed to fetch|networkerror|load failed|fetch failed/i.test(raw);
+ message.textContent=network
+  ? 'ارتباط با سرویس ورود برقرار نشد. اتصال اینترنت را بررسی کن و دوباره تلاش کن؛ اگر مشکل ادامه داشت، چند دقیقه بعد دوباره امتحان کن.'
+  : (raw||'عملیات انجام نشد. دوباره تلاش کن.');
+}
+
+function setAuthBusy(busy,activeButton){
+ authBusy=busy;
+ [signupButton,loginButton].forEach(button=>{
+  button.disabled=busy;
+  if(button===activeButton)button.textContent=busy?'لطفاً صبر کن...':(button===signupButton?'ثبت‌نام':'ورود به حساب');
+ });
+}
 
 function safeNextPath(raw){
  try{
@@ -73,53 +92,48 @@ function safeNextPath(raw){
 }
 const nextDestination=safeNextPath(new URLSearchParams(location.search).get('next'));
 
-db.auth.getSession().then(({data})=>{
+db.auth.getSession().then(({data,error})=>{
+ if(error)throw error;
  if(data?.session && new URLSearchParams(location.search).has('next')){
   location.replace(nextDestination);
  }
-});
+}).catch(showAuthError);
 
 async function signup(){
- const email = document.getElementById('email').value.trim();
- const password = document.getElementById('password').value;
-
- if(!email || password.length < 10){
-  message.textContent='ایمیل را وارد کن و برای ثبت‌نام رمز حداقل ۱۰ کاراکتری انتخاب کن.';
+ if(authBusy)return;
+ const email=document.getElementById('email').value.trim();
+ const password=document.getElementById('password').value;
+ if(!email||!document.getElementById('email').checkValidity()||password.length<10){
+  message.textContent='ایمیل معتبر را وارد کن و برای ثبت‌نام رمز حداقل ۱۰ کاراکتری انتخاب کن.';
   return;
  }
-
- const {data,error} = await db.auth.signUp({
-  email,
-  password,
-  options:{
-   emailRedirectTo:location.origin + '/auth.html?next=' + encodeURIComponent(nextDestination)
-  }
- });
-
- if(error){
-  message.textContent=error.message;
-  return;
- }
-
- message.textContent =
- 'ثبت‌نام انجام شد! ایمیلت را برای تأیید حساب بررسی کن.';
+ setAuthBusy(true,signupButton);message.textContent='در حال ایجاد حساب...';
+ try{
+  const {error}=await db.auth.signUp({
+   email,password,
+   options:{emailRedirectTo:location.origin+'/auth.html?next='+encodeURIComponent(nextDestination)}
+  });
+  if(error)throw error;
+  message.textContent='درخواست ثبت‌نام ارسال شد. ایمیلت را برای تأیید حساب بررسی کن.';
+ }catch(error){showAuthError(error)}
+ finally{setAuthBusy(false,null)}
 }
 
 async function login(){
- const email = document.getElementById('email').value.trim();
- const password = document.getElementById('password').value;
-
- const {data,error} = await db.auth.signInWithPassword({
-  email,
-  password
- });
-
- if(error){
-  message.textContent=error.message;
+ if(authBusy)return;
+ const email=document.getElementById('email').value.trim();
+ const password=document.getElementById('password').value;
+ if(!email||!document.getElementById('email').checkValidity()||!password){
+  message.textContent='ایمیل معتبر و رمز عبور را وارد کن.';
   return;
  }
-
- location.href=nextDestination;
+ setAuthBusy(true,loginButton);message.textContent='در حال ورود...';
+ try{
+  const {error}=await db.auth.signInWithPassword({email,password});
+  if(error)throw error;
+  location.replace(nextDestination);
+ }catch(error){showAuthError(error)}
+ finally{setAuthBusy(false,null)}
 }
 </script>
 <script src="marketplace-upgrade.js?v=20261126e"></script>
