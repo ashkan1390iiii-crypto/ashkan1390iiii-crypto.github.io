@@ -27,7 +27,15 @@ input[type=file]{padding:9px}textarea{min-height:85px;resize:vertical}
 .reply{padding:10px;margin:7px 0;border-radius:10px;background:#17314d;font-size:12px;white-space:pre-wrap}
 .reply.admin{border-right:3px solid var(--accent)}.reply.customer{border-right:3px solid var(--good)}
 .empty{text-align:center;padding:22px;color:var(--muted);font-size:13px}
-.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}\n.account-nav{display:flex;gap:8px;overflow:auto;padding:8px 0;margin:10px 0;scrollbar-width:thin}\n.account-nav a{white-space:nowrap;background:var(--panel2);border:1px solid var(--line);color:var(--text);font-size:12px;padding:9px 13px}\n.account-nav a:hover{border-color:var(--accent);color:var(--accent)}\n.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}\n.settings-note{padding:12px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:12px;line-height:1.9;background:#0b1c2e}\n.danger-btn{background:#532634;color:#ffe8ed;border-color:#7e3a4a}\n.section-kicker{font-size:11px;color:var(--accent);font-weight:800;margin-bottom:5px}\n@media(max-width:620px){.settings-grid{grid-template-columns:1fr}}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.account-nav{display:flex;gap:8px;overflow:auto;padding:8px 0;margin:10px 0;scrollbar-width:thin}
+.account-nav a{white-space:nowrap;background:var(--panel2);border:1px solid var(--line);color:var(--text);font-size:12px;padding:9px 13px}
+.account-nav a:hover{border-color:var(--accent);color:var(--accent)}
+.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.settings-note{padding:12px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:12px;line-height:1.9;background:#0b1c2e}
+.danger-btn{background:#532634;color:#ffe8ed;border-color:#7e3a4a}
+.section-kicker{font-size:11px;color:var(--accent);font-weight:800;margin-bottom:5px}
+@media(max-width:620px){.settings-grid{grid-template-columns:1fr}}
 .profile-menu{position:relative;margin-inline-start:auto}
 .profile-menu>summary{list-style:none;width:44px;height:42px;display:grid;place-items:center;border:1px solid var(--line);border-radius:11px;background:var(--panel2);cursor:pointer}
 .profile-menu>summary::-webkit-details-marker{display:none}
@@ -201,7 +209,7 @@ $('profileForm').addEventListener('submit',async e=>{
   const displayName=$('displayName').value.trim();
   const contactPhone=$('profilePhone').value.trim();
   const city=$('profileCity').value.trim();
-  if(contactPhone&&!/^[+0-9()\\s-]{7,25}$/.test(contactPhone))throw new Error('شماره تماس را با قالب معتبر وارد کن.');
+  if(contactPhone&&!/^[+0-9()\s-]{7,25}$/.test(contactPhone))throw new Error('شماره تماس را با قالب معتبر وارد کن.');
   const {data,error}=await db.auth.updateUser({data:{display_name:displayName,contact_phone:contactPhone,city,avatar_path:avatarPath||null}});
   if(error)throw error;
   user=data.user||user;showAvatar(newAvatar);$('welcome').textContent=displayName?'سلام، '+displayName:'پروفایل شما';
