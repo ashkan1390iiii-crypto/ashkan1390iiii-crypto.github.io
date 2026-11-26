@@ -1,0 +1,14 @@
+.profile-menu{position:relative;flex:0 0 auto}
+.profile-menu>summary{list-style:none;display:flex;align-items:center;justify-content:center;gap:7px;width:42px;height:42px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--text);cursor:pointer;transition:.2s}
+.profile-menu>summary::-webkit-details-marker{display:none}
+.profile-menu>summary:hover,.profile-menu[open]>summary{border-color:var(--accent);color:var(--accent)}
+.profile-menu-icon{display:grid;gap:4px;width:18px}
+.profile-menu-icon i{display:block;height:2px;border-radius:5px;background:currentColor;transition:transform .2s,opacity .2s}
+.profile-menu[open] .profile-menu-icon i:first-child{transform:translateY(6px) rotate(45deg)}
+.profile-menu[open] .profile-menu-icon i:nth-child(2){opacity:0}
+.profile-menu[open] .profile-menu-icon i:last-child{transform:translateY(-6px) rotate(-45deg)}
+.profile-menu-list{position:absolute;top:calc(100% + 10px);left:0;z-index:80;display:grid;gap:4px;min-width:190px;padding:8px;border:1px solid var(--line);border-radius:15px;background:var(--surface);box-shadow:var(--shadow)}
+.profile-menu-list a{display:block;padding:9px 11px;border-radius:9px;color:var(--text);font-size:12px;text-decoration:none}
+.profile-menu-list a:hover{background:var(--surface2);color:var(--accent)}
+@media(max-width:680px){.profile-menu-list{left:0;right:auto;min-width:185px}}
+@media(prefers-reduced-motion:reduce){.profile-menu-icon i{transition:none}}
