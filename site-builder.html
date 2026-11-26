@@ -13,6 +13,7 @@
 .wrap{width:min(1180px,94%);margin:26px auto 70px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-weight:900;font-size:19px}.top a,.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;border:1px solid var(--l);border-radius:12px;background:var(--p2);color:var(--t);text-decoration:none;font:inherit;font-weight:800;cursor:pointer}.btn.primary{background:var(--a);color:#07111f;border-color:transparent}.intro{margin:28px 0}.intro h1{font-size:clamp(25px,5vw,42px);margin:0 0 8px}.intro p,.muted{color:var(--m);font-size:13px}
 .layout{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(0,1.2fr);gap:18px;align-items:start}.panel{padding:20px;border:1px solid var(--l);border-radius:20px;background:var(--p);min-width:0}.panel h2{font-size:17px;margin:0 0 15px}.field{display:grid;gap:6px;margin-bottom:13px}.field label{font-size:12px;font-weight:800}.field input,.field textarea,.field select{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--l);border-radius:10px;background:var(--b);color:var(--t);font:inherit}.field textarea{min-height:90px;resize:vertical}.colors{display:flex;gap:10px;flex-wrap:wrap}.colors label{display:flex;align-items:center;gap:6px;font-size:12px}.colors input{width:18px;min-height:18px}.preview-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}.preview-frame{width:100%;height:560px;border:1px solid var(--l);border-radius:14px;background:white}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.notice{font-size:11px;color:var(--m);margin-top:12px}.templates{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.template{padding:12px;border:1px solid var(--l);border-radius:10px;background:var(--b);color:var(--t);font:inherit;font-size:12px;cursor:pointer}.template[aria-pressed=true]{border-color:var(--a);color:var(--a)}
 @media(max-width:800px){.layout{grid-template-columns:1fr}.preview-frame{height:480px}}@media(max-width:460px){.wrap{width:92%}.panel{padding:15px}.preview-frame{height:430px}.templates{grid-template-columns:1fr}}
+.cloud-actions{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.cloud-actions input{flex:1 1 220px;min-width:0;padding:10px 12px;border:1px solid var(--l);border-radius:10px;background:var(--b);color:var(--t);font:inherit}.cloud-list{display:grid;gap:9px;margin-top:12px}.cloud-item{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px;border:1px solid var(--l);border-radius:12px;background:var(--b)}.cloud-item strong{display:block;font-size:13px}.cloud-item small{color:var(--m);font-size:11px}.cloud-item-actions{display:flex;gap:7px;flex-wrap:wrap}.cloud-item-actions button{padding:7px 10px;border:1px solid var(--l);border-radius:9px;background:var(--p2);color:var(--t);font:inherit;font-size:11px;cursor:pointer}.cloud-item-actions button:hover{border-color:var(--a);color:var(--a)}.cloud-status{font-size:12px;color:var(--m);margin-top:8px}.cloud-status.error{color:#ff8795}
 </style>
 </head>
 <body>
@@ -34,7 +35,14 @@
 </section>
 <section class="panel"><div class="preview-head"><h2>۳. پیش‌نمایش زنده</h2><span class="muted">نمایش نمونه</span></div><iframe class="preview-frame" id="preview" title="پیش‌نمایش سایت ساخته‌شده" sandbox="allow-scripts"></iframe></section>
 </div>
+<section class="panel" aria-label="پروژه‌های ذخیره‌شده در حساب کاربری" style="margin-top:18px">
+<h2>۴. پروژه‌های ذخیره‌شده در حساب کاربری</h2>
+<p class="muted">پروژه‌ها به‌صورت خصوصی در حساب شما ذخیره می‌شوند و فقط صاحب حساب می‌تواند آن‌ها را ببیند، باز کند یا حذف کند.</p>
+<div class="cloud-actions"><input id="projectName" maxlength="80" placeholder="نام پروژه، مثلاً فروشگاه پوشاک"><button class="btn primary" id="saveCloud" type="button">ذخیره در حساب</button><button class="btn" id="refreshCloud" type="button">به‌روزرسانی فهرست</button></div>
+<p class="cloud-status" id="cloudStatus" role="status">در حال بررسی اتصال حساب...</p><div class="cloud-list" id="cloudProjects"><p class="muted">در حال بارگذاری پروژه‌ها...</p></div>
+</section>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id);let template='business';
@@ -49,6 +57,84 @@ $('download').addEventListener('click',()=>{const blob=new Blob([markup(values()
 $('saveDraft').addEventListener('click',()=>{try{localStorage.setItem('mw-site-builder-draft',JSON.stringify(values()));$('status').textContent='پیش‌نویس روی همین مرورگر ذخیره شد.'}catch(e){$('status').textContent='ذخیره‌سازی در این مرورگر در دسترس نیست.'}});
 try{const saved=JSON.parse(localStorage.getItem('mw-site-builder-draft')||'null');if(saved){$('siteName').value=saved.name||'';$('headline').value=saved.headline||'';$('description').value=saved.description||'';$('buttonText').value=saved.button||'';template=saved.template||'business';const radio=document.querySelector('input[name="accent"][value="'+saved.accent+'"]');if(radio)radio.checked=true;document.querySelectorAll('[data-template]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.template===template)));}}catch(_){}
 render();
+const SUPABASE_URL='https://oczpjbwwogsydzkouxtj.supabase.co';
+const SUPABASE_KEY='sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
+const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
+const cloudStatus=$('cloudStatus'),cloudProjects=$('cloudProjects');
+function cloudMessage(message,error=false){cloudStatus.textContent=message;cloudStatus.className='cloud-status'+(error?' error':'')}
+function applyProject(v){
+ $('siteName').value=String(v.name||'').slice(0,60);
+ $('headline').value=String(v.headline||'').slice(0,100);
+ $('description').value=String(v.description||'').slice(0,400);
+ $('buttonText').value=String(v.button||'').slice(0,35);
+ template=['business','store','personal'].includes(v.template)?v.template:'business';
+ const radio=document.querySelector('input[name="accent"][value="'+v.accent+'"]');
+ if(radio)radio.checked=true;
+ document.querySelectorAll('[data-template]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.template===template)));
+ render();
+}
+async function refreshCloud(){
+ if(!db){cloudMessage('سرویس ذخیره‌سازی در دسترس نیست.',true);return}
+ cloudProjects.replaceChildren();
+ try{
+  const {data:{user},error:authError}=await db.auth.getUser();
+  if(authError)throw authError;
+  if(!user){
+   cloudMessage('برای ذخیره و مشاهده پروژه‌های ابری ابتدا وارد حساب کاربری شو.');
+   const a=document.createElement('a');a.href='auth.html?next='+encodeURIComponent('site-builder.html');a.textContent='ورود به حساب کاربری';a.className='btn';cloudProjects.append(a);return;
+  }
+  const {data,error}=await db.from('builder_projects').select('id,name,updated_at').order('updated_at',{ascending:false}).limit(50);
+  if(error)throw error;
+  if(!data?.length){cloudMessage('هنوز پروژه‌ای در حساب شما ذخیره نشده است.');return}
+  data.forEach(project=>{
+   const item=document.createElement('article');item.className='cloud-item';
+   const info=document.createElement('div');const name=document.createElement('strong');name.textContent=project.name;const date=document.createElement('small');date.textContent='آخرین ذخیره: '+new Date(project.updated_at).toLocaleString('fa-IR');info.append(name,date);
+   const actions=document.createElement('div');actions.className='cloud-item-actions';
+   const load=document.createElement('button');load.type='button';load.textContent='باز کردن';load.addEventListener('click',()=>loadCloudProject(project.id));
+   const remove=document.createElement('button');remove.type='button';remove.textContent='حذف';remove.addEventListener('click',()=>deleteCloudProject(project.id,project.name));
+   actions.append(load,remove);item.append(info,actions);cloudProjects.append(item);
+  });
+  cloudMessage('تعداد پروژه‌های ذخیره‌شده: '+data.length.toLocaleString('fa-IR'));
+ }catch(error){cloudMessage('دریافت پروژه‌ها ناموفق بود: '+(error.message||'خطای نامشخص'),true)}
+}
+async function saveCloudProject(){
+ if(!db){cloudMessage('سرویس ذخیره‌سازی در دسترس نیست.',true);return}
+ const name=$('projectName').value.trim();
+ if(name.length<1||name.length>80){cloudMessage('برای پروژه یک نام ۱ تا ۸۰ کاراکتری وارد کن.',true);return}
+ const button=$('saveCloud');button.disabled=true;
+ try{
+  const {data:{user},error:authError}=await db.auth.getUser();
+  if(authError)throw authError;
+  if(!user){location.href='auth.html?next='+encodeURIComponent('site-builder.html');return}
+  const {error}=await db.from('builder_projects').insert({user_id:user.id,name,project_data:values(),updated_at:new Date().toISOString()});
+  if(error)throw error;
+  cloudMessage('پروژه با موفقیت در حساب کاربری ذخیره شد.');
+  await refreshCloud();
+ }catch(error){cloudMessage('ذخیره پروژه انجام نشد: '+(error.message||'خطای نامشخص'),true)}
+ finally{button.disabled=false}
+}
+async function loadCloudProject(id){
+ try{
+  const {data,error}=await db.from('builder_projects').select('project_data').eq('id',id).single();
+  if(error)throw error;
+  if(!data?.project_data||typeof data.project_data!=='object')throw new Error('اطلاعات پروژه معتبر نیست.');
+  applyProject(data.project_data);
+  cloudMessage('پروژه در ویرایشگر بارگذاری شد.');
+  window.scrollTo({top:0,behavior:'smooth'});
+ }catch(error){cloudMessage('باز کردن پروژه ناموفق بود: '+(error.message||'خطای نامشخص'),true)}
+}
+async function deleteCloudProject(id,name){
+ if(!window.confirm('پروژه «'+name+'» حذف شود؟ این کار قابل بازگشت نیست.'))return;
+ try{
+  const {error}=await db.from('builder_projects').delete().eq('id',id);
+  if(error)throw error;
+  cloudMessage('پروژه حذف شد.');
+  await refreshCloud();
+ }catch(error){cloudMessage('حذف پروژه انجام نشد: '+(error.message||'خطای نامشخص'),true)}
+}
+$('saveCloud').addEventListener('click',saveCloudProject);
+$('refreshCloud').addEventListener('click',refreshCloud);
+refreshCloud();
 })();
 </script>
 </body></html>
