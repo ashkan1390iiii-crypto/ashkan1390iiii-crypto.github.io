@@ -1,4 +1,4 @@
-const CACHE='moradi-web-v5';
+const CACHE='moradi-web-v6';
 const CORE=[
  '/', '/index.html','/manifest.webmanifest','/icon.svg','/logo.svg','/404.html','/offline.html',
  '/services.html','/portfolio.html','/pricing.html','/compare.html','/order.html','/preview.html','/marketplace-upgrade.css','/marketplace-upgrade.js','/inner-pages.js','/profile-menu.js','/seo.js',
