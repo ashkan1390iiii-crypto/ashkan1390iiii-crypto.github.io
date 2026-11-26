@@ -99,3 +99,7 @@
 }
 @media(max-width:380px){.market-account-label{display:none}.market-account-menu>summary{padding-inline:7px}}
 @media(prefers-reduced-motion:reduce){.inner-page-view *{scroll-behavior:auto!important}}
+
+/* افزوده‌های سایت‌ساز و دستیار پروژه */
+.market-category-bar>a[aria-current="page"]{color:var(--accent);font-weight:900}
+.market-category-bar .market-menu-trigger:focus-visible,.market-category-bar>a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
