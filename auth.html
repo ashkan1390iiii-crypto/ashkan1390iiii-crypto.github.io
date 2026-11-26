@@ -9,12 +9,12 @@
 *{box-sizing:border-box}
 body{
  margin:0;min-height:100vh;display:grid;place-items:center;
- background:#07111f;color:#fff;font-family:tahoma,Arial;
+ background:#07111f;color:#fff;font-family:Vazirmatn,Tahoma,Arial;
  padding:20px
 }
 .card{
- width:100%;max-width:420px;background:#101e30;
- padding:30px;border-radius:22px;
+ width:min(100%,460px);max-width:460px;background:#101e30;
+ padding:clamp(22px,5vw,34px);border-radius:22px;
  border:1px solid #263b52
 }
 h1{text-align:center;color:#42d9ff}
@@ -28,7 +28,7 @@ button{
  background:#12bde8;color:#06121d;border:0;
  font-weight:bold;cursor:pointer
 }
-button.secondary{background:#263b52;color:white}
+button.secondary{background:#263b52;color:white}\nbutton:not(:disabled):active{transform:translateY(1px)}\n@media(max-width:480px){body{padding:14px}.card{padding:22px 18px}h1{font-size:27px}}
 #message{line-height:2;font-size:13px;text-align:center}
 </style>
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -78,8 +78,9 @@ function showAuthError(error){
 function setAuthBusy(busy,activeButton){
  authBusy=busy;
  [signupButton,loginButton].forEach(button=>{
+  const idleLabel=button===signupButton?'ثبت‌نام':'ورود به حساب';
   button.disabled=busy;
-  if(button===activeButton)button.textContent=busy?'لطفاً صبر کن...':(button===signupButton?'ثبت‌نام':'ورود به حساب');
+  button.textContent=busy&&button===activeButton?'لطفاً صبر کن...':idleLabel;
  });
 }
 
