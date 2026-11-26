@@ -81,6 +81,23 @@ async function testAuth(viewport,label){
   console.log(`PASS auth ${label}`);
  }finally{await context.close();}
 }
+
+async function testAuthNetworkError(){
+ const context=await browser.newContext({viewport:{width:390,height:844}});
+ const page=await context.newPage();
+ await page.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',route=>route.fulfill({
+  status:200,contentType:'application/javascript',
+  body:`window.supabase={createClient:()=>({auth:{getSession:async()=>({data:{session:null},error:null}),signUp:async()=>{throw new TypeError('Failed to fetch')},signInWithPassword:async()=>{throw new TypeError('Failed to fetch')}}})};`
+ }));
+ await page.goto(`${baseURL}/auth.html`,{waitUntil:'domcontentloaded'});
+ await page.locator('#email').fill('test@example.com');
+ await page.locator('#password').fill('a-strong-test-password');
+ await page.locator('#signupButton').click();
+ check((await page.locator('#message').innerText()).includes('VPN'),'Network failure did not produce actionable guidance');
+ await context.close();
+ console.log('PASS auth network error guidance');
+}
+
 async function testHomeHeader(viewport,label,path='index.html'){
  const {context,page,pageErrors}=await openPage(viewport,path);
  try{
@@ -114,6 +131,7 @@ try {
   await testAssistant({ width: 390, height: 844 }, 'mobile');
   await testAuth({ width: 1365, height: 900 }, 'desktop');
   await testAuth({ width: 390, height: 844 }, 'mobile');
+  await testAuthNetworkError();
   await testHomeHeader({ width: 1365, height: 900 }, 'desktop');
   await testHomeHeader({ width: 390, height: 844 }, 'mobile');
   await testHomeHeader({ width: 390, height: 844 }, 'order mobile', 'order.html');
