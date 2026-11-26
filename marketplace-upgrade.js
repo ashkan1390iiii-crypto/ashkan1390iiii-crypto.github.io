@@ -10,6 +10,75 @@ function addSearch(){
  nav.insertBefore(wrap,actions);
 }
 
+function addHeaderAccountMenu(){
+ const nav=$('.nav'),actions=nav&&$('.actions',nav);
+ if(!actions||$('.market-account-menu',actions))return;
+
+ const authLink=$('#authLink',actions);
+ const accountLink=$('#accountLink',actions);
+ const themeButton=$('#themeButton',actions);
+
+ if(accountLink){
+  accountLink.href='order.html';
+  accountLink.textContent='ثبت سفارش';
+  accountLink.setAttribute('aria-label','ثبت سفارش جدید');
+ }
+
+ const menu=document.createElement('details');
+ menu.className='market-account-menu';
+ const summary=document.createElement('summary');
+ summary.innerHTML='<span class="market-account-avatar" aria-hidden="true">♙</span><span class="market-account-label">حساب کاربری</span><span class="market-account-chevron" aria-hidden="true">⌄</span>';
+ const list=document.createElement('div');
+ list.className='market-account-panel';
+ list.setAttribute('aria-label','منوی حساب کاربری');
+
+ const heading=document.createElement('strong');
+ heading.className='market-account-heading';
+ heading.textContent='حساب کاربری من';
+ list.append(heading);
+
+ if(authLink){
+  authLink.classList.remove('btn','small','ghost');
+  authLink.classList.add('market-account-login');
+  list.append(authLink);
+ }else{
+  const login=document.createElement('a');
+  login.href='auth.html';login.className='market-account-login';login.textContent='ورود / ثبت‌نام';
+  list.append(login);
+ }
+
+ const links=[
+  ['پروفایل من','account.html','♙'],
+  ['سفارش‌های من','account.html#ordersList','▤'],
+  ['پیگیری سفارش','tracking.html','⌕'],
+  ['تیکت‌های پشتیبانی','tickets.html','؟'],
+  ['تنظیمات حساب','account.html#profileSettings','⚙'],
+  ['امنیت حساب','account.html#securitySettings','◈'],
+  ['اعلان‌ها','account.html#notificationsList','♢']
+ ];
+ const divider=document.createElement('span');divider.className='market-account-divider';list.append(divider);
+ links.forEach(([label,href,icon])=>{
+  const a=document.createElement('a');a.href=href;a.className='market-account-link';
+  const glyph=document.createElement('span');glyph.setAttribute('aria-hidden','true');glyph.textContent=icon;
+  const text=document.createElement('span');text.textContent=label;
+  a.append(glyph,text);list.append(a);
+ });
+
+ if(themeButton){
+  const theme=document.createElement('button');
+  theme.type='button';theme.className='market-account-link market-account-theme';
+  theme.innerHTML='<span aria-hidden="true">◐</span><span>تغییر پوسته سایت</span>';
+  theme.addEventListener('click',()=>{themeButton.click();menu.open=false;});
+  list.append(theme);
+ }
+
+ menu.append(summary,list);
+ if(authLink)actions.insertBefore(menu,authLink);else actions.insertBefore(menu,actions.firstChild);
+ if(authLink)list.insertBefore(authLink,divider);
+ document.addEventListener('click',event=>{if(!menu.contains(event.target))menu.open=false;});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape')menu.open=false;});
+}
+
 function addCategoryBar(){
  if($('.market-category-bar'))return;
  const groups=[
@@ -75,5 +144,5 @@ async function addProjectProgress(){
  data.forEach(o=>{const index=Math.max(0,stages.indexOf(o.status));const item=document.createElement('div');item.className='market-progress-item';const head=document.createElement('div');head.className='market-progress-head';const name=document.createElement('span');name.textContent=(o.site_type||'پروژه طراحی سایت')+' · #'+o.id;const status=document.createElement('span');status.textContent=labels[o.status]||'در انتظار بررسی';head.append(name,status);const track=document.createElement('div');track.className='market-progress-track';const fill=document.createElement('div');fill.className='market-progress-fill';fill.style.width=((index+1)*25)+'%';track.append(fill);const small=document.createElement('small');small.textContent='ثبت‌شده در '+new Date(o.created_at).toLocaleDateString('fa-IR')+(o.tracking_code?' · کد پیگیری: '+o.tracking_code:'');item.append(head,track,small);target.append(item)});
  }catch(e){const target=$('.market-progress-content',card);target.textContent=e.message||'دریافت وضعیت پروژه ممکن نشد.'}
 }
-document.addEventListener('DOMContentLoaded',()=>{addSearch();addCategoryBar();enhancePortfolio();addPlanComparison();addProjectProgress()});
+document.addEventListener('DOMContentLoaded',()=>{addHeaderAccountMenu();addSearch();addCategoryBar();enhancePortfolio();addPlanComparison();addProjectProgress()});
 })();
