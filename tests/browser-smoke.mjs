@@ -81,8 +81,8 @@ async function testAuth(viewport,label){
   console.log(`PASS auth ${label}`);
  }finally{await context.close();}
 }
-async function testHomeHeader(viewport,label){
- const {context,page,pageErrors}=await openPage(viewport,'index.html');
+async function testHomeHeader(viewport,label,path='index.html'){
+ const {context,page,pageErrors}=await openPage(viewport,path);
  try{
   const menu=page.locator('.market-account-menu');
   await menu.locator('summary').waitFor();
@@ -116,6 +116,7 @@ try {
   await testAuth({ width: 390, height: 844 }, 'mobile');
   await testHomeHeader({ width: 1365, height: 900 }, 'desktop');
   await testHomeHeader({ width: 390, height: 844 }, 'mobile');
+  await testHomeHeader({ width: 390, height: 844 }, 'order mobile', 'order.html');
   await testPolicyPages();
   console.log('All browser smoke tests passed.');
 } catch (error) {
