@@ -34,7 +34,8 @@ button.secondary{background:var(--panel2);color:var(--text);border:1px solid var
 footer{text-align:center;color:var(--muted);font-size:12px;margin-top:28px}
 @media(max-width:760px){.layout{grid-template-columns:1fr}.tool-list{grid-template-columns:repeat(2,minmax(0,1fr));max-height:260px}.workspace{min-height:0}}
 @media(max-width:420px){.tool-list{grid-template-columns:1fr 1fr}.tool-pick{font-size:11px;padding:8px}}
-</style><link rel="stylesheet" href="profile-menu.css">\n<script src="profile-menu.js" defer></script>\n</head>
+</style><link rel="stylesheet" href="profile-menu.css">\n<script src="profile-menu.js" defer></script>\n<link rel="stylesheet" href="marketplace-upgrade.css">
+</head>
 <body><main class="wrap">
 <div class="top"><a href="index.html">← بازگشت به وب‌ساز مرادی</a><span class="badge">نسخه اول · ۲۰ ابزار فعال</span></div>
 <section class="hero"><span class="eyebrow">ابزارهای رایگان و فوری</span><h1>مرکز ابزارهای وب‌ساز مرادی</h1><p class="muted">۲۰ ابزار کاربردی برای متن، محتوا و کدنویسی سبک. پردازش‌ها داخل مرورگر انجام می‌شوند و متن ورودی به سرور ارسال نمی‌شود.</p></section>
@@ -82,4 +83,5 @@ $('copyOutput').addEventListener('click',async()=>{try{await navigator.clipboard
 $('clearTool').addEventListener('click',()=>{$('toolInput').value='';$('toolOutput').textContent='نتیجه اینجا نمایش داده می‌شود.';$('toolStatus').textContent='';});
 $('year').textContent=new Date().getFullYear();renderList();
 })();
-</script></body></html>
+</script><script src="marketplace-upgrade.js"></script>
+</body></html>
