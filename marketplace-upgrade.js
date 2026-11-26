@@ -13,6 +13,7 @@ function addSearch(){
 function addHeaderAccountMenu(){
  const nav=$('.nav'),actions=nav&&$('.actions',nav);
  if(!actions||$('.market-account-menu',actions))return;
+ const legacyMenu=$('.profile-menu',actions);if(legacyMenu)legacyMenu.remove();
 
  const authLink=$('#authLink',actions);
  const accountLink=$('#accountLink',actions);
