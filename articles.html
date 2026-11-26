@@ -597,13 +597,11 @@ a,button{-webkit-tap-highlight-color:transparent}
 }
 
 
-/* صفحه خانه: فقط معرفی کوتاه و آمار اصلی */
-main>section{display:none!important}
-main>section#home,main>section.stats{display:block!important}
-
-/* صفحه مستقل فهرست مقالات */
+/* نمایش فقط محتوای صفحه جاری */
 main>section{display:none!important}
 main>section#blog{display:block!important}
+.page-route-note{display:none!important}
+@media(max-width:680px){.nav-more-menu{position:static}}
 </style>
 <script src="seo.js" defer></script>
 </head>
