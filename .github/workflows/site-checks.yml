@@ -66,6 +66,8 @@ jobs:
                       subprocess.run(["node", "--check", handle.name], check=True)
               print(f"Checked inline scripts: {filename}")
           PY
+      - name: Check site links, anchors and duplicate IDs
+        run: python3 tests/site-integrity.py
       - name: Install Playwright
         run: |
           npm install --no-save --package-lock=false playwright@1.58.2
