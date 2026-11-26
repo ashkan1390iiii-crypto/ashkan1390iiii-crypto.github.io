@@ -550,6 +550,24 @@ a,button{-webkit-tap-highlight-color:transparent}
  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 
+
+/* راهنمای خودکار و ثبت تیکت */
+.support-bot-tools{border-top:1px solid var(--line);padding-top:9px;margin-top:8px}
+.support-bot-heading{font-size:11px;font-weight:800;margin-bottom:7px}
+.support-bot-quick{display:flex;flex-wrap:wrap;gap:5px}
+.support-bot-quick button,.support-ticket-actions button{border:1px solid var(--line);border-radius:20px;padding:6px 9px;background:var(--surface2);color:var(--text);font:inherit;font-size:10px;cursor:pointer}
+.support-bot-quick button:hover{border-color:var(--accent)}
+.support-bot-reply{font-size:11px;line-height:1.8;margin-top:8px;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--accent) 10%,var(--surface));color:var(--text)}
+.support-ticket-mini{display:grid;gap:7px;margin-top:9px;padding:10px;border:1px solid var(--line);border-radius:11px;background:var(--surface2)}
+.support-ticket-mini[hidden]{display:none}
+.support-ticket-mini strong{font-size:12px}
+.support-ticket-mini input,.support-ticket-mini textarea{width:100%;min-width:0;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:11px}
+.support-ticket-mini textarea{min-height:65px;resize:vertical}
+.support-ticket-actions{display:flex;gap:7px}
+.support-ticket-actions button:first-child{background:var(--accent);color:#07111f;border-color:var(--accent);font-weight:800}
+#botTicketStatus{font-size:10px;color:var(--muted)}
+#chatPanel{height:min(650px,88vh);max-height:88vh}
+
 </style>
 <script src="seo.js" defer></script>
 </head>
@@ -1107,6 +1125,27 @@ a,button{-webkit-tap-highlight-color:transparent}
   <button id="chatSend" type="submit" disabled>ارسال</button>
  </form>
  <div id="chatStatus" class="chat-status"></div>
+ <section class="support-bot-tools" aria-label="راهنمای خودکار پشتیبانی">
+  <div class="support-bot-heading">🤖 راهنمای خودکار</div>
+  <div class="support-bot-quick">
+   <button type="button" data-bot-topic="price">قیمت و تعرفه</button>
+   <button type="button" data-bot-topic="time">زمان انجام</button>
+   <button type="button" data-bot-topic="order">پیگیری سفارش</button>
+   <button type="button" data-bot-topic="payment">پرداخت</button>
+   <button type="button" data-bot-topic="account">ورود به حساب</button>
+   <button type="button" data-bot-topic="ticket">ثبت تیکت</button>
+  </div>
+  <div id="supportBotReply" class="support-bot-reply" aria-live="polite">سلام! من راهنمای خودکار وب‌ساز مرادی هستم. یکی از موضوع‌ها را انتخاب کن یا سؤالت را بنویس.</div>
+ </section>
+ <form id="quickTicketForm" class="support-ticket-mini" hidden>
+  <strong>ثبت تیکت پشتیبانی</strong>
+  <input id="botTicketName" maxlength="100" placeholder="نام و نام خانوادگی" required>
+  <input id="botTicketPhone" maxlength="30" inputmode="tel" placeholder="شماره تماس" required>
+  <input id="botTicketSubject" maxlength="80" placeholder="موضوع تیکت" required>
+  <textarea id="botTicketMessage" maxlength="1000" placeholder="شرح درخواستت را بنویس..." required></textarea>
+  <div class="support-ticket-actions"><button type="submit" id="botTicketSubmit">ثبت تیکت</button><button type="button" id="botTicketCancel">انصراف</button></div>
+  <small id="botTicketStatus" aria-live="polite"></small>
+ </form>
 </div>
 <button id="chatLauncher" type="button" aria-expanded="false">گفت‌وگو با پشتیبانی</button>
 
@@ -1560,12 +1599,60 @@ $("chatLauncher").addEventListener("click",async()=>{
  }
 });
 
+function getSupportBotAnswer(message){
+ const q=String(message||'').toLocaleLowerCase('fa');
+ if(/(قیمت|هزینه|تعرفه|چقدر|مبلغ)/.test(q))return 'هزینه طراحی به نوع سایت، تعداد صفحات و امکانات موردنیاز بستگی دارد. از بخش «تعرفه‌ها» و «محاسبه قیمت» در صفحه اصلی یک برآورد اولیه بگیر؛ برای قیمت قطعی، درخواستت را برای پشتیبانی بفرست.';
+ if(/(زمان|چقدر طول|چند روز|تحویل|مدت)/.test(q))return 'زمان تحویل به امکانات و حجم پروژه بستگی دارد. بعد از بررسی توضیحات سفارش، زمان تقریبی مشخص می‌شود. اگر سفارش ثبت کرده‌ای، کد رهگیری‌ات را در بخش «پیگیری سفارش» وارد کن.';
+ if(/(پیگیری|رهگیری|کد سفارش|وضعیت سفارش)/.test(q))return 'برای پیگیری، از بخش «پیگیری سفارش» در صفحه اصلی استفاده کن و کد رهگیری‌ای را که هنگام ثبت سفارش دریافت کردی وارد کن.';
+ if(/(پرداخت|درگاه|کارت به کارت|واریز)/.test(q))return 'وضعیت پرداخت سفارش در پنل و جزئیات سفارش قابل پیگیری است. در حال حاضر اتصال درگاه واقعی ممکن است هنوز فعال نباشد؛ برای هماهنگی دقیق، یک تیکت ثبت کن.';
+ if(/(ورود|ثبت.?نام|رمز|حساب کاربری)/.test(q))return 'از دکمه «ورود / ثبت‌نام» بالای سایت وارد شو. اگر رمزت را فراموش کرده‌ای، گزینه بازیابی رمز را در صفحه ورود بررسی کن.';
+ if(/(سلام|درود|وقت بخیر|خسته نباشید)/.test(q))return 'سلام! خوش آمدی 🌟 من می‌توانم درباره تعرفه، زمان انجام، پیگیری سفارش و پرداخت راهنمایی‌ات کنم. اگر مسئله‌ات خاص است، تیکت ثبت کن یا پیام را برای پشتیبانی بفرست.';
+ return null;
+}
+function showSupportBotReply(message){
+ const answer=getSupportBotAnswer(message);
+ if(answer){$('supportBotReply').textContent=answer;return true;}
+ $('supportBotReply').textContent='برای این سؤال پاسخ آماده‌ای ندارم. می‌توانی پیام را با دکمه ارسال برای پشتیبانی بفرستی یا از «ثبت تیکت» استفاده کنی.';
+ return false;
+}
+document.querySelectorAll('[data-bot-topic]').forEach(button=>button.addEventListener('click',()=>{
+ const topic=button.dataset.botTopic;
+ if(topic==='ticket'){
+  if(!currentUser){$('supportBotReply').textContent='برای ثبت تیکت ابتدا وارد حساب کاربری شو.';location.href='auth.html?next='+encodeURIComponent('tickets.html');return;}
+  $('quickTicketForm').hidden=false;$('botTicketSubject').focus();return;
+ }
+ const prompts={price:'قیمت و تعرفه',time:'زمان انجام پروژه',order:'پیگیری سفارش',payment:'روش پرداخت',account:'ورود به حساب'};
+ showSupportBotReply(prompts[topic]||'');
+}));
+$('botTicketCancel').addEventListener('click',()=>{$('quickTicketForm').hidden=true;$('quickTicketForm').reset();$('botTicketStatus').textContent='';});
+$('quickTicketForm').addEventListener('submit',async event=>{
+ event.preventDefault();
+ const {data:{user},error:authError}=await db.auth.getUser();
+ if(authError||!user){$('botTicketStatus').textContent='برای ثبت تیکت ابتدا وارد حساب کاربری شو.';return;}
+ const button=$('botTicketSubmit');button.disabled=true;$('botTicketStatus').textContent='در حال ثبت تیکت...';
+ const payload={user_id:user.id,customer_name:$('botTicketName').value.trim(),phone:$('botTicketPhone').value.trim(),subject:$('botTicketSubject').value.trim(),message:$('botTicketMessage').value.trim()};
+ try{
+  const {data,error}=await db.from('support_tickets').insert(payload).select('id').single();
+  if(error)throw error;
+  $('botTicketStatus').textContent='تیکت ثبت شد. از صفحه تیکت‌ها پاسخ را دنبال کن.';
+  $('supportBotReply').textContent='درخواستت با موفقیت ثبت شد. شماره تیکت: '+data.id+' — پاسخ پشتیبانی در صفحه تیکت‌ها نمایش داده می‌شود.';
+  $('quickTicketForm').reset();$('quickTicketForm').hidden=true;
+  setTimeout(()=>{location.href='tickets.html';},1400);
+ }catch(error){$('botTicketStatus').textContent='ثبت تیکت ناموفق بود: '+error.message;}
+ finally{button.disabled=false;}
+});
+
 /* Send customer message */
 $("chatForm").addEventListener("submit",async event=>{
  event.preventDefault();
 
  const message=$("chatInput").value.trim();
  const file=$("chatAttachment").files[0];
+ if(message&&!file&&showSupportBotReply(message)){
+  $('chatInput').value='';
+  chatStatus('پاسخ خودکار نمایش داده شد. برای صحبت با پشتیبانی، پیام دیگری ارسال کن.');
+  return;
+ }
  if(!message&&!file) return;
  if(file && (!['image/png','image/jpeg','image/webp','application/pdf'].includes(file.type)||file.size>5*1024*1024)){chatStatus("فقط PNG، JPG، WEBP یا PDF تا ۵ مگابایت مجاز است.");return;}
 
