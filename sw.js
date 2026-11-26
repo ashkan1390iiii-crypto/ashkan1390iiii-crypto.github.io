@@ -1,7 +1,7 @@
-const CACHE='moradi-web-v9';
+const CACHE='moradi-web-v10';
 const CORE=[
  '/', '/index.html','/manifest.webmanifest','/icon.svg','/logo.svg','/404.html','/offline.html',
- '/site-builder.html','/ai-assistant.html','/services.html','/portfolio.html','/pricing.html','/compare.html','/order.html','/preview.html','/marketplace-upgrade.css','/marketplace-upgrade.js','/inner-pages.js','/profile-menu.js','/seo.js',
+ '/site-builder.html','/ai-assistant.html','/services.html','/portfolio.html','/pricing.html','/compare.html','/order.html','/preview.html','/marketplace-upgrade.css','/marketplace-upgrade.js','/inner-pages.js','/seo.js',
  '/calculator.html','/extras.html','/articles.html','/consultation.html',
  '/tracking.html','/faq.html','/tools.html','/avid.html','/contact.html','/account.html','/auth.html','/tickets.html','/blog.html',
  '/terms.html','/privacy.html','/admin.html','/admin-suite.html','/admin-tools.html'
