@@ -1,5 +1,5 @@
-const CACHE='moradi-web-v1';
-const CORE=['/','/index.html','/manifest.webmanifest','/icon.svg','/404.html'];
+const CACHE='moradi-web-v2';
+const CORE=['/','/index.html','/manifest.webmanifest','/icon.svg','/logo.svg','/404.html','/services.html','/portfolio.html','/pricing.html','/order.html','/preview.html','/calculator.html','/extras.html','/articles.html','/consultation.html','/tracking.html','/faq.html'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)));self.skipWaiting()});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))));self.clients.claim()});
 self.addEventListener('fetch',event=>{
