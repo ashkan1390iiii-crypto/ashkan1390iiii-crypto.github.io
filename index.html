@@ -615,10 +615,8 @@ main>section#home,main>section.stats,main>section.home-extra,main>section#faq{di
 @media(max-width:760px){.pro-workflow{grid-template-columns:1fr}.pro-dashboard{transform:none}.pro-feature-grid{grid-template-columns:1fr 1fr}.pro-cta{align-items:flex-start;flex-direction:column}.pro-cta .hero-buttons{width:100%}}
 @media(max-width:460px){.pro-feature-grid{grid-template-columns:1fr}.pro-dash-grid{flex-direction:column;align-items:stretch}}
 </style>
-<link rel="stylesheet" href="profile-menu.css">
-<script src="profile-menu.js" defer></script>
 <script src="seo.js" defer></script>
- <link rel="stylesheet" href="marketplace-upgrade.css?v=20261126g">
+ <link rel="stylesheet" href="marketplace-upgrade.css?v=20261126h">
 </head>
 
 <body>
@@ -654,7 +652,7 @@ main>section#home,main>section.stats,main>section.home-extra,main>section#faq{di
    <a class="btn small ghost" href="auth.html" id="authLink">ورود / ثبت‌نام</a>
    <a class="btn small" href="account.html" id="accountLink">پنل مشتری</a>
    <button class="icon-btn" id="themeButton" type="button" title="تغییر تم" aria-label="تغییر تم">◐</button>
-   <button class="icon-btn" id="menuToggle" type="button" aria-label="باز کردن منو" aria-expanded="false">☰</button>
+   <button class="icon-btn" id="menuToggle" type="button" aria-label="باز کردن فهرست بخش‌های سایت" aria-expanded="false">▦</button>
   </div>
  </div>
 </header>
@@ -1953,6 +1951,6 @@ let installPromptEvent=null;
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPromptEvent=event;let btn=document.getElementById('installAppButton');if(!btn){btn=document.createElement('button');btn.id='installAppButton';btn.className='btn';btn.textContent='نصب اپلیکیشن';btn.style.cssText='position:fixed!important;bottom:82px!important;right:18px!important;left:auto!important;top:auto!important;z-index:39!important;display:inline-flex;width:auto;max-width:calc(100vw - 36px);white-space:nowrap;box-shadow:0 8px 25px #0005';document.body.append(btn);}btn.hidden=false;btn.onclick=async()=>{if(!installPromptEvent)return;installPromptEvent.prompt();await installPromptEvent.userChoice;installPromptEvent=null;btn.remove();};});
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(err=>console.warn('PWA registration failed',err)));
 </script>
- <script src="marketplace-upgrade.js?v=20261126g" defer></script>
+ <script src="marketplace-upgrade.js?v=20261126h" defer></script>
 </body>
 </html>

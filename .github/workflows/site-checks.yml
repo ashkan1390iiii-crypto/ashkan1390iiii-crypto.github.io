@@ -56,7 +56,7 @@ jobs:
                       self.capture = False
                       self.current = []
 
-          for filename in ("site-builder.html", "ai-assistant.html", "account.html", "index.html", "order.html"):
+          for filename in ("site-builder.html", "ai-assistant.html", "account.html", "index.html", "order.html", "auth.html"):
               parser = Scripts()
               parser.feed(Path(filename).read_text(encoding="utf-8"))
               for index, script in enumerate(parser.scripts):

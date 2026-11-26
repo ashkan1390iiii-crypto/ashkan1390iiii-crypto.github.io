@@ -15,7 +15,7 @@ async function openPage(viewport, path) {
     route.fulfill({
       status: 200,
       contentType: 'application/javascript',
-      body: `window.supabase={createClient:()=>({auth:{getUser:async()=>({data:{user:null},error:null})}})};`
+      body: `window.supabase={createClient:()=>({auth:{getUser:async()=>({data:{user:null},error:null}),getSession:async()=>({data:{session:null},error:null}),signUp:async()=>({data:{user:{id:'test-user'},session:null},error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe:()=>{}}}}),signInWithPassword:async()=>window.__mockAuthFail?({data:{},error:{message:'Failed to fetch'}}):({data:{user:{id:'test-user'},session:{access_token:'test'}} ,error:null})}})};`
     })
   );
   await page.route('https://fonts.googleapis.com/**', route => route.abort());
@@ -68,7 +68,56 @@ async function testAssistant(viewport, label) {
     await context.close();
   }
 }
+async function testAuth(viewport, label) {
+  const { context, page, pageErrors } = await openPage(viewport, 'auth.html?next=site-builder.html');
+  try {
+    check(await page.locator('html').getAttribute('dir') === 'rtl', 'Auth page must be RTL');
+    await page.locator('#email').fill('not-an-email');
+    await page.locator('#password').fill('short');
+    await page.locator('#loginButton').click();
+    check((await page.locator('#message').innerText()).includes('ایمیل معتبر'), 'Auth form validation did not run');
+    await page.locator('#email').fill('customer@example.com');
+    await page.locator('#password').fill('a-secure-test-password');
+    await page.locator('#signupButton').click();
+    check((await page.locator('#message').innerText()).includes('ایمیلت را'), 'Signup success message is missing');
+    await page.evaluate(() => { window.__mockAuthFail = true; });
+    await page.locator('#loginButton').click();
+    check((await page.locator('#message').innerText()).includes('ارتباط با سرویس ورود'), 'Network error was not translated to a helpful message');
+    await page.evaluate(() => { window.__mockAuthFail = false; });
+    await page.locator('#loginButton').click();
+    await page.waitForURL('**/site-builder.html');
+    check(pageErrors.length === 0, `Browser errors in auth at ${label}: ${pageErrors.join('; ')}`);
+    console.log(`PASS auth ${label}`);
+  } finally {
+    await context.close();
+  }
+}
+async function testProfileNavigation(viewport, label) {
+  const { context, page, pageErrors } = await openPage(viewport, 'tickets.html');
+  try {
+    const summary = page.locator('.market-account-menu > summary');
+    await summary.waitFor();
+    check((await summary.innerText()).trim() === 'ح', 'Profile avatar fallback is missing');
+    await summary.click();
+    const panel = page.locator('.market-account-panel');
+    check(await panel.isVisible(), 'Profile menu did not open');
+    const menuText = await panel.innerText();
+    check(menuText.includes('ثبت سفارش جدید') && menuText.includes('کد تخفیف') && menuText.includes('تنظیمات امنیتی'), 'Profile actions are missing');
+    const bounds = await panel.boundingBox();
+    check(bounds && bounds.x >= 0 && bounds.x + bounds.width <= viewport.width, 'Profile menu extends beyond the viewport');
+    const dimensions = await page.evaluate(() => ({ width: document.documentElement.scrollWidth, viewport: window.innerWidth }));
+    check(dimensions.width <= dimensions.viewport, `Horizontal overflow at ${label}: ${JSON.stringify(dimensions)}`);
+    check(pageErrors.length === 0, `Browser errors in profile at ${label}: ${pageErrors.join('; ')}`);
+    console.log(`PASS profile navigation ${label}`);
+  } finally {
+    await context.close();
+  }
+}
 try {
+  await testProfileNavigation({ width: 1365, height: 900 }, 'desktop');
+  await testProfileNavigation({ width: 390, height: 844 }, 'mobile');
+  await testAuth({ width: 1365, height: 900 }, 'desktop');
+  await testAuth({ width: 390, height: 844 }, 'mobile');
   await testBuilder({ width: 1365, height: 900 }, 'desktop');
   await testBuilder({ width: 390, height: 844 }, 'mobile');
   await testAssistant({ width: 1365, height: 900 }, 'desktop');
