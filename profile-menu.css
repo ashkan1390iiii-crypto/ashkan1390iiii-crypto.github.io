@@ -12,3 +12,14 @@
 .profile-menu-list a:hover{background:var(--surface2);color:var(--accent)}
 @media(max-width:680px){.profile-menu-list{left:0;right:auto;min-width:185px}}
 @media(prefers-reduced-motion:reduce){.profile-menu-icon i{transition:none}}
+
+/* Shared navigation alignment */
+.nav .actions{flex:0 0 auto;gap:7px}
+.nav .links{align-items:center}
+.nav .brand{flex:0 0 auto}
+.profile-menu-list{backdrop-filter:blur(16px)}
+@media(max-width:680px){
+ .nav .actions{gap:6px;margin-inline-start:auto}
+ .nav .links.open{max-height:calc(100vh - 105px);overflow-y:auto;box-shadow:0 20px 55px rgba(0,0,0,.2)}
+ .profile-menu-list{max-width:min(82vw,230px)}
+}
