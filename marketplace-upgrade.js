@@ -27,7 +27,7 @@ function addHeaderAccountMenu(){
  const menu=document.createElement('details');
  menu.className='market-account-menu';
  const summary=document.createElement('summary');
- summary.innerHTML='<span class="market-account-avatar" aria-hidden="true">♙</span><span class="market-account-label">حساب کاربری</span><span class="market-account-chevron" aria-hidden="true">⌄</span>';
+ summary.innerHTML='<span class="market-account-avatar" aria-hidden="true">👤</span><span class="market-account-label">حساب کاربری</span><span class="market-account-chevron" aria-hidden="true">⌄</span>';
  const list=document.createElement('div');
  list.className='market-account-panel';
  list.setAttribute('aria-label','منوی حساب کاربری');
@@ -74,6 +74,14 @@ function addHeaderAccountMenu(){
 
  menu.append(summary,list);
  if(authLink)actions.insertBefore(menu,authLink);else actions.insertBefore(menu,actions.firstChild);
+ if(accountLink){
+  const orders=document.createElement('a');
+  orders.href='account.html#ordersList';
+  orders.className='market-orders-shortcut';
+  orders.setAttribute('aria-label','مشاهده سفارش‌های من');
+  orders.innerHTML='<span aria-hidden="true">▤</span><span>سفارش‌ها</span>';
+  actions.insertBefore(orders,accountLink);
+ }
  if(authLink)list.insertBefore(authLink,divider);
  document.addEventListener('click',event=>{if(!menu.contains(event.target))menu.open=false;});
  document.addEventListener('keydown',event=>{if(event.key==='Escape')menu.open=false;});
