@@ -28,6 +28,15 @@ input[type=file]{padding:9px}textarea{min-height:85px;resize:vertical}
 .reply.admin{border-right:3px solid var(--accent)}.reply.customer{border-right:3px solid var(--good)}
 .empty{text-align:center;padding:22px;color:var(--muted);font-size:13px}
 .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.profile-menu{position:relative;margin-inline-start:auto}
+.profile-menu>summary{list-style:none;width:44px;height:42px;display:grid;place-items:center;border:1px solid var(--line);border-radius:11px;background:var(--panel2);cursor:pointer}
+.profile-menu>summary::-webkit-details-marker{display:none}
+.profile-menu-icon{display:grid;gap:4px;width:19px}
+.profile-menu-icon i{height:2px;border-radius:5px;background:var(--accent)}
+.profile-menu-list{position:absolute;top:calc(100% + 8px);left:0;z-index:30;min-width:190px;padding:8px;display:grid;gap:4px;border:1px solid var(--line);border-radius:13px;background:var(--panel);box-shadow:0 18px 45px #0005}
+.profile-menu-list a{padding:9px 11px;border-radius:8px;color:var(--text);background:transparent}
+.profile-menu-list a:hover{background:var(--panel2);color:var(--accent)}
+
 @media(max-width:620px){.wrap{margin-top:16px}.hero{align-items:flex-start}.avatar{width:72px;height:72px;flex-basis:72px}.grid{grid-template-columns:1fr}.full{grid-column:auto}h1{font-size:20px}}
 </style>
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -38,7 +47,16 @@ input[type=file]{padding:9px}textarea{min-height:85px;resize:vertical}
 <main class="wrap">
  <div class="top">
   <div class="brand">👤 وب‌ساز مرادی | پروفایل مشتری</div>
-  <div class="links"><a class="ghost" href="index.html">صفحه اصلی</a><a class="ghost" href="tickets.html">صفحه تیکت‌ها</a></div>
+  <div class="links">
+   <a class="ghost" href="index.html">صفحه اصلی</a>
+   <a class="ghost" href="tickets.html">صفحه تیکت‌ها</a>
+   <details class="profile-menu">
+    <summary aria-label="باز کردن منوی پروفایل" title="منوی پروفایل"><span class="profile-menu-icon" aria-hidden="true"><i></i><i></i><i></i></span></summary>
+    <div class="profile-menu-list">
+     <a href="#profileForm">اطلاعات پروفایل</a><a href="#ordersList">سفارش‌های من</a><a href="#ticketsList">تیکت‌ها</a><a href="#notificationsList">اعلان‌ها</a><a href="#logoutBtn">خروج از حساب</a>
+    </div>
+   </details>
+  </div>
  </div>
 
  <section class="hero">
@@ -100,12 +118,13 @@ const SUPABASE_KEY='sb_publishable_MS-mpTamnXY57k8pIllgVA_rRpqAEQ0';
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 let user=null,avatarUrl='';
+const defaultAvatar=$('avatarPreview').src;
 const labels={new:'ثبت شده',open:'باز',reviewing:'در حال بررسی',in_progress:'در حال انجام',completed:'تکمیل شده',closed:'بسته شده',cancelled:'لغو شده'};
 function msg(id,text,error=false){$(id).textContent=text;$(id).className='status'+(error?' error':'')}
 function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n}
 function date(value){return value?new Date(value).toLocaleString('fa-IR'):'—'}
 function statusLabel(value){return labels[value]||value||'نامشخص'}
-function showAvatar(url){avatarUrl=url||'';if(url)$('avatarPreview').src=url}
+function showAvatar(url){avatarUrl=url||'';$('avatarPreview').src=avatarUrl||defaultAvatar}
 async function loadProfile(){
  const meta=user.user_metadata||{};
  const name=meta.display_name||meta.full_name||'';
@@ -113,7 +132,135 @@ async function loadProfile(){
  $('welcome').textContent=name?'سلام، '+name:'پروفایل شما';
  $('email').textContent=user.email||'';
  $('accountEmail').textContent=user.email||'—';
+ const path=typeof meta.avatar_path==='string'?meta.avatar_path:'';
+ const safePath=new RegExp('^'+user.id.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\async function loadProfile(){
+ const meta=user.user_metadata||{};
+ const name=meta.display_name||meta.full_name||'';
+ $('displayName').value=name;
+ $('welcome').textContent=name?'سلام، '+name:'پروفایل شما';
+ $('email').textContent=user.email||'';
+ $('accountEmail').textContent=user.email||'—';
  showAvatar(meta.avatar_url||'');
+}')+'/avatar\\.(png|jpg|webp)
+$('avatarFile').addEventListener('change',()=>{
+ const file=$('avatarFile').files[0];if(!file)return;
+ if(!/^image\/(png|jpeg|webp)$/.test(file.type)){msg('profileMessage','فقط تصویر PNG، JPG یا WEBP مجاز است.',true);return}
+ if(file.size>3*1024*1024){msg('profileMessage','حجم عکس باید کمتر از ۳ مگابایت باشد.',true);return}
+ $('avatarPreview').src=URL.createObjectURL(file);
+});
+$('profileForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(!user)return;
+ const button=$('saveProfile');button.disabled=true;msg('profileMessage','در حال ذخیره پروفایل...');
+ try{
+  let avatarPath=typeof user.user_metadata?.avatar_path==='string'?user.user_metadata.avatar_path:'';
+  let newAvatar=avatarUrl;
+  const file=$('avatarFile').files[0];
+  if(file){
+   const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
+   avatarPath=user.id+'/avatar.'+ext;
+   const {error:uploadError}=await db.storage.from('avatars').upload(avatarPath,file,{upsert:true,contentType:file.type,cacheControl:'3600'});
+   if(uploadError)throw new Error('بارگذاری عکس انجام نشد: '+uploadError.message);
+   const {data:signed,error:signedError}=await db.storage.from('avatars').createSignedUrl(avatarPath,3600);
+   if(signedError)throw signedError;
+   newAvatar=signed.signedUrl;
+  }
+  const displayName=$('displayName').value.trim();
+  const {data,error}=await db.auth.updateUser({data:{display_name:displayName,avatar_path:avatarPath||null}});
+  if(error)throw error;
+  user=data.user||user;showAvatar(newAvatar);$('welcome').textContent=displayName?'سلام، '+displayName:'پروفایل شما';
+  $('avatarFile').value='';msg('profileMessage','اطلاعات پروفایل با موفقیت ذخیره شد.');
+ }catch(error){msg('profileMessage',error.message||'ذخیره پروفایل ناموفق بود.',true)}
+ finally{button.disabled=false}
+});
+async function loadOrders(){
+ const box=$('ordersList');box.replaceChildren();
+ try{
+  const {data,error}=await db.from('orders').select('id,customer_name,phone,site_type,description,status,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50);
+  if(error)throw error;
+  if(!data?.length){box.append(el('div','empty','هنوز سفارشی برای این حساب ثبت نشده است.'));return}
+  data.forEach(o=>{
+   const card=el('article','item');card.append(el('h3','',o.site_type||'سفارش سایت'));
+   card.append(el('span','pill','وضعیت: '+statusLabel(o.status)));
+   card.append(el('p','',`نام: ${o.customer_name||'—'}\nشماره تماس: ${o.phone||'—'}\nتوضیحات: ${o.description||'—'}\nتاریخ ثبت: ${date(o.created_at)}`));
+   box.append(card);
+  });
+ }catch(error){box.append(el('div','empty','دریافت سفارش‌ها ممکن نشد: '+(error.message||'خطای نامشخص')))}
+}
+async function loadNotifications(){
+ const box=$('notificationsList');box.replaceChildren();
+ try{
+  const {data,error}=await db.from('notifications').select('id,title,message,is_read,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(40);
+  if(error)throw error;
+  if(!data?.length){box.append(el('div','empty','هنوز اعلانی دریافت نکرده‌ای.'));return}
+  const unread=data.filter(n=>!n.is_read).map(n=>n.id);
+  for(const n of data){
+   const card=el('article','item');
+   card.append(el('h3','',n.title||'اعلان جدید'));
+   card.append(el('span','pill',n.is_read?'خوانده‌شده':'جدید'));
+   card.append(el('p','',String(n.message||'')+'\\n'+date(n.created_at)));
+   box.append(card);
+  }
+  if(unread.length){
+   const {error:readError}=await db.from('notifications').update({is_read:true}).in('id',unread);
+   if(readError)console.warn('علامت‌گذاری اعلان‌ها ناموفق بود:',readError.message);
+  }
+ }catch(error){box.append(el('div','empty','دریافت اعلان‌ها ممکن نشد: '+(error.message||'خطای نامشخص')))}
+}
+async function loadTickets(){
+ const box=$('ticketsList');box.replaceChildren();
+ try{
+  const {data,error}=await db.from('support_tickets').select('id,subject,message,status,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50);
+  if(error)throw error;
+  if(!data?.length){box.append(el('div','empty','هنوز تیکتی ثبت نکرده‌ای.'));return}
+  for(const t of data){
+   const card=el('article','item');card.append(el('h3','',t.subject||'بدون موضوع'));
+   card.append(el('span','pill','وضعیت: '+statusLabel(t.status)));
+   card.append(el('p','',`${t.message||''}\nتاریخ ثبت: ${date(t.created_at)}`));
+   const replies=el('div');
+   const {data:rows,error:replyError}=await db.from('support_ticket_replies').select('id,sender_role,message,created_at').eq('ticket_id',t.id).order('created_at',{ascending:true});
+   if(replyError)replies.append(el('p','muted','دریافت پاسخ‌ها ممکن نشد: '+replyError.message));
+   else if(!rows?.length)replies.append(el('p','muted','هنوز پاسخی برای این تیکت ثبت نشده است.'));
+   else rows.forEach(r=>{const item=el('div','reply '+(r.sender_role==='admin'?'admin':'customer'));item.textContent=(r.sender_role==='admin'?'پاسخ پشتیبانی':'پیام شما')+' · '+date(r.created_at)+'\n'+r.message;replies.append(item)});
+   card.append(replies);box.append(card);
+  }
+ }catch(error){box.append(el('div','empty','دریافت تیکت‌ها ممکن نشد: '+(error.message||'خطای نامشخص')))}
+}
+$('logoutBtn').addEventListener('click',async()=>{
+ const button=$('logoutBtn');button.disabled=true;
+ const {error}=await db.auth.signOut();
+ if(error){msg('pageMessage','خروج انجام نشد: '+error.message,true);button.disabled=false;return}
+ location.href='auth.html';
+});
+async function loadLoyalty(){
+ const box=$('loyaltyPoints');
+ const {data,error}=await db.from('customer_loyalty').select('points,updated_at').eq('user_id',user.id).maybeSingle();
+ if(error){box.textContent='دریافت امتیازها ممکن نشد.';return}
+ const points=data?.points||0;const level=points>=100?'VIP':points>=50?'طلایی':points>=10?'نقره‌ای':'تازه‌وارد';box.textContent='امتیاز فعلی: '+points.toLocaleString('fa-IR')+' · سطح مشتری: '+level;
+}
+async function loadMyBookings(){
+ const box=$('myBookings');box.replaceChildren();
+ const {data,error}=await db.from('consultation_bookings').select('requested_at,topic,status,admin_note,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(30);
+ if(error){box.append(el('div','empty','دریافت رزروها ممکن نشد: '+error.message));return}
+ if(!data?.length){box.append(el('div','empty','هنوز درخواست مشاوره ثبت نکرده‌ای.'));return}
+ data.forEach(b=>{const card=el('article','item');card.append(el('h3','',b.topic||'جلسه مشاوره'));card.append(el('span','pill','وضعیت: '+statusLabel(b.status)));card.append(el('p','', 'زمان پیشنهادی: '+date(b.requested_at)+'\\nیادداشت مدیر: '+(b.admin_note||'هنوز یادداشتی ثبت نشده است.')));box.append(card)});
+}
+
+async function init(){
+ const {data,error}=await db.auth.getUser();user=!error?data.user:null;
+ if(!user){location.href='auth.html?next=account.html';return}
+ $('loginStatus').textContent='حساب شما با موفقیت وارد شده است.';
+ await loadProfile();
+ await Promise.all([loadOrders(),loadTickets(),loadNotifications(),loadLoyalty(),loadMyBookings()]);
+}
+init();
+})();
+</script>
+</body>
+</html>);
+ if(path&&safePath.test(path)){
+  const {data,error}=await db.storage.from('avatars').createSignedUrl(path,3600);
+  showAvatar(!error&&data?.signedUrl?data.signedUrl:'');
+ }else showAvatar('');
 }
 $('avatarFile').addEventListener('change',()=>{
  const file=$('avatarFile').files[0];if(!file)return;
