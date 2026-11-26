@@ -15,7 +15,7 @@ async function openPage(viewport, path) {
     route.fulfill({
       status: 200,
       contentType: 'application/javascript',
-      body: `window.supabase={createClient:()=>({auth:{getUser:async()=>({data:{user:null},error:null}),getSession:async()=>({data:{session:null},error:null}),signUp:async()=>({data:{user:{id:'test-user'},session:null},error:null}),signInWithPassword:async()=>({data:{user:{id:'test-user'},session:{user:{id:'test-user'}}},error:null})}})};`
+      body: `const q={select(){return this},eq(){return this},neq(){return this},order(){return this},limit(){return this},insert(){return this},update(){return this},delete(){return this},upsert(){return this},maybeSingle(){return Promise.resolve({data:null,error:null})},single(){return Promise.resolve({data:null,error:null})},then(resolve,reject){return Promise.resolve({data:[],error:null}).then(resolve,reject)}};window.supabase={createClient:()=>({auth:{getUser:async()=>({data:{user:null},error:null}),getSession:async()=>({data:{session:null},error:null}),signUp:async()=>({data:{user:{id:'test-user'},session:null},error:null}),signInWithPassword:async()=>({data:{user:{id:'test-user'},session:{user:{id:'test-user'}}},error:null})},from:()=>q,rpc:async()=>({data:null,error:null}),storage:{from:()=>({createSignedUrl:async()=>({data:null,error:null})})}})};`
     })
   );
   await page.route('https://fonts.googleapis.com/**', route => route.abort());
