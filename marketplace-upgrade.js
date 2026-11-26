@@ -90,6 +90,7 @@ function addHeaderAccountMenu(){
 
 function addCategoryBar(){
  if($('.market-category-bar'))return;
+ const header=$('header');if(!header||!$('.nav',header))return;
  const groups=[
   {title:'طراحی وب‌سایت',icon:'▣',links:[['طراحی سایت فروشگاهی','services.html'],['طراحی سایت شرکتی','services.html'],['طراحی سایت شخصی','services.html'],['نمونه‌کارهای طراحی','portfolio.html'],['خدمات طراحی سایت','services.html']]},
   {title:'سفارش و حساب کاربری',icon:'◉',links:[['ثبت سفارش جدید','order.html'],['پیگیری سفارش','tracking.html'],['پروفایل مشتری','account.html'],['مقایسه پلن‌ها','compare.html'],['تعرفه خدمات','pricing.html']]},
@@ -117,7 +118,7 @@ function addCategoryBar(){
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){panel.hidden=true;trigger.setAttribute('aria-expanded','false')}});
  nav.append(trigger,panel);
  quick.forEach(([label,href])=>{const a=document.createElement('a');a.href=href;a.textContent=label;if(location.pathname.endsWith('/'+href)||location.pathname===href)a.setAttribute('aria-current','page');nav.append(a)});
- const header=$('header');if(header)header.after(nav);else document.body.insertBefore(nav,document.body.firstChild);
+ header.after(nav);
 }
 function enhancePortfolio(){
  const section=[...document.querySelectorAll('section')].find(s=>s.querySelector('.portfolio')&&s.querySelector('h2'));
